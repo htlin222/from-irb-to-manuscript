@@ -1,10 +1,11 @@
-.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init \
+.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check \
         set-phase new amendment re_review continuing closure sae ib_update import suspension appeal
 
 # Single source of truth: config.toml (+ the files it references, e.g. cv.toml, 中文計畫摘要.md)
 CONFIG  := config.toml
 OUTPUT  := output
 RUN     := uv run
+RSCRIPT := Rscript
 # Override the phase for one run without editing config.toml: make all PHASE=closure
 PHASE   ?=
 export PHASE
@@ -54,6 +55,9 @@ checklist: ## View checklist
 
 review: ## Run simulated IRB reviewer on generated forms
 	$(RUN) python scripts/reviewer.py $(CONFIG) $(OUTPUT)
+
+data-check: ## Verify raw-data checksums and run data validation → results/data_validation.md
+	$(RSCRIPT) analysis/R/validate_raw.R
 
 test: ## Run tests
 	$(RUN) pytest -v

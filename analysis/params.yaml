@@ -1,0 +1,44 @@
+# 分析參數（單一來源）。研究事實（收案期間、追蹤截止日、IRB 編號）讀 config.toml，不在這裡重寫。
+# 共用定義：藥名對照 → analysis/drug_map.csv
+#   raw_name 必須與藥囑原文完全相同（不做模糊比對：「Trastuzumab emtansine」含 Trastuzumab 字樣但是 T-DM1）
+#   market_from：該產品全球最早核准的約略日期（保守取月初）；早於此日的醫囑不合理，列為資料錯誤
+
+raw_files:
+  registry: registry_breast_her2.csv
+  chemo: chemo_orders.csv
+  surgery: surgery_pathology.csv
+  followup: followup.csv
+
+expected_columns:
+  registry: [chart_no, sex, birth_date, dx_date, cT, cN, cM, stage_ajcc8, ER_pct, PR_pct,
+             HER2_IHC, HER2_ISH, grade, ki67, menopause, ECOG, BMI, LVEF_baseline]
+  chemo: [chart_no, order_date, drug_name, dose_mg]
+  surgery: [chart_no, surgery_date, surgery_type, ypT, ypN]
+  followup: [chart_no, last_contact_date, recurrence_date, recurrence_type, death_date, vital_status]
+
+# 類別欄位允許值（空白另計為缺值）
+allowed_values:
+  sex: [F, M]
+  cT: [T0, Tis, T1mi, T1a, T1b, T1c, T2, T3, T4a, T4b, T4c, T4d]
+  cN: [N0, N1, N2, N3]
+  cM: [M0, M1]
+  stage_ajcc8: [0, IA, IB, IIA, IIB, IIIA, IIIB, IIIC, IV]
+  HER2_IHC: ["0", "1+", "2+", "3+"]
+  HER2_ISH: [Amplified, Not amplified]
+  grade: ["1", "2", "3"]
+  menopause: [Pre, Post]
+  ECOG: ["0", "1", "2", "3", "4"]
+  surgery_type: [Breast-conserving surgery, Mastectomy]
+  ypT: [ypT0, ypTis, ypT1mi, ypT1a, ypT1b, ypT1c, ypT2, ypT3, ypT4a, ypT4b, ypT4c, ypT4d]
+  ypN: [ypN0, "ypN0(i+)", ypN1mi, ypN1a, ypN1b, ypN1c, ypN2a, ypN2b, ypN3a, ypN3b, ypN3c]
+  recurrence_type: [Local, Regional, Distant, Progression before surgery]
+  vital_status: [Alive, Dead]
+
+# 數值合理範圍 [下限, 上限]
+ranges:
+  age_at_dx: [18, 100]
+  ER_pct: [0, 100]
+  PR_pct: [0, 100]
+  ki67: [0, 100]
+  BMI: [12, 60]
+  LVEF_baseline: [20, 90]
