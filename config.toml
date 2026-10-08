@@ -16,7 +16,7 @@ co_pi    = "@cv.toml#co_pi"
 proposal = "@中文計畫摘要.md"
 
 [study]
-irb_no       = ""          # blank until the IRB assigns one
+irb_no       = "DEMO-2026-0412"   # correspondence/IRB核准通知.md
 project_no   = "不適用"
 title_zh     = "早期HER2陽性乳癌患者術前化學治療合併Trastuzumab與Pertuzumab雙標靶相較於單用Trastuzumab之臨床預後比較：單中心回溯性世代研究"
 title_en     = "Neoadjuvant Chemotherapy with Trastuzumab plus Pertuzumab versus Trastuzumab Alone in Early HER2-Positive Breast Cancer: A Single-Center Retrospective Cohort Study"
@@ -28,10 +28,10 @@ genetic      = false
 multicenter  = false
 
 [dates]
-study_start       = "2026年12月01日"   # 預估：IRB 通過後一年，核准後依核准日調整
-study_end         = "2027年11月30日"
+study_start       = "2026年11月16日"   # IRB 核准執行期間（correspondence/IRB核准通知.md）
+study_end         = "2027年11月15日"   # 結案報告須於結束後三個月內提出
 data_period       = "2012年01月01日 至 2023年12月31日（追蹤至2025年12月31日）"
-irb_approval_date = ""
+irb_approval_date = "2026年11月16日"
 
 [subjects]
 planned_n             = 700   # 資訊室初估 600–700 人，取上限
