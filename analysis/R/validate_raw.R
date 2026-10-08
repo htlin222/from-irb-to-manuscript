@@ -10,7 +10,8 @@ p <- params()
 facts <- study_facts()
 dm <- drug_map()
 
-raw <- lapply(setNames(names(p$raw_files), names(p$raw_files)), read_raw, p = p)
+rr <- read_all_raw(p)   # 已套用資訊室更正
+raw <- rr$raw
 
 checks <- list()
 add <- function(id, area, item, n, unit, level, action) {
@@ -198,6 +199,12 @@ add("G4", "對應", "有本院醫囑、沒有手術紀錄、也沒有「術前�
 res <- rbindlist(checks)
 res[, level := factor(level, c("error", "warning", "info", "ok"))]
 setorder(res, level, id)
+# 已查證的項目（analysis/data_queries.yaml）：保留原等級，但標為已處理，不再阻擋分析
+queries <- rbindlist(lapply(yaml::read_yaml("analysis/data_queries.yaml"), as.data.table))
+res <- merge(res, queries, by = "id", all.x = TRUE, sort = FALSE)
+res[, resolved := !is.na(status) & level != "ok"]
+setorder(res, level, id)
+status_zh <- c(corrected = "已更正", accepted = "已查證、依說明處理", confirmed = "已查證、資料正確", decided = "已決定")
 dir.create(RESULTS_DIR, showWarnings = FALSE)
 fwrite(res, file.path(RESULTS_DIR, "data_validation.csv"))
 
@@ -218,6 +225,8 @@ md <- c(
   sprintf("- 程式版本（git）：%s", prov$git_commit),
   sprintf("- 軟體：%s；%s", prov$r_version, prov$packages),
   "- 原始資料 checksum：與 `data/raw/MANIFEST.sha256` 全部相符",
+  sprintf("- 資訊室更正：已套用 %d 筆（`data/raw/%s`；舊值皆與原始資料相符）", rr$applied, p$corrections),
+  "- 查詢處理紀錄：`analysis/data_queries.yaml`（回覆：`correspondence/資訊室_查詢回覆.md`）",
   "",
   "| 檔案 | 列數 | 病人數 | SHA-256（前 12 碼） |",
   "|---|---:|---:|---|",
@@ -226,8 +235,11 @@ md <- c(
   "",
   "## 總結",
   "",
-  sprintf("- **錯誤 %d 項**：資料本身可能有誤，需資訊室查證；查清楚之前不進入分析。", res[level == "error", .N]),
-  sprintf("- **注意 %d 項**：資料可用，但需決定處理方式並寫進分析計畫。", res[level == "warning", .N]),
+  sprintf("- **錯誤 %d 項未解決**：資料本身可能有誤，需資訊室查證；查清楚之前不進入分析。",
+          res[level == "error" & !resolved, .N]),
+  sprintf("- **錯誤 %d 項已查證**：無法更正，依紀錄的方式處理。", res[level == "error" & resolved, .N]),
+  sprintf("- **注意 %d 項**（其中 %d 項已有處理方式）：資料可用，處理方式寫進分析計畫。",
+          res[level == "warning", .N], res[level == "warning" & resolved, .N]),
   sprintf("- **資訊 %d 項**：預期中的不符收案條件，分析時依計畫排除。", res[level == "info", .N]),
   sprintf("- **通過 %d 項**。", res[level == "ok", .N]),
   ""
@@ -235,17 +247,20 @@ md <- c(
 for (lv in c("error", "warning", "info")) {
   r <- res[level == lv]
   if (!nrow(r)) next
-  md <- c(md, sprintf("## %s", label[[lv]]), "", "| 編號 | 範圍 | 檢查項目 | 數量 | 建議處理 |", "|---|---|---|---:|---|",
-          r[, sprintf("| %s | %s | %s | %d %s | %s |", id, area, item, n, unit, action)], "")
+  md <- c(md, sprintf("## %s", label[[lv]]), "", "| 編號 | 範圍 | 檢查項目 | 數量 | 處理 |", "|---|---|---|---:|---|",
+          r[, sprintf("| %s | %s | %s | %d %s | %s |", id, area, item, n, unit,
+                      fifelse(resolved, sprintf("**%s**：%s", status_zh[status], handling), action))], "")
 }
-md <- c(md, "## 通過的檢查", "", paste0("- ", res[level == "ok", sprintf("%s 無「%s」", id, item)]), "",
+md <- c(md, "## 通過的檢查", "",
+        paste0("- ", res[level == "ok", sprintf("%s 無「%s」%s", id, item,
+                                                fifelse(!is.na(status), sprintf("（%s：%s）", status_zh[status], handling), ""))]), "",
         "## 各藥品醫囑期間（供判斷資料合理性）", "",
         "| 藥物 | 藥囑名稱 | 最早 | 最晚 | 病人數 |", "|---|---|---|---|---:|",
         usage[, sprintf("| %s | %s | %s | %s | %d |", agent, drug_name, first, last, patients)], "",
         "---", "", "由 `make data-check`（analysis/R/validate_raw.R）產生，請勿手改。")
 writeLines(md, file.path(RESULTS_DIR, "data_validation.md"))
 
-n_err <- res[level == "error", .N]
-cat(sprintf("資料檢查：錯誤 %d、注意 %d、資訊 %d、通過 %d → %s\n", n_err, res[level == "warning", .N],
+n_err <- res[level == "error" & !resolved, .N]
+cat(sprintf("資料檢查：未解決錯誤 %d、注意 %d、資訊 %d、通過 %d → %s\n", n_err, res[level == "warning", .N],
             res[level == "info", .N], res[level == "ok", .N], file.path(RESULTS_DIR, "data_validation.md")))
 if (n_err > 0) quit(status = 1)

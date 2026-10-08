@@ -21,8 +21,8 @@ reg[, age_at_dx := as.numeric(age_at_dx)]
 
 ch <- rd("chemo")[, order_d := as_date(order_date)]
 su <- rd("surgery")[, surg_d := as_date(surgery_date)]
-fu <- rd("followup")[, rec_d := as_date(recurrence_date)]
-neo <- neoadjuvant_summary(map_orders(ch, drug_map()), su, fu)
+fu <- rd("followup")[, `:=`(rec_d = as_date(recurrence_date), death_d = as_date(death_date))]
+neo <- neoadjuvant_summary(map_orders(drop_unexecuted_orders(ch, fu), drug_map()), su, fu)
 co <- merge(reg, neo, by = "study_id", all.x = TRUE)
 
 # ── 逐步篩選：每人只記第一個不符合的理由 ─────────────────────────────────
@@ -40,7 +40,7 @@ co[is.na(step1), step2 := fcase(
   index_d < facts$enroll_start | index_d > facts$enroll_end, "Neoadjuvant therapy started outside enrolment period",
   default = NA_character_)]
 co[is.na(step1) & is.na(step2), step3 := fifelse(
-  is.na(window_end), "No surgery at our hospital and no progression before surgery", NA_character_)]
+  is.na(window_end), "Surgery at another hospital, no pathology report", NA_character_)]
 co[, eligible := is.na(step1) & is.na(step2) & is.na(step3)]
 stopifnot(co[eligible == TRUE, all(treatment_group %in% c("dual", "single"))])
 
@@ -65,8 +65,7 @@ flow <- rbind(
     , .(step = "group", reason = fifelse(reason == "dual", "Trastuzumab + pertuzumab", "Trastuzumab alone"), n = N)][
     order(-reason)]
 )
-val <- fread(file.path(RESULTS_DIR, "data_validation.csv"))
-n_err <- val[level == "error", .N]
+n_err <- unresolved_errors()
 flow[, preliminary := n_err > 0]
 fwrite(flow, file.path(RESULTS_DIR, "cohort_flow.csv"))
 
@@ -118,7 +117,7 @@ draw_flow <- function() {
     sprintf("Duplicate records removed (n = %d)", n_of("duplicates")),
     bullets("excluded_1"),
     bullets("excluded_2"),
-    bullets("excluded_3", mark = "No surgery at our hospital and no progression before surgery")
+    bullets("excluded_3", mark = "Surgery at another hospital, no pathology report")
   )
 
   y <- 98
@@ -148,7 +147,7 @@ draw_flow <- function() {
 
   notes <- c(
     if (n_err > 0) sprintf("PRELIMINARY: %d data-validation errors pending verification (results/data_validation.md).", n_err),
-    "† May have had surgery at another hospital; pending verification.",
+    "† No surgery record at our hospital and no progression before surgery; surgery elsewhere confirmed by the IT office.",
     "Other active malignancy and clinical-trial participation are not recorded in the extract.",
     "Synthetic data for teaching."
   )

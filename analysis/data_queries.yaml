@@ -1,0 +1,41 @@
+# 資料查詢與處理紀錄（每項對應資料檢查報告的編號）。
+# 查詢：2026/11 向資訊室提出；回覆：correspondence/資訊室_查詢回覆.md；更正：data/raw/資訊室_資料更正.csv
+# status：
+#   corrected  已由更正檔修正（套用後該項檢查應為 0）
+#   accepted   無法更正，依 handling 處理；資料檢查不再視為阻擋分析的錯誤
+#   confirmed  查證後確認資料正確，依收案條件處理
+#   decided    醫師決定的處理方式（記錄於 analysis/decision_log.md）
+
+- id: B3
+  status: accepted
+  handling: 生日為系統預設值、紙本亦無記載；年齡視為缺值（deidentify.R）
+- id: B4
+  status: accepted
+  handling: 與 B3 為同一位病人；年齡視為缺值
+- id: D2
+  status: accepted
+  handling: 2021 年藥品代碼整併時以現行品項回填歷史醫囑，成分皆為 trastuzumab；分析只用成分（drug_map.csv 的 agent），不用品牌
+- id: D3
+  status: accepted
+  handling: 劑量欄位為品項標準劑量，非實際給藥量；不做劑量強度分析
+- id: D4
+  status: accepted
+  handling: 死亡後的醫囑為預開未執行；分析時排除（definitions.R drop_unexecuted_orders）
+- id: D5
+  status: accepted
+  handling: 追蹤終點取最後一次就醫（門診或醫囑），死亡者取死亡日（definitions.R followup_end）
+- id: E2
+  status: confirmed
+  handling: 18 人均為先手術、無術前治療，依收案條件排除
+- id: E3
+  status: decided
+  handling: 依國際通用定義，ypN0(i+) 不視為 pCR（analysis/decision_log.md，2026-10-09）
+- id: E4
+  status: corrected
+  handling: 手術日期年份誤植，已依紙本手術紀錄更正 2 筆
+- id: F6
+  status: corrected
+  handling: 實為術前治療期間發現遠端轉移，類別更正為 Progression before surgery（2 筆）
+- id: G4
+  status: confirmed
+  handling: 收案名單內 16 位均於他院手術、本院無病理報告，依排除條件排除

@@ -70,8 +70,7 @@ t1 <- tbl_summary(tab, by = group, label = labels, missing = "ifany", missing_te
   modify_source_note("Carboplatin-based: carboplatin without an anthracycline.") |>
   remove_abbreviation("CI = Confidence Interval")
 
-val <- fread(file.path(RESULTS_DIR, "data_validation.csv"))
-n_err <- val[level == "error", .N]
+n_err <- unresolved_errors()
 caption <- paste0(
   "Table 1. Baseline characteristics by neoadjuvant anti-HER2 regimen",
   if (n_err > 0) sprintf(" [PRELIMINARY: %d data-validation errors pending]", n_err), ". Synthetic data for teaching.")

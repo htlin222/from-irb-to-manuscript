@@ -9,6 +9,9 @@ raw_files:
   surgery: surgery_pathology.csv
   followup: followup.csv
 
+# 資訊室更正檔（data/raw/，唯讀、有 checksum）：讀資料時逐筆套用，舊值須與原始資料相符
+corrections: 資訊室_資料更正.csv
+
 expected_columns:
   registry: [chart_no, sex, birth_date, dx_date, cT, cN, cM, stage_ajcc8, ER_pct, PR_pct,
              HER2_IHC, HER2_ISH, grade, ki67, menopause, ECOG, BMI, LVEF_baseline]

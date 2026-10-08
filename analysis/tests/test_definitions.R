@@ -103,3 +103,24 @@ test_that("percent fields parse with or without % and receptor cut-off is inclus
   expect_equal(parse_pct(c("64%", "64", " 5% ", "", "n/a")), c(64, 64, 5, NA, NA))
   expect_equal(receptor_positive(c("0", "1", "0.5", "90", ""), cutoff = 1), c(FALSE, TRUE, FALSE, TRUE, NA))
 })
+
+test_that("pCR is ypT0/is ypN0; ITCs, micrometastases and no surgery are not pCR", {
+  expect_equal(pcr(c("ypT0", "ypTis", "ypT0", "ypT0", "ypT1mi", "", "ypT0"),
+                   c("ypN0", "ypN0", "ypN0(i+)", "ypN1mi", "ypN0", "ypN0", ""),
+                   had_surgery = rep(TRUE, 7)),
+               c(TRUE, TRUE, FALSE, FALSE, FALSE, NA, NA))
+  expect_false(pcr(NA_character_, NA_character_, had_surgery = FALSE))   # 術前惡化、未手術
+})
+
+test_that("orders after death are dropped as unexecuted pre-orders", {
+  ord <- data.table(study_id = c("J", "J", "K"), order_d = d(c("2020-01-01", "2020-06-01", "2020-06-01")))
+  fu <- data.table(study_id = c("J", "K"), death_d = d(c("2020-03-01", NA)))
+  expect_equal(drop_unexecuted_orders(ord, fu)[, .N, by = study_id]$N, c(1L, 1L))
+})
+
+test_that("follow-up ends at the later of last visit and last order, death date if dead, capped at cut-off", {
+  end <- followup_end(last_contact_d = d(c("2024-01-01", "2024-05-01", "2024-01-01", "2025-11-01")),
+                      last_order_d = d(c("2024-03-01", NA, "2024-03-01", "2026-02-01")),
+                      death_d = d(c(NA, NA, "2024-02-01", NA)), cutoff = d("2025-12-31"))
+  expect_equal(end, d(c("2024-03-01", "2024-05-01", "2024-02-01", "2025-12-31")))
+})

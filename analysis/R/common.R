@@ -43,6 +43,34 @@ read_raw <- function(key, p = params()) {
   fread(file.path(RAW_DIR, p$raw_files[[key]]), colClasses = "character", na.strings = NULL)
 }
 
+# 資訊室更正：每筆以 (chart_no, table, field) 定位唯一一列，舊值不符就停止。回傳更正後資料與彙總紀錄。
+apply_corrections <- function(raw, p = params()) {
+  if (is.null(p$corrections)) return(list(raw = raw, applied = 0L))
+  cx <- fread(file.path(RAW_DIR, p$corrections), colClasses = "character", na.strings = NULL)
+  for (r in seq_len(nrow(cx))) {
+    k <- names(p$raw_files)[match(paste0(cx$table[r], ".csv"), unlist(p$raw_files))]
+    if (is.na(k) || !cx$field[r] %in% names(raw[[k]])) stop("更正檔第 ", r, " 列：表或欄位不存在")
+    i <- which(raw[[k]]$chart_no == cx$chart_no[r])
+    if (length(i) != 1 || raw[[k]][[cx$field[r]]][i] != cx$old_value[r]) {
+      stop("更正檔第 ", r, " 列：找不到唯一一列或舊值與原始資料不符，未套用任何更正")
+    }
+    set(raw[[k]], i, cx$field[r], cx$new_value[r])
+  }
+  list(raw = raw, applied = nrow(cx))
+}
+
+# 讀全部原始表並套用資訊室更正（資料檢查與去識別化都用這個，確保兩者看到同一份資料）
+read_all_raw <- function(p = params()) {
+  raw <- lapply(setNames(names(p$raw_files), names(p$raw_files)), read_raw, p = p)
+  apply_corrections(raw, p)
+}
+
+# 資料檢查中仍未解決的錯誤數（已查證並記錄在 analysis/data_queries.yaml 者不算）
+unresolved_errors <- function() {
+  val <- fread(file.path(RESULTS_DIR, "data_validation.csv"))
+  val[level == "error" & !resolved, .N]
+}
+
 as_date <- function(x) as.IDate(ifelse(grepl("^\\d{4}-\\d{2}-\\d{2}$", x), x, NA_character_))
 
 # 每份結果旁邊放一個 provenance 檔：哪個程式版本、哪份資料、哪些軟體產生的

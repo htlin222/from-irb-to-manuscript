@@ -7,7 +7,7 @@ DERIVED_DIR <- "data/derived"
 
 manifest <- verify_manifest()
 p <- params()
-raw <- lapply(setNames(names(p$raw_files), names(p$raw_files)), read_raw, p = p)
+raw <- read_all_raw(p)$raw
 
 link_dir <- path.expand(p$linkage_dir)
 link_file <- file.path(link_dir, "linkage.csv")

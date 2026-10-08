@@ -28,6 +28,31 @@ chemo_backbone <- function(neo_anthracycline, neo_platinum, neo_taxane) {
         default = "Other")
 }
 
+# 死亡日之後的醫囑為預開未執行（資訊室查證 D4），不視為給藥。orders 需有 study_id, order_d。
+drop_unexecuted_orders <- function(orders, followup) {
+  x <- merge(orders, followup[, .(study_id, death_d)], by = "study_id", all.x = TRUE)
+  x[is.na(death_d) | order_d <= death_d][, death_d := NULL][]
+}
+
+# 追蹤終點（資訊室查證 D5）：最後一次就醫 = 最後門診與最後一次醫囑取較晚者；
+# 死亡者為死亡日；不超過追蹤截止日
+followup_end <- function(last_contact_d, last_order_d, death_d, cutoff) {
+  end <- pmax(last_contact_d, last_order_d, na.rm = TRUE)
+  end <- fifelse(!is.na(death_d), death_d, end)
+  pmin(end, cutoff, na.rm = TRUE)
+}
+
+# pCR = ypT0/is ypN0：乳房無侵襲性癌殘留（原位癌可）且淋巴結完全無腫瘤細胞。
+# ypN0(i+)（孤立腫瘤細胞）與 ypN1mi 都不是 pCR（決定紀錄：analysis/decision_log.md 2026-10-09；
+# Provenzano 2015 doi:10.1038/modpathol.2015.74、Bossuyt 2015 doi:10.1093/annonc/mdv161、
+# ICCR 2024 doi:10.1111/his.15165）。未手術（術前惡化）視為非 pCR；有手術但 yp 分期空白為 NA。
+PCR_YPT <- c("ypT0", "ypTis")
+PCR_YPN <- "ypN0"
+pcr <- function(ypT, ypN, had_surgery) {
+  fifelse(!had_surgery, FALSE,
+          fifelse(is.na(ypT) | is.na(ypN) | ypT == "" | ypN == "", NA, ypT %in% PCR_YPT & ypN %in% PCR_YPN))
+}
+
 # 術前治療摘要（每位有醫囑的病人一列）
 #   index_d          指標日 = 第一筆抗癌藥醫囑日
 #   upfront_surgery  手術早於指標日（先開刀）
