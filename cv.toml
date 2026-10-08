@@ -1,14 +1,19 @@
 # Study team. Referenced from config.toml as "@cv.toml#pi" / "@cv.toml#co_pi".
-# Fill once, reuse across studies.
+# 教學示範：以下人名與聯絡方式皆為虛構。
 
 [pi]
-name    = "王大明"
-name_en = "Ta-Ming Wang"
-dept    = "胸腔內科部／醫師"       # 單位／職稱
-phone   = "院內分機1680"
-email   = "tmwang@kfsyscc.org"
+name    = "陳怡君"
+name_en = "Yi-Chun Chen"
+dept    = "腫瘤內科／主治醫師"       # 單位／職稱
+phone   = "院內分機2301"
+email   = "ycchen@example.org"
 
 [[co_pi]]
-name    = "李小華"
-name_en = "Xiao-Hua Li"
-dept    = "皮膚科／醫師"
+name    = "張家豪"
+name_en = "Chia-Hao Chang"
+dept    = "乳房外科／主治醫師"
+
+[[co_pi]]
+name    = "黃淑芬"
+name_en = "Shu-Fen Huang"
+dept    = "臨床研究中心／生物統計師"
