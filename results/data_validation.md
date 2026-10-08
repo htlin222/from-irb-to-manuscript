@@ -5,9 +5,9 @@
 
 - IRB 編號：DEMO-2026-0412
 - 收案期間：2012-01-01 至 2023-12-31；追蹤截止：2025-12-31（讀自 config.toml）
-- 產生時間：2026-10-09 07:39:29 CST
-- 程式版本（git）：4a0c265
-- 軟體：R version 4.5.1 (2025-06-13)；data.table 1.17.8、yaml 2.3.10、RcppTOML 0.2.3、digest 0.6.37
+- 產生時間：2026-10-09 07:49:25 CST
+- 程式版本（git）：b5f155a
+- 軟體：R version 4.5.1 (2025-06-13)；data.table 1.17.8、yaml 2.3.10、RcppTOML 0.2.3、digest 0.6.37、jsonlite 2.0.0
 - 原始資料 checksum：與 `data/raw/MANIFEST.sha256` 全部相符
 
 | 檔案 | 列數 | 病人數 | SHA-256（前 12 碼） |

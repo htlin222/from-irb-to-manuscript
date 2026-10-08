@@ -1,8 +1,8 @@
 {
   "outputs": ["results/table1.csv", "results/table1.docx"],
   "script": "analysis/R/table1.R",
-  "generated": "2026-10-09 07:49:00 CST",
-  "git_commit": "e0189b1（分析程式有未存檔修改）",
+  "generated": "2026-10-09 07:49:30 CST",
+  "git_commit": "b5f155a",
   "r_version": "R version 4.5.1 (2025-06-13)",
   "packages": "data.table 1.17.8、yaml 2.3.10、RcppTOML 0.2.3、digest 0.6.37、jsonlite 2.0.0、gtsummary 2.4.0、flextable 0.9.10、smd 0.8.0",
   "raw_data_sha256": {

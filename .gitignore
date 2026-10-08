@@ -35,3 +35,6 @@ data/derived/
 # Demo recording: regenerable data and session state
 demo/simulate/out/
 demo/.state*/
+
+# Office lock files (created while a document is open in Word)
+~$*
