@@ -42,3 +42,12 @@ ranges:
   ki67: [0, 100]
   BMI: [12, 60]
   LVEF_baseline: [20, 90]
+
+# 去識別化：病歷號↔研究編號對照表放在專案資料夾以外，僅主持人帳號可讀（IRB 回覆意見 3）
+linkage_dir: ~/her2-study-linkage
+birth_placeholder_max_year: 1900   # 生日年份 ≤ 此值視為系統預設值，年齡設為缺值
+
+# 收案條件（對應 中文計畫摘要.md「納入條件／排除條件」；收案期間讀 config.toml）
+eligibility:
+  min_age: 20
+  stages: [IIA, IIB, IIIA, IIIB, IIIC]

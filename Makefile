@@ -1,4 +1,4 @@
-.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check \
+.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check deidentify cohort test-analysis \
         set-phase new amendment re_review continuing closure sae ib_update import suspension appeal
 
 # Single source of truth: config.toml (+ the files it references, e.g. cv.toml, 中文計畫摘要.md)
@@ -58,6 +58,15 @@ review: ## Run simulated IRB reviewer on generated forms
 
 data-check: ## Verify raw-data checksums and run data validation → results/data_validation.md
 	$(RSCRIPT) analysis/R/validate_raw.R
+
+deidentify: ## Replace chart numbers with study IDs → data/derived/ (linkage kept outside the project)
+	$(RSCRIPT) analysis/R/deidentify.R
+
+cohort: deidentify ## Apply eligibility criteria → results/cohort_flow.csv + results/figures/cohort_flow.{pdf,png}
+	$(RSCRIPT) analysis/R/cohort.R
+
+test-analysis: ## Run R tests for shared definitions (treatment groups, HER2, drug map)
+	$(RSCRIPT) -e 'testthat::test_dir("analysis/tests", reporter = "summary", stop_on_failure = TRUE)'
 
 test: ## Run tests
 	$(RUN) pytest -v
