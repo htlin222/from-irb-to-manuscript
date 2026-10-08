@@ -14,11 +14,26 @@ map_orders <- function(orders, dm) {
 # HER2 陽性：IHC 3+，或 ISH 擴增
 her2_positive <- function(ihc, ish) ihc == "3+" | ish == "Amplified"
 
+# 病理報告的百分比欄位（如 Ki-67 寫成 "64%" 或 "64"）→ 數字；空白為 NA
+parse_pct <- function(x) suppressWarnings(as.numeric(sub("%$", "", trimws(x))))
+
+# ER／PR 陽性：染色百分比 ≥ cutoff（params$receptor_positive_cutoff）
+receptor_positive <- function(pct, cutoff) parse_pct(pct) >= cutoff
+
+# 術前化療組合（依優先順序）：含 anthracycline → 含 carboplatin（無 anthracycline）→ 只有 taxane
+chemo_backbone <- function(neo_anthracycline, neo_platinum, neo_taxane) {
+  fcase(neo_anthracycline, "Anthracycline-based",
+        neo_platinum, "Carboplatin-based",
+        neo_taxane, "Taxane only",
+        default = "Other")
+}
+
 # 術前治療摘要（每位有醫囑的病人一列）
 #   index_d          指標日 = 第一筆抗癌藥醫囑日
 #   upfront_surgery  手術早於指標日（先開刀）
 #   window_end       術前治療期間的最後一天：手術前一天；沒有手術但術前惡化者為惡化日；兩者皆無則為 NA
 #   neo_*            術前治療期間 [index_d, window_end] 內是否用過該類藥
+#   chemo_backbone   術前化療組合（見 chemo_backbone()）
 #   treatment_group  dual = trastuzumab + pertuzumab；single = trastuzumab 未合併 pertuzumab；其他為 NA
 # orders_mapped: study_id, order_d, agent, agent_class；surgery: study_id, surg_d；
 # followup: study_id, recurrence_type, rec_d
@@ -35,11 +50,15 @@ neoadjuvant_summary <- function(orders_mapped, surgery, followup) {
   flags <- w[, .(neo_trastuzumab = any(agent == "trastuzumab"),
                  neo_pertuzumab = any(agent == "pertuzumab"),
                  neo_tdm1 = any(agent == "trastuzumab_emtansine"),
-                 neo_chemo = any(agent_class %in% CHEMO_CLASSES)), by = study_id]
+                 neo_chemo = any(agent_class %in% CHEMO_CLASSES),
+                 neo_anthracycline = any(agent_class == "anthracycline"),
+                 neo_platinum = any(agent_class == "platinum"),
+                 neo_taxane = any(agent_class == "taxane")), by = study_id]
   s <- merge(s, flags, by = "study_id", all.x = TRUE)
-  for (col in c("neo_trastuzumab", "neo_pertuzumab", "neo_tdm1", "neo_chemo")) {
+  for (col in grep("^neo_", names(s), value = TRUE)) {
     set(s, which(is.na(s[[col]])), col, FALSE)
   }
+  s[, chemo_backbone := chemo_backbone(neo_anthracycline, neo_platinum, neo_taxane)]
   s[, treatment_group := fcase(neo_trastuzumab & neo_pertuzumab, "dual",
                                neo_trastuzumab & !neo_pertuzumab, "single",
                                default = NA_character_)]

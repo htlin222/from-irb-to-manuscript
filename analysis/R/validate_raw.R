@@ -3,6 +3,7 @@
 # 不輸出病歷號、生日或任何個別病人資料；不比較兩組的療效。
 # 有「錯誤」等級的項目時以非零狀態結束，讓 make 停下來。
 source("analysis/R/common.R")
+source("analysis/R/definitions.R")
 
 manifest <- verify_manifest()
 p <- params()
@@ -73,10 +74,9 @@ add("B4", "癌登", sprintf("診斷年齡超出 %d–%d 歲", rng[1], rng[2]),
 ki67 <- reg$ki67
 add("B5", "癌登", "Ki-67 寫法不一致（帶 % 符號）", sum(grepl("%", ki67)), "人", "warning",
     "去除 % 後轉為數字（程式自動處理）")
-num <- function(x) suppressWarnings(as.numeric(sub("%$", "", trimws(x))))
 for (col in c("ER_pct", "PR_pct", "ki67", "BMI", "LVEF_baseline")) {
   v <- reg[[col]]
-  x <- num(v)
+  x <- parse_pct(v)
   r <- p$ranges[[col]]
   add(sprintf("B6-%s", col), "癌登", sprintf("%s 非數字或超出 %s–%s", col, r[1], r[2]),
       sum(v != "" & (is.na(x) | x < r[1] | x > r[2])), "人", "error", "請資訊室確認原始值")

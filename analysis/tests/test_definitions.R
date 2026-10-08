@@ -87,3 +87,19 @@ test_that("HER2 positive is IHC 3+ or ISH amplified", {
   expect_equal(her2_positive(c("3+", "2+", "2+", "2+", "1+"), c("", "Amplified", "Not amplified", "", "Amplified")),
                c(TRUE, TRUE, FALSE, FALSE, TRUE))
 })
+
+test_that("chemo backbone follows anthracycline > carboplatin > taxane", {
+  expect_equal(chemo_backbone(c(TRUE, FALSE, FALSE, FALSE), c(TRUE, TRUE, FALSE, FALSE), c(TRUE, TRUE, TRUE, FALSE)),
+               c("Anthracycline-based", "Carboplatin-based", "Taxane only", "Other"))
+  s <- neoadjuvant_summary(
+    orders(o("I", "2014-01-01", "Pharmorubicin"), o("I", "2014-01-01", "Endoxan"),
+           o("I", "2014-03-01", "Taxotere"), o("I", "2014-03-01", "Herceptin"), o("I", "2014-09-01", "Paraplatin")),
+    surg("I", "2014-08-01"), no_fu)
+  expect_equal(s$chemo_backbone, "Anthracycline-based")
+  expect_false(s$neo_platinum)   # carboplatin 在手術後，不算術前
+})
+
+test_that("percent fields parse with or without % and receptor cut-off is inclusive", {
+  expect_equal(parse_pct(c("64%", "64", " 5% ", "", "n/a")), c(64, 64, 5, NA, NA))
+  expect_equal(receptor_positive(c("0", "1", "0.5", "90", ""), cutoff = 1), c(FALSE, TRUE, FALSE, TRUE, NA))
+})

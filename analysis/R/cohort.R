@@ -44,7 +44,8 @@ co[is.na(step1) & is.na(step2), step3 := fifelse(
 co[, eligible := is.na(step1) & is.na(step2) & is.na(step3)]
 stopifnot(co[eligible == TRUE, all(treatment_group %in% c("dual", "single"))])
 
-fwrite(co[, .(study_id, eligible, step1, step2, step3, treatment_group, index_d, surg_d, window_end)],
+fwrite(co[, c("study_id", "eligible", "step1", "step2", "step3", "treatment_group", "chemo_backbone",
+              "index_d", "surg_d", "window_end", grep("^neo_", names(co), value = TRUE)), with = FALSE],
        file.path(DERIVED_DIR, "cohort.csv"))
 
 # ── 人數表 ─────────────────────────────────────────────────────────────────
@@ -165,6 +166,8 @@ draw_flow(); invisible(dev.off())
 ragg::agg_png(file.path(RESULTS_DIR, "figures", "cohort_flow.png"), width = 7.5, height = 9, units = "in", res = 200)
 draw_flow(); invisible(dev.off())
 
+write_provenance("cohort_flow", c("results/cohort_flow.csv", "results/figures/cohort_flow.pdf",
+                                   "results/figures/cohort_flow.png"))
 cat(sprintf("收案：%d 人符合條件（雙標靶 %d、單標靶 %d）%s → results/figures/cohort_flow.png\n",
             n_of("cohort"), n_of("group", "Trastuzumab + pertuzumab"), n_of("group", "Trastuzumab alone"),
             if (n_err > 0) sprintf("［暫定：資料檢查尚有 %d 項錯誤］", n_err) else ""))

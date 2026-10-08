@@ -45,11 +45,23 @@ read_raw <- function(key, p = params()) {
 
 as_date <- function(x) as.IDate(ifelse(grepl("^\\d{4}-\\d{2}-\\d{2}$", x), x, NA_character_))
 
-provenance <- function(manifest) {
+# 每份結果旁邊放一個 provenance 檔：哪個程式版本、哪份資料、哪些軟體產生的
+write_provenance <- function(name, outputs, pkgs = character(), manifest = verify_manifest()) {
+  pr <- provenance(manifest, c(CORE_PKGS, pkgs))
+  dir.create(file.path(RESULTS_DIR, "provenance"), showWarnings = FALSE, recursive = TRUE)
+  jsonlite::write_json(list(
+    outputs = outputs, script = sub(".*--file=", "", grep("--file=", commandArgs(FALSE), value = TRUE)),
+    generated = pr$generated, git_commit = pr$git_commit, r_version = pr$r_version,
+    packages = pr$packages, raw_data_sha256 = setNames(as.list(manifest$sha256), manifest$file)
+  ), file.path(RESULTS_DIR, "provenance", paste0(name, ".json")), auto_unbox = TRUE, pretty = TRUE)
+}
+
+CORE_PKGS <- c("data.table", "yaml", "RcppTOML", "digest", "jsonlite")
+
+provenance <- function(manifest, pkgs = CORE_PKGS) {
   git <- function(...) tryCatch(system2("git", c(...), stdout = TRUE, stderr = FALSE),
                                 error = function(e) NA_character_)
   dirty <- length(git("status", "--porcelain", "--", "analysis", "config.toml")) > 0
-  pkgs <- c("data.table", "yaml", "RcppTOML", "digest")
   list(
     generated = format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"),
     git_commit = paste0(git("rev-parse", "--short", "HEAD"), if (dirty) "（分析程式有未存檔修改）" else ""),
