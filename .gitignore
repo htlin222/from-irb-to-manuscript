@@ -1,0 +1,37 @@
+# Generated artifacts
+output/
+checklist.md
+reviewers/
+raw/
+# official blank forms (make templates / your own blanks)
+templates/
+
+# Python / uv
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+requirements.txt
+
+# OS
+.DS_Store
+
+# Config with real data (template is tracked)
+# Uncomment if you don't want to track your filled config:
+# config.toml cv.toml 中文計畫摘要.md
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Study data: never in git (only data/raw/MANIFEST.sha256 is tracked)
+inbox/
+data/raw/*
+!data/raw/MANIFEST.sha256
+data/derived/
+
+# Demo recording: regenerable data and session state
+demo/simulate/out/
+demo/.state*/
