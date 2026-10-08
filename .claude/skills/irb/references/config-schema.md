@@ -145,6 +145,7 @@ Full example: `examples/tdxd-her2low/中文計畫摘要.md`.
 | `variables` / `endpoints` | `資料收集項目` / `研究終點` | 七、研究方法 (retrospective) |
 | `methods` | `研究方法` | 七、研究方法 (prospective / trials) |
 | `statistics` | `統計分析` | 九、統計分析 |
+| `data_protection` | `資料保護` | 十、資料保護及安全監測 (appended after the generated `closure.data_safety` bullets) |
 | `attachments` | `附件` | 十一、附件 (string or list) |
 
 ## `closure` (when phase=closure)
@@ -175,3 +176,15 @@ Full example: `examples/tdxd-her2low/中文計畫摘要.md`.
 | `enrollment_status` | string | Current enrollment status |
 | `deviations` | int | Number of protocol deviations |
 | `extension_requested` | bool | Requesting study extension |
+
+## `re_review` (when phase=re_review)
+
+| Field | Type | Description |
+|---|---|---|
+| `original_phase` | string | 原審查類別: `new` / `amendment` / `continuing`, or free text for 其他 |
+| `review_date` | string | 原審查日期 (blank → underscores to fill by hand) |
+| `responses` | Markdown | Usually `"@correspondence/<name>_回覆.md"`: one `## 意見 N` section per comment; first paragraph = the committee's comment (`審查意見：` prefix optional), rest = the reply (`回覆：` prefix optional). `{dotted.key}` in a reply is filled from config (e.g. `{closure.data_safety.retention_years}`) |
+| `revised_documents` | list | Revised documents attached; 研究計畫書／受試者同意書／個案報告表 tick their own box, anything else goes under 其他 |
+
+The `re_review` phase generates SF019 plus the revised 中文計畫摘要 (PROPOSAL).
+

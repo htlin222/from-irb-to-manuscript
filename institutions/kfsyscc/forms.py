@@ -87,7 +87,7 @@ PHASE_FORMS = {
         ],
     },
     "re_review": {
-        "base": ["SF019"],
+        "base": ["SF019", "PROPOSAL"],
         "conditions": [],
     },
     "continuing": {

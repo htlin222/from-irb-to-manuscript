@@ -6,7 +6,7 @@ import os
 
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.shared import Pt
+from docx.shared import Cm, Pt
 
 from scripts.docx_utils import (
     add_ct,
@@ -14,11 +14,37 @@ from scripts.docx_utils import (
     add_header,
     add_p,
     apply_tb,
+    check,
     init_doc,
     institution,
     set_cell_shading,
     set_run_font,
 )
+from scripts.template_fill import resolve
+
+ORIGINAL_TYPES = {"new": "新案", "amendment": "修正案", "continuing": "期中審查"}
+MIN_RESPONSE_ROWS = 5
+REVISED_DOCUMENTS = ("研究計畫書", "受試者同意書", "個案報告表")
+
+
+def _strip_label(text, label):
+    text = text.strip()
+    return text[len(label):].strip() if text.startswith(label) else text
+
+
+def parse_responses(responses, config):
+    """`## 意見 N` sections → [(comment, reply)].
+
+    Each section's first paragraph is the committee's comment (optionally
+    prefixed 審查意見：), the rest is the reply (optionally prefixed 回覆：).
+    `{dotted.config.key}` placeholders in the reply are filled from config.
+    """
+    rows = []
+    for body in responses.values():
+        comment, _, reply = (body if isinstance(body, str) else "\n".join(body)).partition("\n")
+        rows.append((_strip_label(comment, "審查意見："),
+                     resolve(_strip_label(reply, "回覆："), config)))
+    return rows
 
 # ---------------------------------------------------------------------------
 # SF019 — 複審案申請表 v4, 2018/01/02
@@ -71,9 +97,15 @@ def generate_sf019(config, output_dir):
 
     # 原審查類別
     add_p(doc, "", sa=Pt(2), sb=Pt(0))
-    add_p(doc, "原審查類別：  □ 新案　□ 修正案　□ 期中審查　□ 其他＿＿＿＿",
+    rr = config.get("re_review", {})
+    original = rr.get("original_phase", "")
+    known = original in ORIGINAL_TYPES
+    types = "　".join(f"{check(original == k)} {v}" for k, v in ORIGINAL_TYPES.items())
+    other = original if original and not known else ""
+    add_p(doc, f"原審查類別：  {types}　{check(bool(original) and not known)} 其他"
+               f"{other or '＿＿＿＿'}",
           size=12, sa=Pt(4), sb=Pt(2))
-    add_p(doc, "原審查日期：＿＿＿＿年＿＿月＿＿日",
+    add_p(doc, f"原審查日期：{rr.get('review_date') or '＿＿＿＿年＿＿月＿＿日'}",
           size=12, sa=Pt(2), sb=Pt(4))
 
     # ------------------------------------------------------------------
@@ -82,7 +114,9 @@ def generate_sf019(config, output_dir):
     add_p(doc, "二、審查意見回覆：", bold=True, size=12, sa=Pt(8), sb=Pt(4))
     add_p(doc, "請逐項回覆委員會之審查意見", size=12, sa=Pt(2), sb=Pt(4))
 
-    tbl2 = doc.add_table(rows=6, cols=3)
+    rows = parse_responses(rr.get("responses") or {}, config)
+    n_rows = max(len(rows), MIN_RESPONSE_ROWS)
+    tbl2 = doc.add_table(rows=n_rows + 1, cols=3)
     tbl2.alignment = WD_TABLE_ALIGNMENT.CENTER
 
     # Header row
@@ -92,12 +126,18 @@ def generate_sf019(config, output_dir):
         add_ct(cell, h, bold=True, size=10, alignment=WD_ALIGN_PARAGRAPH.CENTER)
         set_cell_shading(cell, "D9E2F3")
 
-    # 5 numbered empty rows
-    for ri in range(1, 6):
+    # One row per comment; pad with empty numbered rows
+    for ri in range(1, n_rows + 1):
+        comment, reply = rows[ri - 1] if ri <= len(rows) else ("", "")
         add_ct(tbl2.rows[ri].cells[0], str(ri), size=10,
                alignment=WD_ALIGN_PARAGRAPH.CENTER)
-        add_ct(tbl2.rows[ri].cells[1], "", size=10)
-        add_ct(tbl2.rows[ri].cells[2], "", size=10)
+        add_ct(tbl2.rows[ri].cells[1], comment, size=10)
+        add_ct(tbl2.rows[ri].cells[2], reply, size=10)
+    tbl2.autofit = False
+    for col, width in zip(tbl2.columns, (Cm(1.2), Cm(5.8), Cm(9.0)), strict=True):
+        col.width = width
+        for cell in col.cells:
+            cell.width = width
 
     apply_tb(tbl2)
 
@@ -108,12 +148,10 @@ def generate_sf019(config, output_dir):
     add_p(doc, "請以劃線方式標示修正處，並附上修正後之相關文件",
           size=12, sa=Pt(2), sb=Pt(4))
 
-    items = [
-        "□ 修正後研究計畫書",
-        "□ 修正後受試者同意書",
-        "□ 修正後個案報告表",
-        "□ 其他（請說明）：＿＿＿＿＿＿＿＿＿＿",
-    ]
+    revised = rr.get("revised_documents") or []
+    others = "、".join(d for d in revised if d not in REVISED_DOCUMENTS)
+    items = [f"{check(d in revised)} 修正後{d}" for d in REVISED_DOCUMENTS]
+    items.append(f"{check(bool(others))} 其他（請說明）：{others or '＿＿＿＿＿＿＿＿＿＿'}")
     for item in items:
         add_p(doc, f"  {item}", size=12, sa=Pt(2), sb=Pt(2))
 

@@ -64,3 +64,9 @@ affects_risk       = false
 enrollment_status   = ""
 deviations          = 0
 extension_requested = false
+
+[re_review]
+original_phase = "new"   # 原審查類別：new | amendment | continuing | 其他（自填文字）
+review_date    = ""      # 原審查日期；IRB 通知未載明，留白待填
+responses      = "@correspondence/IRB初審_回覆.md"   # ## 意見 N：審查意見原文 + 回覆
+revised_documents = ["中文計畫摘要"]   # 隨複審附上的修正後文件；研究計畫書／受試者同意書／個案報告表以外的列入「其他」

@@ -52,6 +52,7 @@ SECTION_KEYS = {
     "研究終點": "endpoints",
     "研究方法": "methods",
     "統計分析": "statistics",
+    "資料保護": "data_protection",
     "附件": "attachments",
 }
 
@@ -76,6 +77,7 @@ DEFAULTS = {
     "closure": {"data_safety": {}},
     "amendment": {},
     "continuing_review": {},
+    "re_review": {"responses": {}},
 }
 
 # Fields that must be real TOML booleans: a quoted "false" is a non-empty string

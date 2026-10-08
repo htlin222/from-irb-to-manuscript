@@ -181,6 +181,7 @@ def generate_proposal_summary(config, output_dir):
         safety_text += f"■ 資料保存期限：研究結束後{ds['retention_years']}年\n"
     if ds.get("authorized_personnel"):
         safety_text += f"■ 資料存取授權人員：{ds['authorized_personnel']}\n"
+    safety_text += _text("data_protection", "")
     if not safety_text:
         safety_text = "（請說明資料保密措施及受試者安全監測計畫。）"
     add_p(doc, safety_text.strip(), size=10, sa=Pt(2))
