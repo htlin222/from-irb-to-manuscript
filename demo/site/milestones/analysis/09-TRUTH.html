@@ -1,0 +1,108 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>AI 估計 vs. 模擬真值</title>
+<style>
+:root { --ink:#1c1917; --muted:#57534e; --line:#e7e5e4; --soft:#fafaf9; }
+body { margin:0; padding:24px 28px 48px; background:#fff; color:var(--ink);
+  font:15px/1.7 ui-sans-serif,-apple-system,"PingFang TC","Noto Sans TC",sans-serif; }
+main { max-width:880px; margin:0 auto; }
+h1,h2,h3 { line-height:1.35; } h1 { font-size:22px; } h2 { font-size:18px; margin-top:28px; }
+a { color:var(--ink); }
+table { border-collapse:collapse; font-size:13px; margin:12px 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:4px 8px; text-align:left; vertical-align:top; white-space:nowrap; }
+th { background:var(--soft); position:sticky; top:0; }
+pre,code { font:13px ui-monospace,"SF Mono",Menlo,monospace; }
+pre { background:var(--soft); padding:12px; overflow-x:auto; border-radius:4px; white-space:pre-wrap; }
+blockquote { margin:12px 0; padding:4px 14px; border-left:3px solid var(--line); color:var(--muted); }
+.note { color:var(--muted); font-size:13px; margin:0 0 14px; }
+.banner { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; padding:8px 12px; border-radius:4px;
+  font-size:13px; margin-bottom:14px; }
+@media (max-width:600px) { body { padding:16px; } }
+</style></head><body><main><h1 id="ai-估計值-vs-模擬真值">AI 估計值 vs. 模擬真值</h1>
+<blockquote>
+<p>由 <code>demo/truth_compare.py</code> 產生。真值來自
+<code>make demo-data</code> 的
+<code>demo/simulate/out/truth.json</code>。</p>
+</blockquote>
+<p>模擬資料時，每位病人都<strong>同時</strong>以兩種治療各模擬一次（共用同一組隨機數），所以「如果全部用雙標靶
+vs. 全部用單標靶」
+的真正差別是已知的。真實研究永遠拿不到這個答案；教學示範拿得到，正好用來檢查
+AI 選的方法有沒有估對。</p>
+<table>
+<thead>
+<tr>
+<th>指標</th>
+<th>方法</th>
+<th>AI 的估計（results/）</th>
+<th>真值</th>
+<th>判讀</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pCR 差異（雙標靶 − 單標靶）</td>
+<td>粗略比較（未調整）</td>
+<td>+1.6%（195/416 vs 90/199）</td>
+<td>+15.2%</td>
+<td>差 14 個百分點</td>
+</tr>
+<tr>
+<td>pCR 差異（雙標靶 − 單標靶）</td>
+<td>重疊加權（主分析）</td>
+<td>+17.3%（95% CI +3.1% 至 +31.5%）</td>
+<td>+15.2%</td>
+<td>✅ 涵蓋</td>
+</tr>
+<tr>
+<td>pCR 勝算比</td>
+<td>重疊加權（主分析）</td>
+<td>2.01（1.12–3.62）</td>
+<td>1.82</td>
+<td>✅ 涵蓋</td>
+</tr>
+<tr>
+<td>EFS 風險比（HR）</td>
+<td>重疊加權（主分析）</td>
+<td>0.89（0.47–1.69）</td>
+<td>0.76</td>
+<td>✅ 涵蓋</td>
+</tr>
+<tr>
+<td>5 年 EFS 差異</td>
+<td>重疊加權（主分析）</td>
+<td>+7.5%</td>
+<td>+3.4%</td>
+<td>點估計（無 CI）</td>
+</tr>
+<tr>
+<td>OS 風險比（HR）</td>
+<td>重疊加權（主分析）</td>
+<td>0.76（0.34–1.66）</td>
+<td>0.75</td>
+<td>✅ 涵蓋</td>
+</tr>
+<tr>
+<td>5 年 OS 差異</td>
+<td>重疊加權（主分析）</td>
+<td>+2.7%</td>
+<td>+1.9%</td>
+<td>點估計（無 CI）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="怎麼讀這張表">怎麼讀這張表</h2>
+<ul>
+<li><strong>粗略比較會騙人。</strong> 不調整時，雙標靶的 pCR
+只比單標靶高一點點；真值約高 15 個百分點。
+原因是兩種治療用在不同年代，單標靶組又恰好「運氣比較好」——這正是第 14 章
+AI 說「兩組本來就不一樣」的意思。</li>
+<li><strong>重疊加權把答案拉回來了。</strong> 主分析的 pCR
+差異與勝算比都很接近真值，95% 信賴區間涵蓋真值。</li>
+<li><strong>存活的信賴區間很寬。</strong> EFS、OS
+的點估計方向與真值一致，但事件數少、加權後有效樣本小， 所以 AI
+在論文裡寫「資料不足以評估存活」——這是正確的保守說法，不是失敗。</li>
+<li>真值的「重疊加權母群」用模擬時的真實傾向分數計算，涵蓋模擬的全部 640
+位符合條件者（含後來因第 I 期被排除者）， 與研究實際納入的 615
+人略有不同；HR 的真值是 5 年內的邊際
+HR（全體），僅供方向與量級比較。</li>
+</ul>
+</main></body></html>

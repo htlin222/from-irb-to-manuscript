@@ -57,6 +57,7 @@ def main() -> None:
     ap.add_argument("--fast", type=float, default=8.0, help="speed-up while the agent is working")
     ap.add_argument("--head", type=float, default=20.0, help="real-time seconds at the start of each turn")
     ap.add_argument("--foot", type=float, default=15.0, help="real-time seconds at the end of each turn")
+    ap.add_argument("--hold", type=float, default=8.0, help="seconds the finished answer stays on screen")
     a = ap.parse_args()
     state, out = Path(a.state), Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -94,6 +95,10 @@ def main() -> None:
         return any(lo <= r < hi for lo, hi in windows)
 
     def gap(r0: float, r1: float) -> float:
+        # The moment a turn ends, the answer is complete: hold it long enough to
+        # read before the next chapter's prompt card covers it.
+        if any(r0 <= e < r1 for e in turn_ends):
+            return a.hold
         g = r1 - r0
         if fast(r0) and fast(r1):
             g /= a.fast

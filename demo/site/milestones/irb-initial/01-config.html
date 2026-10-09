@@ -1,0 +1,86 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>研究設定檔 config.toml</title>
+<style>
+:root { --ink:#1c1917; --muted:#57534e; --line:#e7e5e4; --soft:#fafaf9; }
+body { margin:0; padding:24px 28px 48px; background:#fff; color:var(--ink);
+  font:15px/1.7 ui-sans-serif,-apple-system,"PingFang TC","Noto Sans TC",sans-serif; }
+main { max-width:880px; margin:0 auto; }
+h1,h2,h3 { line-height:1.35; } h1 { font-size:22px; } h2 { font-size:18px; margin-top:28px; }
+a { color:var(--ink); }
+table { border-collapse:collapse; font-size:13px; margin:12px 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:4px 8px; text-align:left; vertical-align:top; white-space:nowrap; }
+th { background:var(--soft); position:sticky; top:0; }
+pre,code { font:13px ui-monospace,"SF Mono",Menlo,monospace; }
+pre { background:var(--soft); padding:12px; overflow-x:auto; border-radius:4px; white-space:pre-wrap; }
+blockquote { margin:12px 0; padding:4px 14px; border-left:3px solid var(--line); color:var(--muted); }
+.note { color:var(--muted); font-size:13px; margin:0 0 14px; }
+.banner { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; padding:8px 12px; border-radius:4px;
+  font-size:13px; margin-bottom:14px; }
+@media (max-width:600px) { body { padding:16px; } }
+</style></head><body><main><h1>研究設定檔 config.toml</h1><pre># IRB-in-Hurry — single source of truth for one study.
+#
+#   make check        resolve @references and validate required fields
+#   make all          DOCX → PDF → layout gate → dashboard
+#   make closure      same, with phase overridden (config.toml is never rewritten)
+#
+# A value &quot;@file&quot; or &quot;@file#key&quot; pulls content from another plain-text file
+# (path relative to this one). Edit prose in Markdown, people in cv.toml.
+# Field reference: .claude/skills/irb/references/config-schema.md
+
+institution = &quot;kfsyscc&quot;   # institutions/&lt;id&gt;/profile.toml
+phase = &quot;new&quot;   # new | amendment | re_review | continuing | closure | sae | ib_update | import | suspension | appeal
+
+pi       = &quot;@cv.toml#pi&quot;
+co_pi    = &quot;@cv.toml#co_pi&quot;
+proposal = &quot;@中文計畫摘要.md&quot;
+
+[study]
+irb_no       = &quot;&quot;          # blank until the IRB assigns one
+project_no   = &quot;不適用&quot;
+title_zh     = &quot;早期HER2陽性乳癌患者術前化學治療合併Trastuzumab與Pertuzumab雙標靶相較於單用Trastuzumab之臨床預後比較：單中心回溯性世代研究&quot;
+title_en     = &quot;Neoadjuvant Chemotherapy with Trastuzumab plus Pertuzumab versus Trastuzumab Alone in Early HER2-Positive Breast Cancer: A Single-Center Retrospective Cohort Study&quot;
+type         = &quot;retrospective&quot;   # retrospective | prospective | clinical_trial | genetic
+design       = &quot;cohort&quot;          # cohort | case_control | cross_sectional | rct | single_arm
+review_type  = &quot;expedited&quot;       # exempt | expedited | full_board
+drug_device  = false
+genetic      = false
+multicenter  = false
+
+[dates]
+study_start       = &quot;2026年12月01日&quot;   # 預估：IRB 通過後一年，核准後依核准日調整
+study_end         = &quot;2027年11月30日&quot;
+data_period       = &quot;2012年01月01日 至 2023年12月31日（追蹤至2025年12月31日）&quot;
+irb_approval_date = &quot;&quot;
+
+[subjects]
+planned_n             = 700   # 資訊室初估 600–700 人，取上限
+actual_n              = 0
+consent_waiver        = true
+vulnerable_population = false
+groups = [
+  { name = &quot;雙標靶組（化療＋trastuzumab＋pertuzumab）&quot;, n = 0 },
+  { name = &quot;單標靶組（化療＋trastuzumab）&quot;, n = 0 },
+]
+
+[closure]
+extensions = 0
+amendments = 0
+sae_count  = 0
+specimens  = false
+
+[closure.data_safety]
+deidentified         = true
+encrypted            = true
+retention_years      = 7
+authorized_personnel = &quot;陳怡君（計畫主持人）、黃淑芬（協同主持人，生物統計師）&quot;
+
+[amendment]
+change_description = &quot;&quot;   # or &quot;@修正說明.md&quot;
+affects_consent    = false
+affects_risk       = false
+
+[continuing_review]
+enrollment_status   = &quot;&quot;
+deviations          = 0
+extension_requested = false
+</pre></main></body></html>
