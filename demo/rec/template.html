@@ -176,6 +176,32 @@
       .hidden {
         display: none !important;
       }
+      #endbar {
+        position: absolute;
+        right: 14px;
+        bottom: 14px;
+        z-index: 15;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        max-width: calc(100% - 28px);
+        padding: 8px 8px 8px 14px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        font-size: 13px;
+        color: var(--muted);
+      }
+      #endbar span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      #endbar .btn {
+        padding: 6px 14px;
+        flex: none;
+      }
       #brief {
         display: flex;
         flex-direction: column;
@@ -515,6 +541,10 @@
                 <button class="btn ghost" id="btn-about2">這是什麼？</button>
               </div>
             </div>
+            <div id="endbar" class="hidden">
+              <span id="endtext"></span>
+              <button class="btn" id="btn-next">下一章 ▶</button>
+            </div>
             <div id="sheet-ms" class="sheet">
               <button class="close" id="close-ms">關閉</button>
               <div
@@ -559,7 +589,7 @@
               每章停下來看題目</label
             >
             <span class="hint"
-              ><kbd>[</kbd> <kbd>]</kbd> 章節 · <kbd>space</kbd> 播放/暫停 ·
+              ><kbd>[</kbd> <kbd>]</kbd> 章節 · <kbd>space</kbd> 下一步 ·
               <kbd>Esc</kbd> 關閉</span
             >
           </footer>
@@ -571,6 +601,9 @@
       var CHAPTERS = {{CHAPTERS}};
       var KEYS = {{KEYS}};
       var cur = -1, player = null, pauseMode = true;
+      // What Space does next: "brief" → play this chapter; "playing" → pause;
+      // "paused" → resume; "ended" → this chapter's answer is on screen, show the next brief.
+      var state = "brief", endedAt = -1;
       var $ = function (id) { return document.getElementById(id); };
       var THEME = { foreground: "#1c1917", background: "#ffffff",
         palette: "#1c1917:#cf222e:#1a7f37:#9a6700:#0969da:#8250df:#1b7c83:#57534e:#57534e:#cf222e:#1a7f37:#9a6700:#0969da:#8250df:#1b7c83:#8c8681" };
@@ -619,8 +652,10 @@
         $("brieftext").innerHTML = emphasise(c.prompt);
         $("briefnote").textContent = c.kind === "say"
           ? "AI 停下來需要回應時，錄影者補上的話。照實保留。"
-          : "這是送進 Claude Code 的原文，一字不改。";
+          : "";
         msButton(c);
+        state = "brief";
+        $("endbar").classList.add("hidden");
         $("brief").classList.remove("hidden");
         $("btn-start").focus();
       }
@@ -635,11 +670,37 @@
 
       function start() {
         $("brief").classList.add("hidden");
+        $("endbar").classList.add("hidden");
         if (!player) return;
+        state = "playing";
         // Resume from this chapter's marker: covers the first START (player still at 0)
         // and a pause on a marker alike, and never re-triggers the same pause.
         Promise.resolve(player.seek({ marker: cur })).then(function () { player.play(); });
       }
+      // Stop on the last frame of a chapter instead of running into the next one.
+      function chapterEnded(last) {
+        endedAt = cur; state = "ended";
+        var n = CHAPTERS[cur + 1];
+        $("endtext").textContent = last || !n ? "全片結束"
+          : "這一章結束 · 空白鍵 → 下一章：" + (n.kind === "say" ? "補充一句" : n.id + " " + n.name);
+        $("btn-next").classList.toggle("hidden", last || !n);
+        $("endbar").classList.remove("hidden");
+      }
+      function next() { go(cur + 1, false); }
+      function step() {
+        if (state === "brief") start();
+        else if (state === "ended") next();
+        else if (state === "playing") { player.pause(); state = "paused"; }
+        else { $("endbar").classList.add("hidden"); player.play(); state = "playing"; }
+      }
+      setInterval(function () {
+        var c = CHAPTERS[cur];
+        if (!pauseMode || !player || state !== "playing" || !c || !c.end || endedAt === cur) return;
+        Promise.resolve(player.getCurrentTime()).then(function (t) {
+          // +2 s lets the final repaint land; the recording holds each answer ~9 s before the next marker.
+          if (state === "playing" && endedAt !== cur && t >= c.end + 2) { player.pause(); chapterEnded(false); }
+        });
+      }, 250);
       function closeSheets() {
         $("sheet-about").classList.remove("open"); $("sheet-ms").classList.remove("open"); closeViewer();
       }
@@ -717,9 +778,13 @@
           highlight(e.index);
           if (pauseMode) brief(e.index);
         });
+        player.addEventListener("play", function () { if (state !== "brief") { state = "playing"; $("endbar").classList.add("hidden"); } });
+        player.addEventListener("pause", function () { if (state === "playing") state = "paused"; });
+        player.addEventListener("ended", function () { chapterEnded(true); });
       }
 
       $("btn-start").onclick = start;
+      $("btn-next").onclick = next;
       $("btn-about2").onclick = openAbout;
       // Hide the brief without playing, so the previous answer can be read in full.
       $("btn-peek").onclick = function () { $("brief").classList.add("hidden"); };
@@ -741,11 +806,15 @@
       };
       document.addEventListener("keydown", function (e) {
         if (e.target.tagName === "INPUT") return;
+        var sheetOpen = document.querySelector(".sheet.open, #viewer.open");
+        if (e.key === " " && !sheetOpen) {
+          // Capture phase: the player would otherwise toggle play/pause on its own.
+          e.preventDefault(); e.stopPropagation(); step(); return;
+        }
         if (e.key === "]") go(cur + 1, true);
         else if (e.key === "[") go(cur - 1, true);
         else if (e.key === "Escape") { if ($("viewer").classList.contains("open")) closeViewer(); else closeSheets(); }
-        else if (e.key === " " && !$("brief").classList.contains("hidden")) { e.preventDefault(); start(); }
-      });
+      }, true);
 
       var css = document.createElement("style");
       var pal = THEME.palette.split(":");
