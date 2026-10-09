@@ -136,3 +136,70 @@ def test_proposal_summary_uses_config_text(output_dir):
     text = "\n".join(p.text for p in Document(
         generate_proposal_summary(config, output_dir)).paragraphs)
     assert "納入條件：（請列出）" in text
+
+
+def test_re_review_fills_responses_from_markdown(output_dir):
+    """re_review.responses (## 意見 N) fill SF019 row by row, with {config} placeholders."""
+    from scripts.config import parse_markdown
+    from scripts.generators.re_review import generate_sf019
+
+    config = load_config("examples/gcsf-retrospective/config.toml")
+    config["closure"]["data_safety"]["retention_years"] = 7
+    config["re_review"] = {
+        "original_phase": "new",
+        "responses": parse_markdown(
+            "## 意見 1\n\n**審查意見：** 請說明保存年限。\n\n"
+            "**回覆：** 保存{closure.data_safety.retention_years}年。\n"),
+        "revised_documents": ["中文計畫摘要"],
+    }
+    path = generate_sf019(config, output_dir)
+    reply_table = Document(path).tables[-1]
+    assert [c.text for c in reply_table.rows[1].cells] == ["1", "請說明保存年限。", "保存7年。"]
+    assert len(reply_table.rows) == 1 + 5  # padded to the form's 5 rows
+    text = docx_text(path)
+    assert "■ 新案" in text
+    assert "■ 其他（請說明）：中文計畫摘要" in text
+
+
+def test_proposal_appends_data_protection_prose(output_dir):
+    from scripts.generators.proposal import generate_proposal_summary
+
+    config = load_config("examples/tdxd-her2low/config.toml")
+    config["proposal"]["data_protection"] = "對照表由計畫主持人保管。"
+    text = "\n".join(p.text for p in Document(
+        generate_proposal_summary(config, output_dir)).paragraphs)
+    assert "資料保存期限" in text and "對照表由計畫主持人保管。" in text
+
+
+def test_amendment_changes_compare_sections_and_mark_edits(output_dir):
+    """SF016 lists only changed proposal sections; deleted text is struck, added text underlined."""
+    from scripts.config import parse_markdown
+    from scripts.generators import amendment
+
+    old = "## 研究設計\n\n以IPTW平衡。\n\n## 附件\n\n- 資料收集表\n"
+    new = parse_markdown("## 研究設計\n\n以重疊加權平衡。\n\n## 附件\n\n- 資料收集表\n")
+    rows = amendment.proposal_changes(old, new)
+    assert rows == [("中文計畫摘要：研究設計", "以IPTW平衡。", "以重疊加權平衡。")]
+
+    config = load_config("examples/gcsf-retrospective/config.toml")
+    config["proposal"] = new
+    config["amendment"].update(number=1, reasons=["研究設計變更", "統計方法"], baseline="unused")
+    amendment.baseline_text = lambda spec: old   # no git needed in the test
+    sf016 = Document(amendment.generate_sf016(config, output_dir)).tables[-1]
+    before, after = sf016.rows[1].cells[2].paragraphs[0].runs, sf016.rows[1].cells[3].paragraphs[0].runs
+    assert [r.text for r in before if r.font.strike] == ["IPTW"]
+    assert [r.text for r in after if r.font.underline] == ["重疊加權"]
+    assert len(sf016.rows) == 2   # header + one changed section
+
+    text = docx_text(amendment.generate_sf015(config, output_dir))
+    assert "第1次修正" in text
+    assert "■ 研究設計變更" in text and "■ 其他（請說明）：統計方法" in text
+
+
+def test_sf038_fills_sections_from_closure_report(retro_config, output_dir):
+    """SF038: closure.report sections fill the report; background falls back to the proposal; others keep the placeholder."""
+    retro_config["closure"]["report"] = {"participants": "共收案882人。", "results": "主要結果如下。"}
+    retro_config["proposal"] = {"background": "背景說明。"}
+    text = docx_text(generate_all.generate_form("SF038", retro_config, output_dir))
+    assert "共收案882人。" in text and "主要結果如下。" in text and "背景說明。" in text
+    assert text.count("（請填寫本節內容）") == 5   # 目的、設計、方法、結論、參考文獻

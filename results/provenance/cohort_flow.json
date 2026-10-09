@@ -1,0 +1,15 @@
+{
+  "outputs": ["results/cohort_flow.csv", "results/figures/cohort_flow.pdf", "results/figures/cohort_flow.png"],
+  "script": "analysis/R/cohort.R",
+  "generated": "2026-10-09 09:54:19 CST",
+  "git_commit": "b3fb1bc",
+  "r_version": "R version 4.5.1 (2025-06-13)",
+  "packages": "data.table 1.17.8、yaml 2.3.10、RcppTOML 0.2.3、digest 0.6.37、jsonlite 2.0.0",
+  "raw_data_sha256": {
+    "chemo_orders.csv": "f95dce8d6f78aa7677cad8c093195db03aae0a284350cc61c941541cb2feb90a",
+    "followup.csv": "fd88e1cda5cc72cd18ac4e8455a957eb48d89b9a82f6148d2b29ab3e63c4acc6",
+    "registry_breast_her2.csv": "bf434011c39f7fb1890b73f822455a047cff18a972f687fa3d66934a6b350723",
+    "surgery_pathology.csv": "c85ee1671adb90ae62115504ed349a7b4f214e165a260b73e236a16777847d83",
+    "資訊室_資料更正.csv": "45a342fde3163547708abc62561979f0b6b60ff4654db11cd9508fab41215f05"
+  }
+}

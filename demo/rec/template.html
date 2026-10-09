@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{BLURB}}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.17.0/dist/bundle/asciinema-player.css">
+<style>
+  :root {
+    --ink: #1c1917; --muted: #57534e; --faint: #8c8681;
+    --line: #e7e5e4; --bg: #ffffff; --card: #ffffff; --soft: #fafaf9;
+    --sans: ui-sans-serif, -apple-system, "Segoe UI", system-ui, "PingFang TC", "Noto Sans TC", sans-serif;
+    --mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--sans); }
+  ::backdrop { background: #fff; }
+  #app { display: grid; grid-template-rows: auto 1fr; height: 100vh; background: var(--bg); }
+  header { display: flex; align-items: center; gap: 24px; min-height: 60px; padding: 10px 20px; border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 16px; font-weight: 600; margin: 0; white-space: nowrap; }
+  header .blurb { color: var(--muted); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  header .facts { display: flex; gap: 18px; }
+  header .facts div { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2; }
+  header .facts b { font-size: 15px; }
+  header .facts span { font-size: 12px; color: var(--faint); }
+  header nav { display: flex; gap: 14px; font-size: 13px; white-space: nowrap; }
+  header nav a { color: var(--muted); text-decoration: none; cursor: pointer; }
+  header nav a:hover { color: var(--ink); }
+  main { display: grid; grid-template-columns: 272px 1fr; min-height: 0; }
+  #rail { border-right: 1px solid var(--line); overflow-y: auto; padding: 6px 0 24px; }
+  #rail .part { font-size: 11px; letter-spacing: .1em; color: var(--faint); padding: 14px 14px 4px; }
+  #rail button { display: grid; grid-template-columns: 28px 1fr auto; gap: 4px; width: 100%; text-align: left;
+    background: none; border: 0; padding: 6px 14px; font: 13px/1.45 var(--sans); color: var(--muted); cursor: pointer; }
+  #rail button.say { padding-left: 42px; font-size: 12px; }
+  #rail button .n, #rail button .t { color: var(--faint); font-variant-numeric: tabular-nums; }
+  #rail button:hover { color: var(--ink); }
+  #rail button[aria-current="true"] { color: var(--ink); font-weight: 600; background: var(--soft); }
+  #stage { display: grid; grid-template-rows: 1fr auto; min-height: 0; }
+  #screen { position: relative; min-height: 0; background: var(--bg); }
+  #player { position: absolute; inset: 0; }
+  #player .ap-wrapper, #player .ap-player { background: #fff; }
+  .overlay { position: absolute; inset: 0; z-index: 20; background: var(--card); overflow-y: auto; }
+  .hidden { display: none !important; }
+  #brief { display: flex; flex-direction: column; justify-content: center; padding: 40px 56px; }
+  #brief .label { font-size: 12px; color: var(--faint); letter-spacing: .08em; margin-bottom: 14px; }
+  #brieftext { font-size: 22px; line-height: 1.9; max-width: 40ch; white-space: pre-wrap; margin: 0 0 12px; }
+  #briefnote { color: var(--muted); font-size: 14px; max-width: 62ch; margin: 0 0 28px; }
+  #brieftext b { font-weight: 700; }
+  .row { display: flex; gap: 12px; align-items: center; }
+  .btn { font: 600 13px var(--sans); letter-spacing: .14em; color: #fff; background: var(--ink); border: 0;
+    padding: 11px 22px; border-radius: 4px; cursor: pointer; }
+  .btn.ghost { color: var(--ink); background: none; border: 1px solid var(--line); letter-spacing: .04em; font-weight: 500; }
+  .sheet { position: absolute; inset: 0; z-index: 30; background: var(--card); padding: 40px 56px; overflow-y: auto; display: none; }
+  .sheet.open { display: block; }
+  .sheet .close { position: absolute; top: 14px; right: 18px; background: none; border: 1px solid var(--line);
+    border-radius: 4px; font: 13px var(--sans); color: var(--muted); padding: 4px 10px; cursor: pointer; }
+  #sheet-about .body { max-width: 66ch; }
+  #sheet-about a { color: var(--ink); }
+  #sheet-about h2 { font-size: 17px; margin: 26px 0 6px; }
+  #sheet-about code { font: 13px var(--mono); background: var(--soft); padding: 1px 4px; border-radius: 3px; }
+  footer { display: flex; align-items: center; gap: 16px; padding: 8px 20px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  footer .note { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  footer .hint { font-size: 12px; color: var(--faint); white-space: nowrap; }
+  footer label { display: flex; gap: 6px; align-items: center; white-space: nowrap; cursor: pointer; }
+  kbd { font: 11px var(--mono); border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; }
+  @media (max-width: 1100px) { header .facts { display: none; } }
+  @media (max-width: 760px) {
+    header .blurb, footer .hint { display: none; }
+    main { grid-template-columns: 1fr; grid-template-rows: 160px 1fr; }
+    #rail { border-right: 0; border-bottom: 1px solid var(--line); }
+    header { flex-wrap: wrap; gap: 6px 14px; padding: 8px 16px; }
+    header h1 { white-space: normal; font-size: 15px; flex: 1 1 100%; }
+    .row { flex-wrap: wrap; }
+    footer { padding: 8px 16px; }
+    footer .note { display: none; }
+    #brief, .sheet { padding: 24px 16px; }
+    #brieftext { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>{{NAME}}</h1>
+    <div class="blurb">{{BLURB}}</div>
+    <div class="facts">{{FACTS}}</div>
+    <nav><a id="about-link">關於這段錄影</a><a href="{{REPO}}">原始碼</a></nav>
+  </header>
+  <main>
+    <div id="rail" role="list"></div>
+    <div id="stage">
+      <div id="screen">
+        <div id="player"></div>
+        <div id="brief" class="overlay">
+          <div class="label" id="brieflabel"></div>
+          <div id="brieftext"></div>
+          <div id="briefnote"></div>
+          <div class="row">
+            <button class="btn" id="btn-start">START</button>
+            <button class="btn ghost" id="btn-peek">先看上一章的回答</button>
+            <button class="btn ghost" id="btn-about2">這是什麼？</button>
+          </div>
+        </div>
+        <div id="sheet-about" class="sheet">
+          <button class="close" id="close-about">關閉</button>
+          <div class="body">{{ABOUT}}</div>
+        </div>
+      </div>
+      <footer>
+        <span class="note" id="note"></span>
+        <label><input type="checkbox" id="pausemode" checked> 每章停下來看題目</label>
+        <span class="hint"><kbd>[</kbd> <kbd>]</kbd> 章節 · <kbd>space</kbd> 播放/暫停 · <kbd>Esc</kbd> 關閉</span>
+      </footer>
+    </div>
+  </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.17.0/dist/bundle/asciinema-player.min.js"></script>
+<script>
+var CHAPTERS = {{CHAPTERS}};
+var KEYS = {{KEYS}};
+var cur = -1, player = null, pauseMode = true;
+var $ = function (id) { return document.getElementById(id); };
+var THEME = { foreground: "#1c1917", background: "#ffffff",
+  palette: "#1c1917:#cf222e:#1a7f37:#9a6700:#0969da:#8250df:#1b7c83:#57534e:#57534e:#cf222e:#1a7f37:#9a6700:#0969da:#8250df:#1b7c83:#8c8681" };
+
+function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
+function emphasise(s) {
+  var h = esc(s);
+  KEYS.forEach(function (k) { if (k) h = h.split(esc(k)).join("<b>" + esc(k) + "</b>"); });
+  return h;
+}
+function clock(t) {
+  t = Math.floor(t); var h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s = t % 60;
+  return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(s).padStart(2, "0");
+}
+
+function rail() {
+  var lastPart = null;
+  CHAPTERS.forEach(function (c, i) {
+    if (c.kind === "stage" && c.part !== lastPart) {
+      var p = document.createElement("div"); p.className = "part"; p.textContent = c.part; $("rail").appendChild(p);
+      lastPart = c.part;
+    }
+    var b = document.createElement("button");
+    if (c.kind === "say") b.className = "say";
+    b.innerHTML = '<span class="n">' + (c.kind === "say" ? "↳" : c.id) + '</span><span>' + esc(c.kind === "say" ? "補充一句" : c.name) +
+      '</span><span class="t">' + clock(c.t) + '</span>';
+    b.onclick = function () { go(i, true); };
+    $("rail").appendChild(b);
+  });
+}
+
+function highlight(i) {
+  cur = i;
+  document.querySelectorAll("#rail button").forEach(function (b, j) {
+    b.setAttribute("aria-current", j === i ? "true" : "false");
+    if (j === i) b.scrollIntoView({ block: "nearest" });
+  });
+  var c = CHAPTERS[i];
+  $("note").textContent = c ? (c.kind === "say" ? "補充：" + c.prompt : c.id + " · " + c.part + " · " + c.name) : "";
+  if (c) history.replaceState(null, "", "#" + c.id);
+}
+
+function brief(i) {
+  var c = CHAPTERS[i];
+  $("brieflabel").textContent = c.kind === "say" ? "補充一句（不在腳本裡）" : c.part + " · " + c.id + " · " + c.name;
+  $("brieftext").innerHTML = emphasise(c.prompt);
+  $("briefnote").textContent = c.kind === "say"
+    ? "AI 停下來需要回應時，錄影者補上的話。照實保留。"
+    : "這是送進 Claude Code 的原文，一字不改。";
+  $("brief").classList.remove("hidden");
+  $("btn-start").focus();
+}
+
+function go(i, seek) {
+  if (i < 0 || i >= CHAPTERS.length) return;
+  highlight(i);
+  closeSheets();
+  if (seek && player) { player.pause(); player.seek({ marker: i }); }
+  brief(i);
+}
+
+function start() {
+  $("brief").classList.add("hidden");
+  if (!player) return;
+  // Resume from this chapter's marker: covers the first START (player still at 0)
+  // and a pause on a marker alike, and never re-triggers the same pause.
+  Promise.resolve(player.seek({ marker: cur })).then(function () { player.play(); });
+}
+function closeSheets() { $("sheet-about").classList.remove("open"); }
+function openAbout() { closeSheets(); $("sheet-about").classList.add("open"); }
+
+function makePlayer() {
+  player = AsciinemaPlayer.create("demo.cast", $("player"), {
+    fit: "both", theme: "her2", terminalFontFamily: "var(--mono)", preload: true,
+    pauseOnMarkers: pauseMode, idleTimeLimit: 2, poster: "npt:0:3"
+  });
+  player.addEventListener("marker", function (e) {
+    highlight(e.index);
+    if (pauseMode) brief(e.index);
+  });
+}
+
+$("btn-start").onclick = start;
+$("btn-about2").onclick = openAbout;
+// Hide the brief without playing, so the previous answer can be read in full.
+$("btn-peek").onclick = function () { $("brief").classList.add("hidden"); };
+$("close-about").onclick = closeSheets;
+$("about-link").onclick = openAbout;
+$("pausemode").onchange = function (e) {
+  pauseMode = e.target.checked;
+  // pauseOnMarkers is fixed at creation: rebuild at the same position.
+  var at = player ? player.getCurrentTime() : Promise.resolve(0);
+  Promise.resolve(at).then(function (t) {
+    if (player) player.dispose();
+    $("player").innerHTML = "";
+    makePlayer();
+    player.seek(t || 0);
+  });
+};
+document.addEventListener("keydown", function (e) {
+  if (e.target.tagName === "INPUT") return;
+  if (e.key === "]") go(cur + 1, true);
+  else if (e.key === "[") go(cur - 1, true);
+  else if (e.key === "Escape") { closeSheets(); }
+  else if (e.key === " " && !$("brief").classList.contains("hidden")) { e.preventDefault(); start(); }
+});
+
+var css = document.createElement("style");
+var pal = THEME.palette.split(":");
+css.textContent = ".asciinema-player-theme-her2{--term-color-foreground:" + THEME.foreground +
+  ";--term-color-background:" + THEME.background + ";" +
+  pal.map(function (c, n) { return "--term-color-" + n + ":" + c; }).join(";") + "}";
+document.head.appendChild(css);
+
+rail();
+makePlayer();
+var h = location.hash.slice(1), i0 = CHAPTERS.findIndex(function (c) { return c.id === h; });
+go(i0 >= 0 ? i0 : 0, i0 > 0);
+</script>
+</body>
+</html>

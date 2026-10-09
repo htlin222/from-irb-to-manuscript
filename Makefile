@@ -1,10 +1,11 @@
-.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init \
+.PHONY: help setup demo-data check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check deidentify cohort table1 analysis-data outcomes posthoc posthoc2 closure-report analysis test-analysis references manuscript submission revision \
         set-phase new amendment re_review continuing closure sae ib_update import suspension appeal
 
 # Single source of truth: config.toml (+ the files it references, e.g. cv.toml, 中文計畫摘要.md)
 CONFIG  := config.toml
 OUTPUT  := output
 RUN     := uv run
+RSCRIPT := Rscript
 # Override the phase for one run without editing config.toml: make all PHASE=closure
 PHASE   ?=
 export PHASE
@@ -55,6 +56,51 @@ checklist: ## View checklist
 review: ## Run simulated IRB reviewer on generated forms
 	$(RUN) python scripts/reviewer.py $(CONFIG) $(OUTPUT)
 
+data-check: ## Verify raw-data checksums and run data validation → results/data_validation.md
+	$(RSCRIPT) analysis/R/validate_raw.R
+
+deidentify: ## Replace chart numbers with study IDs → data/derived/ (linkage kept outside the project)
+	$(RSCRIPT) analysis/R/deidentify.R
+
+cohort: deidentify ## Apply eligibility criteria → results/cohort_flow.csv + results/figures/cohort_flow.{pdf,png}
+	$(RSCRIPT) analysis/R/cohort.R
+
+table1: cohort ## Baseline characteristics by treatment group → results/table1.{csv,docx}
+	$(RSCRIPT) analysis/R/table1.R
+
+analysis-data: cohort ## One row per eligible patient: covariates, pCR, EFS, OS → data/derived/analysis.csv
+	$(RSCRIPT) analysis/R/analysis_data.R
+
+outcomes: analysis-data ## Primary and sensitivity analyses per analysis/SAP.md → results/outcomes_*.csv, figures
+	$(RSCRIPT) analysis/R/outcomes.R
+
+posthoc: outcomes ## Post hoc analyses for the JCRP round-1 review (not in the SAP) → results/posthoc_r1*.csv
+	$(RSCRIPT) analysis/R/posthoc_revision1.R
+
+closure-report: ## IRB closure report content and enrolment counts from results → results/irb_closure.{md,toml}
+	$(RSCRIPT) analysis/R/irb_closure.R
+
+posthoc2: outcomes ## Post hoc analyses for the JCRP round-2 review (not in the SAP) → results/posthoc_r2.csv
+	$(RSCRIPT) analysis/R/posthoc_revision2.R
+
+analysis: data-check test-analysis table1 outcomes posthoc posthoc2 ## Rerun everything from raw data (stops if data checks or tests fail)
+
+test-analysis: ## Run R tests for shared definitions (treatment groups, HER2, drug map)
+	$(RSCRIPT) -e 'testthat::test_dir("analysis/tests", reporter = "summary", stop_on_failure = TRUE)'
+
+references: ## Verify every reference in manuscript/references.yaml against Crossref + PubMed → references.json
+	$(RSCRIPT) manuscript/verify_references.R
+
+manuscript: ## Build the JCRP draft (title page, blinded article, JPEG figures, writing guide) + checks → manuscript/_build/
+	@test -f manuscript/style/reference.docx || { quarto pandoc -o manuscript/_build/pandoc-reference.docx --print-default-data-file reference.docx && $(RUN) python manuscript/style/make_reference_docx.py manuscript/_build/pandoc-reference.docx manuscript/style/reference.docx; }
+	$(RSCRIPT) manuscript/R/build.R draft
+
+revision: manuscript ## Journal revision per manuscript/revision.yaml: response letter + marked and clean revised article → submission/revision<N>/
+	$(RSCRIPT) manuscript/R/build_revision.R
+
+submission: ## Same as manuscript, but only writes submission/ when every JCRP check passes
+	$(RSCRIPT) manuscript/R/build.R submission
+
 test: ## Run tests
 	$(RUN) pytest -v
 
@@ -74,3 +120,17 @@ set-phase: ## Persist the phase in config.toml (keeps comments): make set-phase 
 # Phase shortcuts: make closure == make all PHASE=closure (config.toml untouched)
 new amendment re_review continuing closure sae ib_update import suspension appeal:
 	@$(MAKE) --no-print-directory all PHASE=$@
+
+closure: closure-report   # 結案報告的數字先由分析結果產生
+
+# ── Teaching demo only ─────────────────────────────────────────────────────
+# Regenerates the simulated hospital extract from its seed (byte-identical to
+# data/raw/MANIFEST.sha256) and places it where the IT office "delivered" it.
+# A real study never has this target: raw data arrives from outside and never
+# enters git.
+SIM_DEPS := --with numpy==2.5.3 --with pandas==3.0.6 --with lifelines==0.30.0
+demo-data: ## (demo) Rebuild the synthetic hospital extract into data/raw/ and check it against MANIFEST
+	uv run --no-project $(SIM_DEPS) python demo/simulate/simulate_export.py --out demo/simulate/out
+	mkdir -p data/raw
+	cp demo/simulate/out/export/*.csv demo/drops/資訊室_資料更正.csv data/raw/
+	cd data/raw && shasum -a 256 -c MANIFEST.sha256

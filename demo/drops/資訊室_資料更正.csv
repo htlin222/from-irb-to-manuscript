@@ -1,0 +1,5 @@
+chart_no,table,field,old_value,new_value,source
+6314459,surgery_pathology,surgery_date,2011-11-12,2012-12-16,手術紀錄紙本核對（年份誤植）
+8427253,surgery_pathology,surgery_date,2013-03-25,2014-04-29,手術紀錄紙本核對（年份誤植）
+1713418,followup,recurrence_type,Distant,Progression before surgery,術前治療期間影像發現遠端轉移，類別誤登
+2993221,followup,recurrence_type,Distant,Progression before surgery,術前治療期間影像發現遠端轉移，類別誤登

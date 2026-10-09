@@ -1,0 +1,14 @@
+step,reason,n,preliminary
+records,Registry records,703,FALSE
+duplicates,Duplicate registry records removed,3,FALSE
+patients,Unique patients,700,FALSE
+excluded_1,Clinical stage 0-I,27,FALSE
+excluded_1,Distant metastasis at diagnosis,14,FALSE
+excluded_1,HER2 not positive,11,FALSE
+tumour_eligible,"Stage II-III, HER2-positive",648,FALSE
+excluded_2,No systemic therapy orders at our hospital,17,FALSE
+neoadjuvant,Neoadjuvant chemotherapy + trastuzumab,631,FALSE
+excluded_3,"Surgery at another hospital, no pathology report",16,FALSE
+cohort,Eligible cohort,615,FALSE
+group,Trastuzumab alone,199,FALSE
+group,Trastuzumab + pertuzumab,416,FALSE

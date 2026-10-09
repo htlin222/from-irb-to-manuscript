@@ -1,0 +1,4 @@
+# 由 make closure-report（analysis/R/irb_closure.R）產生，請勿手改。
+actual_n = 615
+n_dual = 416
+n_single = 199

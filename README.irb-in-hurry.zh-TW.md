@@ -4,6 +4,8 @@
 
 # IRB-in-Hurry：通用 IRB 送審表單自動產生器
 
+> **關於本專案（HER2 教學示範）**：本 repo 以**虛構／模擬資料**，示範一個虛構研究（術前雙標靶治療）從 IRB 送審到期刊投稿的完整流程。**`manuscript/` 與 `submission/` 中的論文示範稿由 AI（Claude Opus 5.5）撰寫；真實投稿時，論文內文必須由作者親自撰寫**（如 *Journal of Cancer Research and Practice* 等期刊禁止以生成式 AI 撰寫論文或其主要部分）。詳見 [`manuscript/README.md`](manuscript/README.md)。
+
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![Tests](https://img.shields.io/badge/tests-pytest-brightgreen.svg)](#測試)
 [![Forms](https://img.shields.io/badge/IRB%20forms-43%2F43-brightgreen.svg)](#表單涵蓋範圍)
@@ -13,7 +15,7 @@
 
 用純文字寫下研究資料（`config.toml` 放結構化資料、`cv.toml` 放研究團隊、`中文計畫摘要.md` 放計畫內容），執行一行指令，即可產生所有必要的 IRB 送審表單 Word 文件 — 簽名後即可送出。要用在自己的醫院？放進貴院的空白表單，執行 `make onboard`（見[導入指南](docs/ONBOARDING.md)）。
 
-[English README](README.md)
+[English README](README.irb-in-hurry.md)
 
 ---
 
