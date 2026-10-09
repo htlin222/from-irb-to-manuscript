@@ -1,9 +1,15 @@
 # 期刊審查回合（單一來源）：make revision 依此產生回覆信與標示修改處的修訂稿。
-round: 1
-baseline_tag: jcrp-submission-v1          # 比對基準：上次投稿的版本
-decision: correspondence/JCRP_decision_round1.md
-response: correspondence/JCRP_round1_response.md
-due_days: 45
-new_supplementary:                        # 本輪新增的補充資料（列入回覆信的修改總覽）
-  - "Supplementary Table S4 (post hoc analyses)"
-  - "Supplementary Figure S2 (propensity-score distributions)"
+# 前一輪的設定見 git 歷史（tag jcrp-revision-1）。
+round: 2
+baseline_tag: jcrp-revision-1             # 比對基準：上次送出的修訂版
+decision: correspondence/JCRP_decision_round2.md
+response: correspondence/JCRP_round2_response.md
+due_days:                                 # 第二輪決定信未載明期限
+other_changes:                            # 正文以外的修改：列入回覆信的修改總覽；find = 在標示版找頁碼的文字
+  - section: "Table 1"
+    part: "New column: SMD after overlap weighting; footnotes revised"
+    find: "Table 1. Baseline characteristics"
+    new_columns: ["SMD, weighted‡"]       # 標示版中以藍色底線標出
+    new_footnotes: ["†", "‡"]
+  - section: "Supplementary material"
+    part: "STROBE checklist provided as Supplementary File S2"

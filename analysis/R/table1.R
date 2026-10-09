@@ -20,11 +20,6 @@ d <- merge(co, reg, by = "study_id")
 stopifnot(nrow(d) == nrow(co))
 
 cut <- p$receptor_positive_cutoff
-periods <- vapply(p$treatment_periods, function(x) sprintf("%d–%d", x[1], x[2]), "")
-period_of <- function(y) {
-  i <- vapply(y, function(v) which(vapply(p$treatment_periods, function(x) v >= x[1] && v <= x[2], TRUE))[1], 1L)
-  factor(periods[i], periods)
-}
 
 # 共變項編碼與傾向分數模型共用（definitions.R build_covariates），這裡只轉成顯示用的標籤
 cv <- build_covariates(d, cut)
@@ -44,7 +39,7 @@ tab <- data.table(
   grade = cv$grade,
   ki67 = cv$ki67,
   backbone = factor(d$chemo_backbone, c("Anthracycline-based", "Carboplatin-based", "Taxane only", "Other")),
-  period = period_of(cv$year)
+  period = period_of(cv$year, p$treatment_periods)
 )
 tab[, backbone := droplevels(backbone)]
 
@@ -94,12 +89,8 @@ cat(sprintf("Table 1：%d 人（%s）→ results/table1.{csv,docx}；|SMD| ≥ 0
 
 # ── 論文版 Table 1（JCRP：≤ 25 列、≤ 10 欄）────────────────────────────────
 # 合併細項以符合列數限制；完整版（上方 table1.docx）作為補充資料。SMD 以 tableone 計算（多分類變項用 Yang & Dalton 法）。
-ms <- data.table(
-  dual = tab$group == "Trastuzumab + pertuzumab",
-  age = cv$age, postmenopausal = cv$postmenopausal == 1, ecog_ge1 = cv$ecog != "0", bmi = cv$bmi, lvef = cv$lvef,
-  ct = cv$ct, cn = cv$cn, hr_positive = cv$hr_positive == 1, her2_ihc3 = cv$her2_ihc3 == 1,
-  grade3 = fifelse(is.na(cv$grade), NA, cv$grade == "3"), ki67 = cv$ki67,
-  anthracycline = cv$anthracycline == 1, period = tab$period)
+# 加權後 SMD 由 outcomes.R 依同一份變項定義計算（results/table1_smd_weighted.csv），論文產生表格時以 variable 欄對上
+ms <- data.table(dual = tab$group == "Trastuzumab + pertuzumab", table1_variables(cv, p$treatment_periods))
 smd_of <- function(v) {
   t1 <- tableone::CreateTableOne(vars = v, strata = "dual", data = as.data.frame(ms[, c("dual", v), with = FALSE]),
                                  test = FALSE, smd = TRUE)
@@ -109,13 +100,13 @@ fmt_cont <- function(x) sprintf("%.1f (%.1f–%.1f)", median(x, na.rm = TRUE), q
                                 quantile(x, .75, na.rm = TRUE))
 fmt_bin <- function(x) sprintf("%d (%.1f)", sum(x, na.rm = TRUE), 100 * mean(x, na.rm = TRUE))
 row <- function(label, f, v, smd = TRUE) data.table(
-  characteristic = label, dual = f(ms[dual == TRUE][[v]]), single = f(ms[dual == FALSE][[v]]),
+  variable = v, characteristic = label, dual = f(ms[dual == TRUE][[v]]), single = f(ms[dual == FALSE][[v]]),
   smd = if (smd) sprintf("%.2f", smd_of(v)) else "")
 level_rows <- function(header, v) {
   lv <- levels(ms[[v]])
-  rbind(data.table(characteristic = header, dual = "", single = "", smd = sprintf("%.2f", smd_of(v))),
+  rbind(data.table(variable = v, characteristic = header, dual = "", single = "", smd = sprintf("%.2f", smd_of(v))),
         rbindlist(lapply(lv, function(l) data.table(
-          characteristic = paste0("  ", l), dual = fmt_bin(ms[dual == TRUE][[v]] == l),
+          variable = "", characteristic = paste0("  ", l), dual = fmt_bin(ms[dual == TRUE][[v]] == l),
           single = fmt_bin(ms[dual == FALSE][[v]] == l), smd = ""))))
 }
 t1_ms <- rbind(

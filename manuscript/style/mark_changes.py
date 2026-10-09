@@ -63,25 +63,28 @@ def snippet(words):
 
 
 def mark_paragraph(old, new):
-    """Return (marked paragraph, snippet of the first change or None)."""
+    """Return (marked paragraph, snippet of the first change or None, words as displayed incl. deleted ones)."""
     if old == new:
-        return new, None
+        return new, None, new.split()
     head = re.match(r"^(#+ )", new) or re.match(r"^(#+ )", old)
     prefix = head.group(1) if head else ""
     (o, ot), (n, nt) = protect(old[len(prefix):]), protect(new[len(prefix):])
     ow, nw = o.split(), n.split()
-    out, first = [], None
+    out, first, shown = [], None, []
     for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, ow, nw, autojunk=False).get_opcodes():
         if tag == "equal":
             out.append(" ".join(nw[j1:j2]))
+            shown += nw[j1:j2]
             continue
         if tag in ("delete", "replace"):
             out.append(deleted(ow[i1:i2]))
+            shown += ow[i1:i2]
             first = first or snippet(ow[i1:i2]) or None
         if tag in ("insert", "replace"):
             out.append(inserted(nw[j1:j2]))
+            shown += nw[j1:j2]
             first = first or snippet(nw[j1:j2]) or None
-    return prefix + restore(" ".join(x for x in out if x), {**ot, **nt}), first
+    return prefix + restore(" ".join(x for x in out if x), {**ot, **nt}), first, shown
 
 
 def paragraphs(text):
@@ -107,11 +110,10 @@ def mark(old_text, new_text, section=""):
         heading = re.match(r"^#+ (.*)$", new or old)
         if heading:
             subsection = heading.group(1)
-        marked, first = mark_paragraph(old, new)
+        marked, first, shown = mark_paragraph(old, new)
         out.append(marked)
-        if first:   # 頁碼用段落開頭定位（比修改處的片段更獨特）
-            lead = snippet(protect(re.sub(r"^#+ ", "", new or old))[0].split())
-            changes.append({"section": section, "subsection": subsection, "snippet": lead, "change": first})
+        if first:   # 頁碼用標示版中段落開頭實際顯示的文字定位（含刪除線的字），比修改處的片段更獨特
+            changes.append({"section": section, "subsection": subsection, "snippet": snippet(shown), "change": first})
     return "\n\n".join(p for p in out if p) + "\n", changes
 
 

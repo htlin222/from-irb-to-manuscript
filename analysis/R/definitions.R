@@ -89,6 +89,20 @@ build_covariates <- function(d, receptor_cutoff) {
     year = year(as.IDate(index_d))
   )]
 }
+# 治療年代分組（params.yaml treatment_periods；例："2012–2015"）
+period_of <- function(year, periods) {
+  labels <- vapply(periods, function(x) sprintf("%d–%d", x[1], x[2]), "")
+  i <- vapply(year, function(v) which(vapply(periods, function(x) v >= x[1] && v <= x[2], TRUE))[1], 1L)
+  factor(labels[i], labels)
+}
+
+# 論文版 Table 1 的變項定義。未加權 SMD 用觀察資料（table1.R）、加權後 SMD 用插補資料（outcomes.R），兩者共用這一份
+table1_variables <- function(x, periods) data.table(
+  age = x$age, postmenopausal = x$postmenopausal == 1, ecog_ge1 = x$ecog != "0", bmi = x$bmi, lvef = x$lvef,
+  ct = x$ct, cn = x$cn, hr_positive = x$hr_positive == 1, her2_ihc3 = x$her2_ihc3 == 1,
+  grade3 = x$grade == "3", ki67 = x$ki67, anthracycline = x$anthracycline == 1,
+  period = period_of(x$year, periods))
+
 PS_COVARIATES <- c("age", "postmenopausal", "ecog", "bmi", "lvef", "ct", "cn", "hr_positive", "her2_ihc3",
                    "grade", "ki67", "anthracycline", "year")
 

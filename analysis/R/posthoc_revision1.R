@@ -3,7 +3,6 @@
 # 輸出：results/posthoc_r1.csv（效應值）、posthoc_r1_overlap.csv（傾向分數重疊）、posthoc_r1_timing.csv（時間零點），
 #       results/figures/ps_overlap.{pdf,png}
 source("analysis/R/estimation.R")
-suppressPackageStartupMessages(library(splines))
 
 rd <- function(k) fread(file.path("data/derived", paste0(k, ".csv")), colClasses = "character", na.strings = NULL)
 co <- rd("cohort"); su <- rd("surgery"); fu <- rd("followup"); reg <- unique(rd("registry"))
@@ -32,9 +31,8 @@ overlap <- rbind(
              value = ov[dual == 0, mean(ps >= ov[dual == 1, min(ps)] & ps <= ov[dual == 1, max(ps)])]),
   ov[, .(metric = "weight_share", value = sum(w) / ov[, sum(w)]), keyby = .(group = period(year))]
 )
-spline_f <- reformulate(c(setdiff(PS_COVARIATES, "year"), "ns(year, 3)"), "dual")
 out$P1 <- row("P1", "Propensity score with natural spline for year (3 df)",
-              run(imputed, "overlap", survival = FALSE, ps = spline_f), "or", measure = "OR for pCR")
+              run(imputed, "overlap", survival = FALSE, ps = PS_SPLINE), "or", measure = "OR for pCR")
 
 # ── R1.2 術後 T-DM1：只看 T-DM1 普及前（2012–2019）開始治療者的 EFS ─────────
 pre <- lapply(imputed, function(x) x[year <= 2019])

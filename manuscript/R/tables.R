@@ -16,7 +16,9 @@ ANALYSIS_LABELS <- c(main = "Overlap weighting (primary)", S1 = "S1: Treatment s
 table_baseline <- function(tk = manuscript_tokens()) {
   d <- rd_res("table1_manuscript.csv", colClasses = "character", strip.white = FALSE, na.strings = NULL)
   miss <- rd_res("table1_manuscript_missing.csv")
-  setnames(d, c("characteristic", "smd"), c("Characteristic", "SMD†"))
+  sw <- rd_res("table1_smd_weighted.csv")   # 加權後 SMD：以 variable 欄對上（只標在每個變項的第一列）
+  d[, smd_w := ""][sw, on = "variable", smd_w := sprintf("%.2f", abs(i.smd_after))][, variable := NULL]
+  setnames(d, c("characteristic", "smd", "smd_w"), c("Characteristic", "SMD, unweighted†", "SMD, weighted‡"))
   list(
     title = "Table 1. Baseline characteristics of the study cohort, by neoadjuvant anti-HER2 regimen",
     data = d,
@@ -24,7 +26,8 @@ table_baseline <- function(tk = manuscript_tokens()) {
       "Values are n (%) unless otherwise indicated. Abbreviations: BMI, body mass index; ECOG, Eastern Cooperative Oncology Group; ER, estrogen receptor; HER2, human epidermal growth factor receptor 2; IHC, immunohistochemistry; IQR, interquartile range; ISH, in situ hybridization; LVEF, left ventricular ejection fraction; PR, progesterone receptor; SMD, standardized mean difference.",
       sprintf("*Missing: histologic grade, %d; Ki-67, %d. Percentages exclude missing values.",
               miss[item == "grade_missing", value], miss[item == "ki67_missing", value]),
-      sprintf("†Before weighting. After overlap weighting, every covariate in the propensity-score model was exactly balanced (maximum absolute SMD, %s).", tk[["max_smd_after"]])
+      "†Before weighting, in patients with available data.",
+      sprintf("‡After overlap weighting, averaged over the %s imputed data sets. Year of treatment start entered the propensity-score model as a continuous variable, so its mean was exactly balanced but the distribution of treatment periods was not.", tk[["imputations"]])
     ))
 }
 

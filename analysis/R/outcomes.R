@@ -49,6 +49,11 @@ surv_tab <- rbindlist(lapply(c("efs", "os"), function(ep) rbindlist(lapply(setdi
 balance <- rbindlist(lapply(analyses$main$fits, `[[`, "balance"))[
   , .(smd_before = mean(before), smd_after = mean(after), max_abs_after = max(abs(after))), by = covariate]
 
+# Table 1 加權後的 SMD（期刊第二輪 R2.2）：與 Table 1 相同的變項定義與 tableone 算法（多分類變項用 Yang & Dalton 法），
+# 在每組插補資料以主分析的重疊權重計算，再取 20 組的平均
+smd_weighted <- rbindlist(Map(function(x, f) table1_smd(x, f$weights), imputed, analyses$main$fits))[
+  , .(smd_after = mean(smd)), by = variable]
+
 # 次族群（SAP §6.4）：依荷爾蒙受體分層，各層內重新估計傾向分數；交互作用用整體權重
 subgroup <- rbindlist(lapply(0:1, function(h) {
   fits <- run(lapply(imputed, function(x) x[hr_positive == h]), "overlap", drop = "hr_positive", survival = FALSE)
@@ -101,6 +106,7 @@ descriptive <- rbind(
 fwrite(pcr_tab, file.path(RESULTS_DIR, "outcomes_pcr.csv"))
 fwrite(surv_tab, file.path(RESULTS_DIR, "outcomes_survival.csv"))
 fwrite(balance, file.path(RESULTS_DIR, "outcomes_balance.csv"))
+fwrite(smd_weighted, file.path(RESULTS_DIR, "table1_smd_weighted.csv"))
 fwrite(subgroup, file.path(RESULTS_DIR, "outcomes_subgroup.csv"))
 fwrite(evals, file.path(RESULTS_DIR, "outcomes_evalues.csv"))
 fwrite(descriptive, file.path(RESULTS_DIR, "outcomes_descriptive.csv"))
@@ -169,11 +175,11 @@ love <- ggplot(lp, aes(abs(smd), covariate, shape = sample, colour = sample)) +
                                         plot.caption = element_text(size = 7.5, colour = "grey30", hjust = 0))
 save_fig(love, "love_plot", 6, 5.5)
 
-write_provenance("outcomes", c(file.path(RESULTS_DIR, c("outcomes_pcr.csv", "outcomes_survival.csv", "outcomes_balance.csv",
+write_provenance("outcomes", c(file.path(RESULTS_DIR, c("outcomes_pcr.csv", "outcomes_survival.csv", "outcomes_balance.csv", "table1_smd_weighted.csv",
                                                          "outcomes_subgroup.csv", "outcomes_evalues.csv",
                                                          "outcomes_descriptive.csv")),
                                file.path(RESULTS_DIR, "figures", c("km_efs.pdf", "km_os.pdf", "love_plot.pdf"))),
-                 pkgs = c("mice", "WeightIt", "MatchIt", "cobalt", "survival", "EValue", "ggplot2", "patchwork"))
+                 pkgs = c("mice", "WeightIt", "MatchIt", "cobalt", "survival", "EValue", "ggplot2", "patchwork", "tableone", "survey"))
 cat(sprintf("主分析：pCR OR %.2f (%.2f–%.2f)；EFS HR %.2f (%.2f–%.2f)；OS HR %.2f (%.2f–%.2f)\n",
             main_pcr$or, main_pcr$or_lo, main_pcr$or_hi, main_efs$hr, main_efs$hr_lo, main_efs$hr_hi,
             surv_tab[endpoint == "OS" & analysis == "main", hr], surv_tab[endpoint == "OS" & analysis == "main", hr_lo],

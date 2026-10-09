@@ -5,7 +5,7 @@ source("analysis/R/common.R")
 source("analysis/R/definitions.R")
 suppressPackageStartupMessages({
   library(mice); library(WeightIt); library(MatchIt); library(cobalt)
-  library(survival); library(sandwich); library(EValue); library(ggplot2); library(patchwork)
+  library(survival); library(sandwich); library(EValue); library(ggplot2); library(patchwork); library(splines)
 })
 
 p <- params()
@@ -14,12 +14,23 @@ a[, `:=`(ecog = factor(ecog), ct = factor(ct, c("T1", "T2", "T3", "T4")), cn = f
 OUTCOMES <- c("study_id", "pcr", "pcr_strict", "efs_days", "efs_event", "os_days", "os_event", "adjuvant_tdm1")
 YEAR <- 365.25
 ps_formula <- function(drop = character()) reformulate(setdiff(PS_COVARIATES, drop), "dual")
+# 事後分析（期刊第一輪 R1.1）：年份改用自然樣條（3 df）的傾向分數模型
+PS_SPLINE <- reformulate(c(setdiff(PS_COVARIATES, "year"), "ns(year, 3)"), "dual")
 
 # ── 多重插補（SAP §7）：只用治療組與共變項，不含任何結果變項 ─────────────
 imp <- mice(a[, c("dual", PS_COVARIATES), with = FALSE], m = p$imputation_m, seed = p$seeds$imputation,
             printFlag = FALSE)
 imputed <- lapply(seq_len(p$imputation_m), function(i) cbind(as.data.table(complete(imp, i)), a[, ..OUTCOMES]))
 complete_case <- list(a[complete.cases(a[, ..PS_COVARIATES])])
+
+# Table 1 變項的 SMD（與 Table 1 相同定義與 tableone 算法；多分類變項用 Yang & Dalton 法），以權重 weights 加權
+table1_smd <- function(x, weights) {
+  t1v <- table1_variables(x, p$treatment_periods)
+  v <- as.data.frame(cbind(dual = x$dual, t1v, wt = weights))
+  t1 <- tableone::svyCreateTableOne(vars = names(t1v), strata = "dual", test = FALSE, smd = TRUE,
+                                    data = survey::svydesign(ids = ~1, weights = ~wt, data = v))
+  data.table(variable = names(t1v), smd = unname(tableone::ExtractSmd(t1)[names(t1v), 1]))
+}
 
 # Rubin 法則合併（m = 1 時即為單一分析）
 pool_rubin <- function(est, v) {
@@ -62,6 +73,7 @@ analyze <- function(x, method = c("overlap", "match", "regression"), outcome = "
     bal <- bal[rownames(bal) != "prop.score", ]
     out$balance <- data.table(covariate = rownames(bal), before = bal$Diff.Un, after = bal$Diff.Adj)
     out$ess <- ess(x$wt, x$dual)
+    out$weights <- x$wt
     m_or <- glm_weightit(reformulate("dual", outcome), data = x, weightit = w, family = binomial)
     m_rd <- glm_weightit(reformulate("dual", outcome), data = x, weightit = w, family = gaussian)
     out$or <- coef_var(m_or); out$rd <- coef_var(m_rd)

@@ -31,6 +31,8 @@ manuscript_tokens <- function() {
   po2 <- function(m) pov[metric == m, value]
   tm <- function(m) ptm[metric == m, value]
   H <- function(k, f) { x <- ph[id == k]; f(x$est, x$lo, x$hi) }
+  sw <- rf("table1_smd_weighted.csv"); ph2 <- rf("posthoc_r2.csv")
+  E2 <- function(m, mdl, g) ph2[metric == m & model == mdl & group == g, value]
 
   tk <- list(
     title_en = RcppTOML::parseTOML("config.toml")$study$title_en,
@@ -94,6 +96,12 @@ manuscript_tokens <- function() {
     ps_median_dual = sprintf("%.2f", po("ps_median", "dual")), ps_median_single = sprintf("%.2f", po("ps_median", "single")),
     common_support_dual = fmt_pct(po("in_common_support", "dual")), common_support_single = fmt_pct(po("in_common_support", "single")),
     weight_share_2016_2019 = fmt_pct(po("weight_share", "2016-2019")),
+    # 期刊第二輪 R2.2：Table 1 加權後的 SMD（table1_smd_weighted.csv）與年代分布（事後分析，posthoc_r2.csv）
+    smd_period_after = sprintf("%.2f", sw[variable == "period", smd_after]),
+    max_smd_after_other = sprintf("%.2f", sw[variable != "period", max(abs(smd_after))]),
+    smd_period_after_spline = sprintf("%.2f", E2("smd_period", "spline", "both")),
+    era_early_w_dual = fmt_pct(E2("share_2012–2015", "linear", "dual")),
+    era_early_w_single = fmt_pct(E2("share_2012–2015", "linear", "single")),
     or_spline = H("P1", fmt_ci), efs_hr_2012_2019 = H("P2", fmt_ci), efs_p_2012_2019 = fmt_p(ph[id == "P2", p]),
     n_2012_2019_dual = ph[id == "P2", n_dual], n_2012_2019_single = ph[id == "P2", n_single],
     tdm1_2012_2019 = if (all(po2("tdm1_pct_non_pcr_2012_2019") == 0)) "none" else "some",

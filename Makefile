@@ -1,4 +1,4 @@
-.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check deidentify cohort table1 analysis-data outcomes posthoc analysis test-analysis references manuscript submission revision \
+.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check deidentify cohort table1 analysis-data outcomes posthoc posthoc2 analysis test-analysis references manuscript submission revision \
         set-phase new amendment re_review continuing closure sae ib_update import suspension appeal
 
 # Single source of truth: config.toml (+ the files it references, e.g. cv.toml, 中文計畫摘要.md)
@@ -77,7 +77,10 @@ outcomes: analysis-data ## Primary and sensitivity analyses per analysis/SAP.md 
 posthoc: outcomes ## Post hoc analyses for the JCRP round-1 review (not in the SAP) → results/posthoc_r1*.csv
 	$(RSCRIPT) analysis/R/posthoc_revision1.R
 
-analysis: data-check test-analysis table1 outcomes posthoc ## Rerun everything from raw data (stops if data checks or tests fail)
+posthoc2: outcomes ## Post hoc analyses for the JCRP round-2 review (not in the SAP) → results/posthoc_r2.csv
+	$(RSCRIPT) analysis/R/posthoc_revision2.R
+
+analysis: data-check test-analysis table1 outcomes posthoc posthoc2 ## Rerun everything from raw data (stops if data checks or tests fail)
 
 test-analysis: ## Run R tests for shared definitions (treatment groups, HER2, drug map)
 	$(RSCRIPT) -e 'testthat::test_dir("analysis/tests", reporter = "summary", stop_on_failure = TRUE)'

@@ -28,7 +28,7 @@ tab <- data.frame(`Item` = vapply(items, `[[`, "", "item"), `Recommendation` = v
                   check.names = FALSE)
 ```
 
-**STROBE Statement — checklist of items for cohort studies**
+**Supplementary File S2. STROBE Statement — checklist of items for cohort studies**
 
 ```{r, results="asis"}
 cat("**", cfg$study$title_en, "**\n\n", sep = "")
@@ -42,4 +42,8 @@ demo_labels()
 ft_df(tab)
 ```
 
-Page numbers refer to the blinded article file. Item wording is abbreviated; see https://www.strobe-statement.org/checklists/ for the full checklist (von Elm E, et al. Lancet 2007;370:1453-7).
+```{r, results="asis"}
+cat("Page numbers refer to ", Sys.getenv("MS_STROBE_REF", "the blinded article file"), ".", sep = "")
+```
+
+ Item wording is abbreviated; see https://www.strobe-statement.org/checklists/ for the full checklist (von Elm E, et al. Lancet 2007;370:1453-7).

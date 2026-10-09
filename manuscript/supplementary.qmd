@@ -56,3 +56,5 @@ Absolute standardized mean differences of the propensity-score covariates; dashe
 Propensity scores for receiving trastuzumab plus pertuzumab, averaged over imputations. The limited overlap reflects the different treatment periods of the two regimens; overlap weighting gives the greatest weight to patients in the region of overlap.
 
 **Supplementary File S1. Analysis code** (`JCRP_supplementary_code.zip`): the statistical analysis plan, analysis code, shared definitions with automated tests, analysis parameters, drug-name map, and records of data queries and decisions. No patient data are included. The code was written with the assistance of Claude Opus 5.5 (see the Use of Generative AI statement).
+
+**Supplementary File S2. STROBE checklist** (`JCRP_STROBE_checklist.docx`): the completed STROBE checklist for cohort studies, with the page on which each item is reported.

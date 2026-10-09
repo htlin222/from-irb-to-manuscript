@@ -12,6 +12,8 @@ render <- function(qmd, out, to = "docx", env = character(), dest = BUILD) {
   # Word：--output 相對於執行目錄（專案根目錄）；HTML 自包含檔要在原位置產生，否則找不到 quarto 的元件
   produced <- if (to == "html") file.path("manuscript", out) else out
   argv <- c("render", file.path("manuscript", qmd), "--to", to, if (to != "html") c("--output", out))
+  # 環境變數的值經 shell 解讀，要加引號（值可含空白、括號）
+  env <- vapply(strsplit(env, "=", fixed = TRUE), function(kv) paste0(kv[1], "=", shQuote(paste(kv[-1], collapse = "="))), "")
   st <- system2("quarto", argv, stdout = log, stderr = log, env = env)
   if (st != 0 || !file.exists(produced)) stop(qmd, " 產生失敗，請看 ", log)
   invisible(file.rename(produced, file.path(dest, out)))
