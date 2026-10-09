@@ -206,7 +206,10 @@ verify = "check answered 24"
 id = "25"
 part = "寫論文"
 name = "寫初稿"
-prompt = "開始寫論文初稿。"
+prompt = "開始寫論文初稿。這是教學模擬，不會投稿，請寫完整初稿並標註由 AI 撰寫。"
+# 錄影時只送了「開始寫論文初稿。」：AI 查到 JCRP 不准 AI 寫內文，停下來問分工，錄影者再補一句（say01）。
+# 現場示範直接用上面這句，就不會停。
+recorded = "開始寫論文初稿。"
 verify = "check answered 25 && check file 'manuscript/*'"
 
 [[stage]]

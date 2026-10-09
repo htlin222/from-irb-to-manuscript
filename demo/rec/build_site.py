@@ -113,6 +113,10 @@ def main() -> None:
                 lines += ["", f"## {part}", ""]
             drop = f"　〔inbox 收到：{'、'.join(Path(d).name for d in s['drop'])}〕" if s.get("drop") else ""
             lines.append(f"{s['id']}. {s['prompt']}{drop}")
+            if s.get("recorded"):
+                lines.append(
+                    f"    - 錄影時只送了「{s['recorded']}」，AI 停下來問，錄影者補了下面這句；上面的 prompt 已把它併進來，現場不用再補"
+                )
             for c in says:
                 if c.get("after") == s["id"]:
                     lines.append(f"    - ↳ 補充一句（錄影時臨場補上）：{c['prompt']}")
