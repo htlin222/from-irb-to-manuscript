@@ -15,7 +15,7 @@
 
 用純文字寫下研究資料（`config.toml` 放結構化資料、`cv.toml` 放研究團隊、`中文計畫摘要.md` 放計畫內容），執行一行指令，即可產生所有必要的 IRB 送審表單 Word 文件 — 簽名後即可送出。要用在自己的醫院？放進貴院的空白表單，執行 `make onboard`（見[導入指南](docs/ONBOARDING.md)）。
 
-[English README](README.md)
+[English README](README.irb-in-hurry.md)
 
 ---
 

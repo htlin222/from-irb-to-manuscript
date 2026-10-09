@@ -1,0 +1,5 @@
+{
+  "theme": "light",
+  "hooks": { "Stop": [ { "matcher": "", "hooks": [
+    { "type": "command", "command": "python3 \"$DEMO_HOME/rec/turn_ended.py\"", "timeout": 20 } ] } ] }
+}

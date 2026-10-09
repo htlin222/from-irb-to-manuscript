@@ -1,0 +1,1 @@
+{"mcpServers":{"openevidence":{"type":"stdio","command":"node","args":["/Users/htlin/openevidence-mcp/dist/server.js"],"env":{"OE_MCP_COOKIES_PATH":"/Users/htlin/openevidence-mcp/cookies.json","OE_MCP_RELAY_PORT":"8780"}}}}

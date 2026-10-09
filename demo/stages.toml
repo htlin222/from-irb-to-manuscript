@@ -1,0 +1,278 @@
+# 示範腳本的唯一來源（SSOT）：每一章送出的 prompt、送出前放進 inbox 的檔案、完成檢查。
+# PROMPTS.md 與播放頁的章節清單都由這個檔產生（demo/rec/build_site.py）。
+#
+#   prompt  一字不改送進 Claude Code 的話（刻意寫短、不用術語）
+#   drop    送出前複製進工作目錄 inbox/ 的檔案（模擬外面寄來的東西），路徑相對於 demo/
+#   verify  在工作目錄執行；回傳 0 才進下一章。`check` = demo/rec/check
+#
+# 完成訊號有兩個：Stop hook 記錄「收到這題的那一輪結束了」（check answered），
+# 有產物的章節再加上產物本身的檢查。只看 AI 說「完成了」不算數。
+
+[project]
+title   = "從 IRB 到投稿：一個回溯性研究的完整旅程"
+blurb   = "HER2 陽性早期乳癌・術前抗 HER2 治療・pCR / EFS / OS — 用白話 prompt 一路從 IRB 做到期刊接受"
+workdir = "her2-neoadjuvant-study"
+repo    = "https://github.com/htlin222/from-irb-to-manuscript"
+
+[recording]
+cols   = 118
+rows   = 28
+socket = "her2demo"
+stall_minutes = 30
+
+# ── Part 1 · 開始之前 ────────────────────────────────────────────────
+[[stage]]
+id = "01"
+part = "開始之前"
+name = "這個專案在做什麼"
+prompt = "用三句話告訴我這個專案在做什麼。"
+verify = "check answered 01"
+
+[[stage]]
+id = "02"
+part = "開始之前"
+name = "題目可行嗎"
+prompt = "我的研究想法寫在「研究構想.md」。這個題目可行嗎？最大的困難是什麼？"
+verify = "check answered 02"
+
+# ── Part 2 · IRB 初審 ───────────────────────────────────────────────
+[[stage]]
+id = "03"
+part = "IRB 初審"
+name = "準備新案送審文件"
+prompt = "好，幫我開一個新分支，準備 IRB 新案送審文件。"
+verify = "check answered 03 && check branch-not-main && grep -qiE 'HER2' config.toml && check file 'output/**/*SF001*.pdf'"
+
+[[stage]]
+id = "04"
+part = "IRB 初審"
+name = "看一張表單"
+prompt = "產出了哪些文件？挑最重要的一張給我看。"
+verify = "check answered 04"
+
+[[stage]]
+id = "05"
+part = "IRB 初審"
+name = "存成「IRB 初審」"
+prompt = "把這個版本存起來，標記為「IRB 初審」。"
+verify = "check answered 05 && check saved 初審"
+
+# ── Part 3 · IRB 複審 ───────────────────────────────────────────────
+[[stage]]
+id = "06"
+part = "IRB 複審"
+name = "審查意見來了"
+drop = ["drops/IRB審查意見_初審.md"]
+prompt = "IRB 審查意見回來了，放在 inbox。請逐條修改。"
+verify = "check answered 06 && check edited 06 05"
+
+[[stage]]
+id = "07"
+part = "IRB 複審"
+name = "回覆表＋複審文件"
+prompt = "幫我寫審查意見回覆表，產出複審文件，存成「IRB 複審」。"
+verify = "check answered 07 && check file 'output/**/*SF019*' && check saved 複審"
+
+[[stage]]
+id = "08"
+part = "IRB 複審"
+name = "IRB 通過"
+drop = ["drops/IRB核准通知.md"]
+prompt = "IRB 通過了！核准通知在 inbox，幫我記下來。"
+verify = "check answered 08 && grep -q 'DEMO-2026-0412' config.toml"
+
+# ── Part 4 · 拿到資料 ───────────────────────────────────────────────
+[[stage]]
+id = "09"
+part = "拿到資料"
+name = "收資料"
+drop = ["simulate/out/export/registry_breast_her2.csv", "simulate/out/export/chemo_orders.csv",
+        "simulate/out/export/surgery_pathology.csv", "simulate/out/export/followup.csv",
+        "drops/資訊室_資料說明.md"]
+prompt = "資訊室把資料放在 inbox 了，幫我收進專案。先不要分析。"
+verify = "check answered 09 && check raw-intake"
+
+[[stage]]
+id = "10"
+part = "拿到資料"
+name = "資料可以相信嗎"
+prompt = "這份資料可以相信嗎？幫我檢查。"
+verify = "check answered 10"
+
+[[stage]]
+id = "11"
+part = "拿到資料"
+name = "收案流程圖"
+prompt = "有幾位病人符合收案條件？畫一張收案流程圖。"
+verify = "check answered 11 && check file 'results/**/*flow*'"
+
+[[stage]]
+id = "12"
+part = "拿到資料"
+name = "Table 1"
+prompt = "幫我做 Table 1，比較兩種治療的病人。"
+verify = "check answered 12 && check file 'results/**/*able*1*'"
+
+[[stage]]
+id = "13"
+part = "拿到資料"
+name = "資訊室回信"
+drop = ["drops/資訊室_查詢回覆.md", "drops/資訊室_資料更正.csv"]
+prompt = "資訊室回信了，在 inbox。ypN0(i+) 就照國際通用的 pCR 定義。"
+verify = "check answered 13"
+
+# ── Part 5 · 公平比較 ───────────────────────────────────────────────
+[[stage]]
+id = "14"
+part = "公平比較"
+name = "有哪些方法"
+prompt = "兩組病人本來就不一樣。要公平比較，有哪些方法？用白話說明，並推薦一個。"
+verify = "check answered 14"
+
+[[stage]]
+id = "15"
+part = "公平比較"
+name = "先寫分析計畫"
+prompt = "就照你的推薦。先寫分析計畫，給我看重點。"
+verify = "check answered 15"
+
+[[stage]]
+id = "16"
+part = "公平比較"
+name = "開始分析"
+prompt = "開始分析：pCR、EFS、OS 都要。"
+verify = "check answered 16 && check file 'results/**/*.json' && check file 'results/**/*.png' 'results/**/*.pdf' 'results/**/*.jpg'"
+
+[[stage]]
+id = "17"
+part = "公平比較"
+name = "白話結果"
+prompt = "用白話告訴我：雙標靶比較好嗎？"
+verify = "check answered 17"
+
+[[stage]]
+id = "18"
+part = "公平比較"
+name = "結果可靠嗎"
+prompt = "這個結果可靠嗎？可能哪裡出錯？"
+verify = "check answered 18"
+
+[[stage]]
+id = "19"
+part = "公平比較"
+name = "從頭重跑一次"
+prompt = "從原始資料整個重跑一次，結果一樣嗎？"
+verify = "check answered 19"
+
+[[stage]]
+id = "20"
+part = "公平比較"
+name = "存成「分析完成」"
+prompt = "存檔，標記為「分析完成」。"
+verify = "check answered 20 && check saved 分析完成"
+
+# ── Part 6 · IRB 修正案 ─────────────────────────────────────────────
+[[stage]]
+id = "21"
+part = "IRB 修正案"
+name = "送修正案"
+prompt = "照你的建議，幫我送 IRB 修正案。"
+verify = "check answered 21 && check file 'output/**/*SF016*' && check saved 修正"
+
+[[stage]]
+id = "22"
+part = "IRB 修正案"
+name = "修正案通過"
+drop = ["drops/IRB修正案核准通知.md"]
+prompt = "修正案通過了，通知在 inbox。"
+verify = "check answered 22"
+
+# ── Part 7 · 寫論文 ─────────────────────────────────────────────────
+[[stage]]
+id = "23"
+part = "寫論文"
+name = "期刊格式要求"
+prompt = "我要投 Journal of Cancer Research and Practice。它的格式要求是什麼？整理起來，之後照這個寫。"
+verify = "check answered 23"
+
+[[stage]]
+id = "24"
+part = "寫論文"
+name = "找文獻"
+prompt = "用 OpenEvidence 幫我找討論要用的文獻，每一篇都要查證是真的。"
+verify = "check answered 24"
+
+[[stage]]
+id = "25"
+part = "寫論文"
+name = "寫初稿"
+prompt = "開始寫論文初稿。"
+verify = "check answered 25 && check file 'manuscript/*'"
+
+[[stage]]
+id = "26"
+part = "寫論文"
+name = "產出投稿檔"
+prompt = "照期刊格式產出投稿檔案。"
+verify = "check answered 26 && check count 2 'submission/**/*.docx' && check file 'submission/**/*.jp*g'"
+
+[[stage]]
+id = "27"
+part = "寫論文"
+name = "投稿前檢查"
+prompt = "投稿前最後檢查：字數、格式、數字有沒有對上？"
+verify = "check answered 27"
+
+[[stage]]
+id = "28"
+part = "寫論文"
+name = "存成「投稿版」"
+prompt = "幫我寫給編輯的 cover letter，然後存成「投稿版」。"
+verify = "check answered 28 && check saved 投稿"
+
+# ── Part 8 · 審稿來回 ───────────────────────────────────────────────
+[[stage]]
+id = "29"
+part = "審稿來回"
+name = "審稿意見來了"
+drop = ["drops/JCRP_decision_round1.md"]
+prompt = "期刊回信了，在 inbox。先用白話告訴我審稿人說什麼。"
+verify = "check answered 29"
+
+[[stage]]
+id = "30"
+part = "審稿來回"
+name = "逐點修改＋回覆信"
+prompt = "請逐點修改，並寫回覆信。"
+verify = "check answered 30 && check edited 30 29"
+
+[[stage]]
+id = "31"
+part = "審稿來回"
+name = "修訂版投稿檔"
+prompt = "修改的地方要讓審稿人看得到。產出修訂版投稿檔，存成「第一次修訂」。"
+verify = "check answered 31 && check saved 修訂"
+
+[[stage]]
+id = "32"
+part = "審稿來回"
+name = "第二輪意見"
+drop = ["drops/JCRP_decision_round2.md"]
+prompt = "第二輪意見來了，在 inbox。請處理，存成「第二次修訂」。"
+verify = "check answered 32 && check saved 第二次修訂"
+
+[[stage]]
+id = "33"
+part = "審稿來回"
+name = "接受了！"
+drop = ["drops/JCRP_decision_accept.md"]
+prompt = "論文接受了！通知在 inbox。接下來還要做什麼？順便準備 IRB 結案文件。"
+verify = "check answered 33 && check file 'output/**/*SF036*'"
+
+# ── Part 9 · 回顧 ───────────────────────────────────────────────────
+[[stage]]
+id = "34"
+part = "回顧"
+name = "誰在判斷"
+prompt = "回顧整個過程：哪些是 AI 在判斷、哪些是固定的程式？身為醫師，我一定要親自檢查哪些地方？"
+verify = "check answered 34"

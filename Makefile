@@ -1,4 +1,4 @@
-.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check deidentify cohort table1 analysis-data outcomes posthoc posthoc2 closure-report analysis test-analysis references manuscript submission revision \
+.PHONY: help setup demo-data check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check deidentify cohort table1 analysis-data outcomes posthoc posthoc2 closure-report analysis test-analysis references manuscript submission revision \
         set-phase new amendment re_review continuing closure sae ib_update import suspension appeal
 
 # Single source of truth: config.toml (+ the files it references, e.g. cv.toml, 中文計畫摘要.md)
@@ -122,3 +122,15 @@ new amendment re_review continuing closure sae ib_update import suspension appea
 	@$(MAKE) --no-print-directory all PHASE=$@
 
 closure: closure-report   # 結案報告的數字先由分析結果產生
+
+# ── Teaching demo only ─────────────────────────────────────────────────────
+# Regenerates the simulated hospital extract from its seed (byte-identical to
+# data/raw/MANIFEST.sha256) and places it where the IT office "delivered" it.
+# A real study never has this target: raw data arrives from outside and never
+# enters git.
+SIM_DEPS := --with numpy==2.5.3 --with pandas==3.0.6 --with lifelines==0.30.0
+demo-data: ## (demo) Rebuild the synthetic hospital extract into data/raw/ and check it against MANIFEST
+	uv run --no-project $(SIM_DEPS) python demo/simulate/simulate_export.py --out demo/simulate/out
+	mkdir -p data/raw
+	cp demo/simulate/out/export/*.csv demo/drops/資訊室_資料更正.csv data/raw/
+	cd data/raw && shasum -a 256 -c MANIFEST.sha256
