@@ -7,3 +7,9 @@ adjuvant_tdm1_pct,dual,31.7307692307692
 adjuvant_tdm1_pct_non_pcr,single,4.58715596330275
 adjuvant_tdm1_pct_non_pcr,dual,59.7285067873303
 efs_events_rare_assumption,all,0
+n,single,199
+n,dual,416
+pcr_n,single,90
+pcr_n,dual,195
+pcr_strict_n,single,56
+pcr_strict_n,dual,133
