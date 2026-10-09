@@ -169,3 +169,28 @@ def test_proposal_appends_data_protection_prose(output_dir):
     text = "\n".join(p.text for p in Document(
         generate_proposal_summary(config, output_dir)).paragraphs)
     assert "資料保存期限" in text and "對照表由計畫主持人保管。" in text
+
+
+def test_amendment_changes_compare_sections_and_mark_edits(output_dir):
+    """SF016 lists only changed proposal sections; deleted text is struck, added text underlined."""
+    from scripts.config import parse_markdown
+    from scripts.generators import amendment
+
+    old = "## 研究設計\n\n以IPTW平衡。\n\n## 附件\n\n- 資料收集表\n"
+    new = parse_markdown("## 研究設計\n\n以重疊加權平衡。\n\n## 附件\n\n- 資料收集表\n")
+    rows = amendment.proposal_changes(old, new)
+    assert rows == [("中文計畫摘要：研究設計", "以IPTW平衡。", "以重疊加權平衡。")]
+
+    config = load_config("examples/gcsf-retrospective/config.toml")
+    config["proposal"] = new
+    config["amendment"].update(number=1, reasons=["研究設計變更", "統計方法"], baseline="unused")
+    amendment.baseline_text = lambda spec: old   # no git needed in the test
+    sf016 = Document(amendment.generate_sf016(config, output_dir)).tables[-1]
+    before, after = sf016.rows[1].cells[2].paragraphs[0].runs, sf016.rows[1].cells[3].paragraphs[0].runs
+    assert [r.text for r in before if r.font.strike] == ["IPTW"]
+    assert [r.text for r in after if r.font.underline] == ["重疊加權"]
+    assert len(sf016.rows) == 2   # header + one changed section
+
+    text = docx_text(amendment.generate_sf015(config, output_dir))
+    assert "第1次修正" in text
+    assert "■ 研究設計變更" in text and "■ 其他（請說明）：統計方法" in text

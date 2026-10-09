@@ -56,7 +56,10 @@ retention_years      = 7
 authorized_personnel = "陳怡君（計畫主持人）、黃淑芬（協同主持人，生物統計師）"
 
 [amendment]
-change_description = ""   # or "@修正說明.md"
+number             = 1
+reasons            = ["研究設計變更", "統計分析方法與研究終點用語"]   # 不在 SF015 勾選項者列入「其他」
+change_description = "@correspondence/IRB修正案1_修正說明.md"
+baseline           = "irb-approved:中文計畫摘要.md"   # SF016：核准版（git tag:檔案）vs 目前版，自動逐段比對
 affects_consent    = false
 affects_risk       = false
 

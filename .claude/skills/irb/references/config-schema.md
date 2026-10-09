@@ -163,9 +163,14 @@ Full example: `examples/tdxd-her2low/中文計畫摘要.md`.
 
 ## `amendment` (when phase=amendment)
 
+The amendment phase also emits the revised 中文計畫摘要 (PROPOSAL).
+
 | Field | Type | Description |
 |---|---|---|
 | `change_description` | string | Description of changes (or `"@修正說明.md"`) |
+| `number` | int | 第幾次修正 (SF015) |
+| `reasons` | list | 修正原因: 研究設計變更／收案條件變更／受試者同意書變更／研究人員變更 tick their box; anything else goes under 其他 (SF015) |
+| `baseline` | string | `"<git revision>:<file>"` of the approved proposal, e.g. `"irb-approved:中文計畫摘要.md"`. SF016 then lists every changed section (before vs current), striking deleted and underlining added text. Blank → 5 empty rows |
 | `affects_consent` | bool | Changes affect consent form |
 | `affects_risk` | bool | Changes affect risk level |
 
