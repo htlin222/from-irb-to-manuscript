@@ -1,10 +1,10 @@
 {
-  "outputs": ["results/cohort_flow.csv", "results/figures/cohort_flow.pdf", "results/figures/cohort_flow.png"],
-  "script": "analysis/R/cohort.R",
-  "generated": "2026-10-09 09:20:40 CST",
+  "outputs": ["results/posthoc_r1.csv", "results/posthoc_r1_overlap.csv", "results/posthoc_r1_timing.csv"],
+  "script": "analysis/R/posthoc_revision1.R",
+  "generated": "2026-10-09 09:21:07 CST",
   "git_commit": "fd3a3ff（分析程式有未存檔修改）",
   "r_version": "R version 4.5.1 (2025-06-13)",
-  "packages": "data.table 1.17.8、yaml 2.3.10、RcppTOML 0.2.3、digest 0.6.37、jsonlite 2.0.0",
+  "packages": "data.table 1.17.8、yaml 2.3.10、RcppTOML 0.2.3、digest 0.6.37、jsonlite 2.0.0、mice 3.18.0、WeightIt 1.5.1、survival 3.8.3、ggplot2 4.0.0",
   "raw_data_sha256": {
     "chemo_orders.csv": "f95dce8d6f78aa7677cad8c093195db03aae0a284350cc61c941541cb2feb90a",
     "followup.csv": "fd88e1cda5cc72cd18ac4e8455a957eb48d89b9a82f6148d2b29ab3e63c4acc6",

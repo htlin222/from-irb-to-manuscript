@@ -48,10 +48,11 @@ km_summary <- function(time, event, dual, w) {
 }
 
 # ── 一份資料、一種平衡方法的完整分析 ─────────────────────────────────────
+# ps：可另給傾向分數公式（事後分析用，例如年份改用樣條）；預設為 SAP 的模型
 analyze <- function(x, method = c("overlap", "match", "regression"), outcome = "pcr", drop = character(),
-                    survival = TRUE) {
+                    survival = TRUE, ps = NULL) {
   method <- match.arg(method)
-  f <- ps_formula(drop)
+  f <- if (is.null(ps)) ps_formula(drop) else ps
   out <- list(n = c(sum(x$dual == 0), sum(x$dual == 1)))
   events <- function(dt) dt[, .(efs = sum(efs_event), os = sum(os_event)), keyby = dual]
   if (method == "overlap") {
@@ -104,7 +105,7 @@ analyze <- function(x, method = c("overlap", "match", "regression"), outcome = "
       }
     }
   }
-  if (is.null(out$events)) out$events <- events(x)
+  if (is.null(out$events) && "efs_event" %in% names(x)) out$events <- events(x)   # 只有 pCR 的資料集不算事件
   out
 }
 
