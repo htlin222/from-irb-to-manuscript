@@ -91,3 +91,53 @@ smd <- t1$table_body[!is.na(t1$table_body$estimate) & t1$table_body$row_type == 
 cat(sprintf("Table 1：%d 人（%s）→ results/table1.{csv,docx}；|SMD| ≥ 0.1 的變項：%s\n", nrow(tab),
             paste(sprintf("%s %d", levels(tab$group), as.integer(table(tab$group))), collapse = "、"),
             paste(sprintf("%s (%.2f)", smd$label, smd$estimate)[abs(smd$estimate) >= 0.1], collapse = "、")))
+
+# ── 論文版 Table 1（JCRP：≤ 25 列、≤ 10 欄）────────────────────────────────
+# 合併細項以符合列數限制；完整版（上方 table1.docx）作為補充資料。SMD 以 tableone 計算（多分類變項用 Yang & Dalton 法）。
+ms <- data.table(
+  dual = tab$group == "Trastuzumab + pertuzumab",
+  age = cv$age, postmenopausal = cv$postmenopausal == 1, ecog_ge1 = cv$ecog != "0", bmi = cv$bmi, lvef = cv$lvef,
+  ct = cv$ct, cn = cv$cn, hr_positive = cv$hr_positive == 1, her2_ihc3 = cv$her2_ihc3 == 1,
+  grade3 = fifelse(is.na(cv$grade), NA, cv$grade == "3"), ki67 = cv$ki67,
+  anthracycline = cv$anthracycline == 1, period = tab$period)
+smd_of <- function(v) {
+  t1 <- tableone::CreateTableOne(vars = v, strata = "dual", data = as.data.frame(ms[, c("dual", v), with = FALSE]),
+                                 test = FALSE, smd = TRUE)
+  unname(tableone::ExtractSmd(t1)[1, 1])
+}
+fmt_cont <- function(x) sprintf("%.1f (%.1f–%.1f)", median(x, na.rm = TRUE), quantile(x, .25, na.rm = TRUE),
+                                quantile(x, .75, na.rm = TRUE))
+fmt_bin <- function(x) sprintf("%d (%.1f)", sum(x, na.rm = TRUE), 100 * mean(x, na.rm = TRUE))
+row <- function(label, f, v, smd = TRUE) data.table(
+  characteristic = label, dual = f(ms[dual == TRUE][[v]]), single = f(ms[dual == FALSE][[v]]),
+  smd = if (smd) sprintf("%.2f", smd_of(v)) else "")
+level_rows <- function(header, v) {
+  lv <- levels(ms[[v]])
+  rbind(data.table(characteristic = header, dual = "", single = "", smd = sprintf("%.2f", smd_of(v))),
+        rbindlist(lapply(lv, function(l) data.table(
+          characteristic = paste0("  ", l), dual = fmt_bin(ms[dual == TRUE][[v]] == l),
+          single = fmt_bin(ms[dual == FALSE][[v]] == l), smd = ""))))
+}
+t1_ms <- rbind(
+  row("Age at diagnosis, years, median (IQR)", fmt_cont, "age"),
+  row("Postmenopausal", fmt_bin, "postmenopausal"),
+  row("ECOG performance status ≥1", fmt_bin, "ecog_ge1"),
+  row("BMI, kg/m², median (IQR)", fmt_cont, "bmi"),
+  row("Baseline LVEF, %, median (IQR)", fmt_cont, "lvef"),
+  level_rows("Clinical T category", "ct"),
+  level_rows("Clinical N category", "cn"),
+  row(sprintf("Hormone receptor positive (ER or PR ≥%g%%)", cut), fmt_bin, "hr_positive"),
+  row("HER2 IHC 3+ (vs IHC 2+, ISH amplified)", fmt_bin, "her2_ihc3"),
+  row("Histologic grade 3*", fmt_bin, "grade3"),
+  row("Ki-67, %, median (IQR)*", fmt_cont, "ki67"),
+  row("Anthracycline-based chemotherapy", fmt_bin, "anthracycline"),
+  level_rows("Year of neoadjuvant therapy start", "period")
+)
+setnames(t1_ms, c("dual", "single"), c(sprintf("Trastuzumab + pertuzumab (n = %d)", sum(ms$dual)),
+                                       sprintf("Trastuzumab alone (n = %d)", sum(!ms$dual))))
+fwrite(t1_ms, file.path(RESULTS_DIR, "table1_manuscript.csv"))
+fwrite(data.table(item = c("grade_missing", "ki67_missing", "age_missing"),
+                  value = c(sum(is.na(ms$grade3)), sum(is.na(ms$ki67)), sum(is.na(ms$age)))),
+       file.path(RESULTS_DIR, "table1_manuscript_missing.csv"))
+write_provenance("table1_manuscript", c("results/table1_manuscript.csv", "results/table1_manuscript_missing.csv"),
+                 pkgs = c("tableone"))

@@ -198,7 +198,11 @@ descriptive <- rbind(
     keyby = dual][, .(item, group, value)],
   a[pcr == 0, .(item = "adjuvant_tdm1_pct_non_pcr", group = fifelse(dual == 1, "dual", "single"),
                 value = 100 * mean(adjuvant_tdm1)), keyby = dual][, .(item, group, value)],
-  data.table(item = "efs_events_rare_assumption", group = "all", value = as.numeric(efs_rare))
+  data.table(item = "efs_events_rare_assumption", group = "all", value = as.numeric(efs_rare)),
+  # 未加權的實際人數（JCRP：百分比須附上計算它的絕對人數）
+  a[, .(item = "n", group = fifelse(dual == 1, "dual", "single"), value = .N), keyby = dual][, .(item, group, value)],
+  a[, .(item = "pcr_n", group = fifelse(dual == 1, "dual", "single"), value = sum(pcr)), keyby = dual][, .(item, group, value)],
+  a[, .(item = "pcr_strict_n", group = fifelse(dual == 1, "dual", "single"), value = sum(pcr_strict)), keyby = dual][, .(item, group, value)]
 )
 
 fwrite(pcr_tab, file.path(RESULTS_DIR, "outcomes_pcr.csv"))
@@ -264,7 +268,7 @@ lp <- balance[, .(covariate, Unweighted = smd_before, `Overlap-weighted` = smd_a
   melt(id.vars = "covariate", variable.name = "sample", value.name = "smd")
 COVARIATE_LABELS <- c(age = "Age", postmenopausal = "Postmenopausal", bmi = "BMI", lvef = "Baseline LVEF",
                       hr_positive = "Hormone receptor positive", her2_ihc3 = "HER2 IHC 3+", ki67 = "Ki-67",
-                      anthracycline = "Anthracycline-based chemotherapy", year = "Year of treatment start")
+                      anthracycline = "Anthracycline-based chemotherapy", year = "Year of treatment start (continuous)")
 pretty_cov <- function(x) {
   out <- COVARIATE_LABELS[x]
   out[is.na(out)] <- sub("^ecog_", "ECOG ", sub("^ct_", "Clinical ", sub("^cn_", "Clinical ", sub("^grade_", "Grade ", x[is.na(out)]))))
