@@ -1,0 +1,63 @@
+---
+# JCRP「Title Page/First Page File」：所有可辨識作者與單位的資訊只放這裡。
+# 題目、作者姓名、聯絡方式、IRB 編號讀自 config.toml / cv.toml；其餘讀自 manuscript/meta.yaml；字數與頁數由 build.R 計算。
+format:
+  docx:
+    reference-doc: style/reference.docx
+lang: en-US
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+```
+
+```{r, results="asis"}
+cfg <- RcppTOML::parseTOML("config.toml")
+cv <- RcppTOML::parseTOML("cv.toml")
+meta <- yaml::read_yaml("manuscript/meta.yaml")
+counts <- jsonlite::read_json("manuscript/_build/counts.json")
+people <- c(list(cv$pi), cv$co_pi)
+who <- function(name_en) Filter(function(p) identical(p$name_en, name_en), people)[[1]]
+L <- function(...) cat(..., "\n\n", sep = "")
+
+L("*SYNTHETIC DATA FOR TEACHING — NOT A REAL STUDY. Patients, investigators and institution are fictional.*")
+L("**Type of manuscript:** ", meta$article_type)
+L("**Title:** ", cfg$study$title_en)
+L("**Running title:** ", meta$running_title)
+
+L("**Authors**")
+for (i in seq_along(meta$authors)) {
+  a <- meta$authors[[i]]
+  L(i, ". ", a$name_en, ", ", a$degrees, " — ", a$designation, "; ", a$affiliation)
+}
+
+L("**Counts:** total pages of the article file, ", counts$pages, "; figures, ", counts$figures, "; tables, ", counts$tables,
+  "; words in abstract, ", counts$abstract_words, "; words in text (excluding abstract, references and tables), ",
+  counts$text_words, "; words in introduction + discussion, ", counts$intro_discussion_words, ".")
+L("**Source(s) of support:** ", meta$funding)
+L("**Acknowledgements:** ", meta$acknowledgements)
+L("**Presentation at a meeting:** ", meta$prior_presentation)
+L("**Clinical trial registration:** Not applicable (retrospective cohort study).")
+en_date <- function(x) {   # config.toml 的日期是「2026年11月16日」→ November 16, 2026
+  d <- as.Date(gsub("(\\d{4})年(\\d{2})月(\\d{2})日", "\\1-\\2-\\3", x))
+  sprintf("%s %d, %s", month.name[as.integer(format(d, "%m"))], as.integer(format(d, "%d")), format(d, "%Y"))
+}
+L("**Ethics approval:** The study was approved by the institutional review board (", cfg$study$irb_no,
+  "; approved ", en_date(cfg$dates$irb_approval_date), "; amendment approved ", en_date(cfg$amendment$approval_date),
+  ") with a waiver of informed consent.")
+L("**Conflicts of interest:** ", meta$conflicts_of_interest)
+contrib <- vapply(meta$authors, function(a) sprintf("%s: %s", a$name_en, paste(a$contributions, collapse = ", ")), "")
+guarantor <- Filter(function(a) isTRUE(a$guarantor), meta$authors)
+L("**Author contributions:** ", paste(contrib, collapse = "; "), ". Guarantor: ",
+  paste(vapply(guarantor, `[[`, "", "name_en"), collapse = ", "), ".")
+L("**Statement:** The manuscript has been read and approved by all the authors, the requirements for authorship have been met, and each author believes that the manuscript represents honest work.")
+
+corr <- Filter(function(a) isTRUE(a$corresponding), meta$authors)[[1]]
+p <- who(corr$name_en)
+L("**Corresponding author:** ", corr$name_en, ", ", corr$degrees, ", ", corr$affiliation, ". Address: ", corr$address,
+  ". E-mail: ", p$email, ". Telephone: ", p$phone, ".")
+```

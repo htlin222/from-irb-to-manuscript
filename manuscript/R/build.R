@@ -1,0 +1,112 @@
+# 產生 JCRP 投稿檔：make manuscript（草稿，可有未完成項目）或 make submission（所有檢查通過才寫入 submission/）。
+# 步驟：參考文獻 → 匿名正文 Word → 計字數與頁數 → 首頁 Word → 圖檔轉 JPEG → 寫作指引 → 檢查報告。
+args <- commandArgs(trailingOnly = TRUE)
+mode <- if (length(args)) args[1] else "draft"
+stopifnot(mode %in% c("draft", "submission"))
+source("manuscript/R/tables.R")   # tokens.R、common.R
+source("manuscript/R/check.R")
+
+BUILD <- "manuscript/_build"
+dir.create(BUILD, showWarnings = FALSE, recursive = TRUE)
+journal <- yaml::read_yaml("manuscript/journal.yaml")
+meta <- yaml::read_yaml("manuscript/meta.yaml")
+cfg <- RcppTOML::parseTOML("config.toml")
+cv <- RcppTOML::parseTOML("cv.toml")
+FIGURES <- c(`Figure 1` = "results/figures/cohort_flow.png", `Figure 2` = "results/figures/km_efs.png",
+             `Figure 3` = "results/figures/km_os.png")
+SUPPLEMENTARY <- c(`Figure S1` = "results/figures/love_plot.png")
+run <- function(cmd, args, ...) {
+  st <- system2(cmd, args, ...)
+  if (!identical(st, 0L) && !is.null(st) && st != 0) stop(cmd, " 失敗（", st, "）")
+}
+
+# 1. 參考文獻：JCRP 的 Vancouver 範例不列 DOI／PMID，給 pandoc 的副本移除這兩欄
+refs_json <- jsonlite::read_json("manuscript/references.json")
+jsonlite::write_json(lapply(refs_json, function(r) r[setdiff(names(r), c("DOI", "PMID"))]),
+                     file.path(BUILD, "references_pandoc.json"), auto_unbox = TRUE, pretty = TRUE)
+
+# 2. 匿名正文
+render <- function(qmd, out, to = "docx") {
+  log <- file.path(BUILD, paste0(qmd, ".log"))
+  # Word：--output 相對於執行目錄（專案根目錄）；HTML 自包含檔要在原位置產生，否則找不到 quarto 的元件
+  produced <- if (to == "html") file.path("manuscript", out) else out
+  argv <- c("render", file.path("manuscript", qmd), "--to", to, if (to != "html") c("--output", out))
+  st <- system2("quarto", argv, stdout = log, stderr = log)
+  if (st != 0 || !file.exists(produced)) stop(qmd, " 產生失敗，請看 ", log)
+  invisible(file.rename(produced, file.path(BUILD, out)))
+}
+render("article.qmd", "JCRP_blinded_article.docx")
+
+# 3. 字數（作者文字填入數字後計算）與頁數
+read_text <- function(f) gsub("<!--.*?-->", "", paste(readLines(file.path("manuscript/text", paste0(f, ".md")), encoding = "UTF-8"), collapse = "\n"))
+tk <- manuscript_tokens()
+texts <- sapply(c("abstract", "introduction", "methods", "results", "discussion", "statements", "figure_legends"),
+                function(f) fill_tokens(read_text(f), tk), simplify = FALSE)
+wc <- vapply(texts, word_count, 0L)
+pdf_dir <- file.path(tempdir(), "jcrp_pdf"); dir.create(pdf_dir, showWarnings = FALSE)
+soffice <- "/Applications/LibreOffice.app/Contents/MacOS/soffice"
+pages <- NA_integer_
+if (file.exists(soffice)) {
+  system2(soffice, c(paste0("-env:UserInstallation=file://", file.path(tempdir(), "lo-profile")), "--headless",
+                     "--convert-to", "pdf", "--outdir", pdf_dir, file.path(BUILD, "JCRP_blinded_article.docx")),
+          stdout = FALSE, stderr = FALSE)
+  info <- suppressWarnings(system2("pdfinfo", file.path(pdf_dir, "JCRP_blinded_article.pdf"), stdout = TRUE))
+  pages <- as.integer(sub("^Pages:\\s+", "", grep("^Pages:", info, value = TRUE)))
+}
+counts <- list(abstract_words = wc[["abstract"]], intro_words = wc[["introduction"]],
+               text_words = sum(wc[c("introduction", "methods", "results", "discussion")]),
+               intro_discussion_words = wc[["introduction"]] + wc[["discussion"]],
+               pages = if (length(pages)) pages else NA, figures = length(FIGURES), tables = length(manuscript_tables()))
+jsonlite::write_json(counts, file.path(BUILD, "counts.json"), auto_unbox = TRUE, pretty = TRUE)
+
+# 4. 首頁
+render("title_page.qmd", "JCRP_title_page.docx")
+
+# 5. 圖檔（JPEG，另外上傳，不嵌入正文）
+px <- journal$limits$image_pixels
+jpg <- function(src, label) file.path(BUILD, "figures", paste0(gsub(" ", "_", label), ".jpg"))
+fig_out <- system2("uv", c("run", "python", "manuscript/style/figures_to_jpeg.py", px[1], px[2],
+                           sprintf("%s=%s", c(FIGURES, SUPPLEMENTARY), jpg(c(FIGURES, SUPPLEMENTARY), names(c(FIGURES, SUPPLEMENTARY))))),
+                   stdout = TRUE)
+images <- rbindlist(lapply(strsplit(fig_out, " "), function(v) data.table(
+  name = basename(v[1]), w = as.integer(v[2]), h = as.integer(v[3]), mb = as.numeric(v[4]) / 1024^2)))
+
+# 6. 寫作指引（給作者，不投稿）
+render("writing_guide.qmd", "writing_guide.html", to = "html")
+
+# 7. 檢查
+docx_text <- function(f) {
+  x <- system2("unzip", c("-p", f, "word/document.xml"), stdout = TRUE)
+  gsub("<[^>]+>", " ", paste(x, collapse = " "))
+}
+article_xml <- docx_text(file.path(BUILD, "JCRP_blinded_article.docx"))
+title_xml <- docx_text(file.path(BUILD, "JCRP_title_page.docx"))
+people <- c(list(cv$pi), cv$co_pi)
+inst <- RcppTOML::parseTOML(file.path("institutions", cfg$institution, "profile.toml"))
+blind_terms <- unique(Filter(nzchar, c(
+  vapply(people, `[[`, "", "name"), vapply(people, `[[`, "", "name_en"),
+  vapply(people, function(p) p$email %||% "", ""), cfg$study$irb_no,
+  unlist(inst[c("name", "name_en", "short_name", "heading")]), "KFSYSCC", "Koo Foundation")))
+files <- list(
+  article_mb = file.size(file.path(BUILD, "JCRP_blinded_article.docx")) / 1024^2,
+  synthetic_label = c(grepl("SYNTHETIC DATA FOR TEACHING", article_xml), grepl("SYNTHETIC DATA FOR TEACHING", title_xml)),
+  title_page_has_cjk = grepl("[㐀-鿿]", title_xml), images = images)
+res <- run_checks(texts, meta, manuscript_tables(), counts, journal, fread("manuscript/references_verification.csv"),
+                  blind_terms, files)
+write_report(res, file.path(BUILD, "check_report.md"), counts)
+n_err <- res[level == "error" & !ok, .N]
+cat(sprintf("論文檔已產生於 %s：待修正 %d 項、請確認 %d 項 → %s/check_report.md\n", BUILD, n_err,
+            res[level == "warning" & !ok, .N], BUILD))
+
+# 8. 投稿版：全部通過才寫入 submission/
+if (mode == "submission") {
+  if (n_err > 0) {
+    cat("投稿檔未產生：請先處理檢查報告中「待修正」的項目。\n")
+    quit(status = 1)
+  }
+  dir.create("submission/figures", showWarnings = FALSE, recursive = TRUE)
+  file.copy(file.path(BUILD, c("JCRP_title_page.docx", "JCRP_blinded_article.docx", "check_report.md")), "submission",
+            overwrite = TRUE)
+  file.copy(list.files(file.path(BUILD, "figures"), full.names = TRUE), "submission/figures", overwrite = TRUE)
+  cat("投稿檔已寫入 submission/\n")
+}
