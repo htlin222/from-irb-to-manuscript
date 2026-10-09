@@ -1,8 +1,8 @@
 {
   "outputs": ["results/outcomes_pcr.csv", "results/outcomes_survival.csv", "results/outcomes_balance.csv", "results/outcomes_subgroup.csv", "results/outcomes_evalues.csv", "results/outcomes_descriptive.csv", "results/figures/km_efs.pdf", "results/figures/km_os.pdf", "results/figures/love_plot.pdf"],
   "script": "analysis/R/outcomes.R",
-  "generated": "2026-10-09 09:20:53 CST",
-  "git_commit": "fd3a3ff（分析程式有未存檔修改）",
+  "generated": "2026-10-09 09:29:53 CST",
+  "git_commit": "d43f1eb",
   "r_version": "R version 4.5.1 (2025-06-13)",
   "packages": "data.table 1.17.8、yaml 2.3.10、RcppTOML 0.2.3、digest 0.6.37、jsonlite 2.0.0、mice 3.18.0、WeightIt 1.5.1、MatchIt 4.7.2、cobalt 4.6.1、survival 3.8.3、EValue 4.1.4、ggplot2 4.0.0、patchwork 1.3.2",
   "raw_data_sha256": {

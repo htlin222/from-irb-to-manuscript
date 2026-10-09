@@ -5,8 +5,8 @@
 
 - IRB 編號：DEMO-2026-0412
 - 收案期間：2012-01-01 至 2023-12-31；追蹤截止：2025-12-31（讀自 config.toml）
-- 產生時間：2026-10-09 09:20:39 CST
-- 程式版本（git）：fd3a3ff（分析程式有未存檔修改）
+- 產生時間：2026-10-09 09:29:39 CST
+- 程式版本（git）：d43f1eb
 - 軟體：R version 4.5.1 (2025-06-13)；data.table 1.17.8、yaml 2.3.10、RcppTOML 0.2.3、digest 0.6.37、jsonlite 2.0.0
 - 原始資料 checksum：與 `data/raw/MANIFEST.sha256` 全部相符
 - 資訊室更正：已套用 4 筆（`data/raw/資訊室_資料更正.csv`；舊值皆與原始資料相符）
