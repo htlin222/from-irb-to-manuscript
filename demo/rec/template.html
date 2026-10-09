@@ -851,7 +851,11 @@
 
       rail();
       makePlayer();
-      fetch("demo.cast").then(function (r) { return r.text(); }).then(function (txt) { full = txt; swapToFull(); });
+      // Start the big download only once the head is in: run in parallel they share
+      // the (slow) Pages bandwidth and the head would arrive no sooner than the full cast.
+      whenReady(function () {
+        fetch("demo.cast").then(function (r) { return r.text(); }).then(function (txt) { full = txt; swapToFull(); });
+      });
       fetch("milestones.json").then(function (r) { return r.ok ? r.json() : []; }).then(function (j) {
         MS = j; renderMilestones();
         msButton(CHAPTERS[cur]);
