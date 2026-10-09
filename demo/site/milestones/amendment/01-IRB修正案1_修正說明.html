@@ -1,0 +1,45 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>修正說明</title>
+<style>
+:root { --ink:#1c1917; --muted:#57534e; --line:#e7e5e4; --soft:#fafaf9; }
+body { margin:0; padding:24px 28px 48px; background:#fff; color:var(--ink);
+  font:15px/1.7 ui-sans-serif,-apple-system,"PingFang TC","Noto Sans TC",sans-serif; }
+main { max-width:880px; margin:0 auto; }
+h1,h2,h3 { line-height:1.35; } h1 { font-size:22px; } h2 { font-size:18px; margin-top:28px; }
+a { color:var(--ink); }
+table { border-collapse:collapse; font-size:13px; margin:12px 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:4px 8px; text-align:left; vertical-align:top; white-space:nowrap; }
+th { background:var(--soft); position:sticky; top:0; }
+pre,code { font:13px ui-monospace,"SF Mono",Menlo,monospace; }
+pre { background:var(--soft); padding:12px; overflow-x:auto; border-radius:4px; white-space:pre-wrap; }
+blockquote { margin:12px 0; padding:4px 14px; border-left:3px solid var(--line); color:var(--muted); }
+.note { color:var(--muted); font-size:13px; margin:0 0 14px; }
+.banner { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; padding:8px 12px; border-radius:4px;
+  font-size:13px; margin-bottom:14px; }
+@media (max-width:600px) { body { padding:16px; } }
+</style></head><body><main><h1 id="irb-修正案第-1-次修正說明">IRB 修正案（第 1 次）修正說明</h1>
+<!--
+教學示範：模擬文件。config.toml 的 [amendment] change_description 讀取本檔，填入 SF015「修正說明」。
+逐段修正前後文字由 SF016 自動比對 IRB 核准版（tag irb-approved）與目前的 中文計畫摘要.md 產生，不在此重抄。
+每段之間空一行（每段在表單上成為一行）。
+-->
+
+<p>本修正案修正統計分析方法、研究終點用語及資料收集項目，不影響受試者風險及知情同意（本研究為回溯性病歷研究，已核准免除知情同意）。各項修正前後文字詳見修正前後對照表（SF016）。</p>
+<ol type="1">
+<li><p>主分析由逆機率加權（IPTW）改為傾向分數重疊加權：兩組治療年代重疊有限，IPTW
+會產生極端權重，致比較不穩定。</p></li>
+<li><p>傾向分數共變項增列停經狀態、ECOG、BMI、LVEF、HER2 判定方式及
+Ki-67，皆為治療前資料。</p></li>
+<li><p>資料收集項目增列身體質量指數（BMI）及基期左心室射出分率（LVEF）；資訊室提供之資料已含此二欄位，未另行擷取。</p></li>
+<li><p>EFS
+事件刪除「對側侵襲性乳癌」及「第二原發侵襲性惡性腫瘤」（院內資料無此欄位）；設限改以最後就醫日（含醫囑）為準。</p></li>
+<li><p>pCR 定義補充說明：淋巴結僅有孤立腫瘤細胞（ypN0(i+)）不屬
+pCR，依國際共識，與原定義「無侵襲性癌殘留」一致。</p></li>
+<li><p>敏感度分析：「EFS 依術後是否使用 T-DM1 分層」改為描述性報告（術後
+T-DM1 屬治療後變項，分層比較會造成偏差）；新增多變項迴歸、pCR 改採 ypT0
+ypN0、完整個案分析；新增荷爾蒙受體次族群探索分析。</p></li>
+<li><p>樣本數段落：依重疊加權後之有效樣本數更新檢定力估計。</p></li>
+</ol>
+<p>上述分析方法係於檢視任何療效結果之前決定（統計分析計畫 v1.0，2026 年
+10 月 9 日定稿）；惟提出本修正案時，已依該計畫完成分析，特此說明。</p>
+</main></body></html>

@@ -14,6 +14,7 @@
 | `rec/drive.py` | 驅動：`start` → `run` →（必要時 `say`）→ `finish` |
 | `rec/postprocess.py` | 原始錄影 → 發佈用 cast：章節寫成 asciinema **marker**、壓縮閒置時間、遮蔽密鑰 |
 | `rec/build_site.py` + `rec/template.html` | 產生播放頁與 `PROMPTS.md` |
+| `milestones.toml` + `rec/build_milestones.py` | 播放頁的「里程碑成品」：每個階段的檔案，**取自當時的 git 標籤**；IRB 表單在該版本上重新產生，DOCX/PDF 轉成逐頁圖片預覽，CSV 轉表格、Markdown 轉網頁 |
 | `TRUTH.md` | AI 的估計值 vs. 模擬時設定的真值 |
 | `site/` | 發佈的播放頁（`index.html`、`demo.cast`、`chapters.json`） |
 
@@ -27,6 +28,8 @@ irb-in-hurry 一章開一個 session、每章結尾 `/exit`，畫面在每章結
   `"m"` 事件；播放器的 `pauseOnMarkers` 讓每章開頭停下來顯示題目。
 - **錄影的結尾 = 最後一輪結束的時間**（Stop hook 記的），再多留幾秒。
   `finish` 先停 asciinema 再關 tmux，所以最後一格是 AI 的最後一段回答，而不是清空的畫面。
+- 每一輪結束時，答案在畫面上固定停留 8 秒（`--hold`），下一章的題目卡才蓋上來。
+- 播放器不用 `poster` 選項：設了它之後，從 marker 開始播放不會重建之前的畫面（標頭與狀態列會消失）。
 - 錄影用原始時間軸（`-i 86400`，不讓 asciinema 自己壓縮），好讓 hook 的時間戳對得上；
   閒置壓縮在後製時做。
 
@@ -53,6 +56,7 @@ python3 demo/rec/drive.py start
 python3 demo/rec/drive.py run          # 停下來時：drive.py say "…"，再 run
 python3 demo/rec/drive.py finish
 python3 demo/rec/postprocess.py demo/.state demo/site
+python3 demo/rec/build_milestones.py demo/site --templates <IRB 空白表單快取>   # 需要 make demo-data、LibreOffice、pdftoppm
 python3 demo/rec/build_site.py demo/site --prompts-md PROMPTS.md
 ```
 

@@ -1,0 +1,20 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>pCR 結果</title>
+<style>
+:root { --ink:#1c1917; --muted:#57534e; --line:#e7e5e4; --soft:#fafaf9; }
+body { margin:0; padding:24px 28px 48px; background:#fff; color:var(--ink);
+  font:15px/1.7 ui-sans-serif,-apple-system,"PingFang TC","Noto Sans TC",sans-serif; }
+main { max-width:880px; margin:0 auto; }
+h1,h2,h3 { line-height:1.35; } h1 { font-size:22px; } h2 { font-size:18px; margin-top:28px; }
+a { color:var(--ink); }
+table { border-collapse:collapse; font-size:13px; margin:12px 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:4px 8px; text-align:left; vertical-align:top; white-space:nowrap; }
+th { background:var(--soft); position:sticky; top:0; }
+pre,code { font:13px ui-monospace,"SF Mono",Menlo,monospace; }
+pre { background:var(--soft); padding:12px; overflow-x:auto; border-radius:4px; white-space:pre-wrap; }
+blockquote { margin:12px 0; padding:4px 14px; border-left:3px solid var(--line); color:var(--muted); }
+.note { color:var(--muted); font-size:13px; margin:0 0 14px; }
+.banner { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; padding:8px 12px; border-radius:4px;
+  font-size:13px; margin-bottom:14px; }
+@media (max-width:600px) { body { padding:16px; } }
+</style></head><body><main><h1>pCR 結果</h1><p class="note">共 6 列 × 15 欄</p><table><thead><tr><th>analysis</th><th>label</th><th>n_dual</th><th>n_single</th><th>ess_dual</th><th>ess_single</th><th>pcr_dual</th><th>pcr_single</th><th>rd</th><th>rd_lo</th><th>rd_hi</th><th>or</th><th>or_lo</th><th>or_hi</th><th>p</th></tr></thead><tbody><tr><td>main</td><td>Primary: overlap weighting</td><td>416</td><td>199</td><td>85.6308738003619</td><td>65.7446618235651</td><td>0.575953828545329</td><td>0.402880666665232</td><td>0.173073161880097</td><td>0.0312313614688919</td><td>0.314914962291301</td><td>2.01312913113268</td><td>1.12083756012777</td><td>3.61576828149213</td><td>0.0191931254868832</td></tr><tr><td>S1</td><td>S1: 2016-2019 only, overlap weighting</td><td>171</td><td>38</td><td>51.0587389059199</td><td>29.8246675488969</td><td>0.630906733810849</td><td>0.442955050197197</td><td>0.187951683613653</td><td>-0.0167900286796419</td><td>0.392693395906947</td><td>2.14977021797735</td><td>0.923048014369172</td><td>5.00679479090889</td><td>0.07600861029364</td></tr><tr><td>S2</td><td>S2: 1:1 propensity-score matching</td><td>44</td><td>44</td><td>44.05</td><td>44.05</td><td>0.539087663147258</td><td>0.4681500715451</td><td>0.0709375916021579</td><td>-0.163831650774568</td><td>0.305706833978884</td><td>1.33172944048919</td><td>0.51643832750478</td><td>3.43410472889281</td><td>0.55230375620022</td></tr><tr><td>S3</td><td>S3: multivariable regression</td><td>416</td><td>199</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>1.96711461472951</td><td>1.09501825522429</td><td>3.5337674865428</td><td>0.0235947192986849</td></tr><tr><td>S4</td><td>S4: pCR defined as ypT0 ypN0</td><td>416</td><td>199</td><td>85.6308738003619</td><td>65.7446618235651</td><td>0.403746434994435</td><td>0.221396973384677</td><td>0.182349461609758</td><td>0.0555576478765455</td><td>0.30914127534297</td><td>2.38142357244442</td><td>1.27287661762834</td><td>4.45540294546433</td><td>0.00663018544589561</td></tr><tr><td>S6</td><td>S6: complete cases, overlap weighting</td><td>333</td><td>164</td><td>67.8626909634857</td><td>52.1746876268757</td><td>0.562453495138181</td><td>0.402602196402612</td><td>0.159851298735569</td><td>0.000140592476300827</td><td>0.319562004994837</td><td>1.90743559360068</td><td>0.988679108637508</td><td>3.67997109673807</td><td>0.0541035803103525</td></tr></tbody></table></main></body></html>

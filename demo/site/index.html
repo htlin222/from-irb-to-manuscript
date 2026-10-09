@@ -1,110 +1,555 @@
 <!doctype html>
 <html lang="zh-Hant">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>從 IRB 到投稿：一個回溯性研究的完整旅程</title>
-<meta name="description" content="HER2 陽性早期乳癌・術前抗 HER2 治療・pCR / EFS / OS — 用白話 prompt 一路從 IRB 做到期刊接受">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.17.0/dist/bundle/asciinema-player.css">
-<style>
-  :root {
-    --ink: #1c1917; --muted: #57534e; --faint: #8c8681;
-    --line: #e7e5e4; --bg: #ffffff; --card: #ffffff; --soft: #fafaf9;
-    --sans: ui-sans-serif, -apple-system, "Segoe UI", system-ui, "PingFang TC", "Noto Sans TC", sans-serif;
-    --mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--sans); }
-  ::backdrop { background: #fff; }
-  #app { display: grid; grid-template-rows: auto 1fr; height: 100vh; background: var(--bg); }
-  header { display: flex; align-items: center; gap: 24px; min-height: 60px; padding: 10px 20px; border-bottom: 1px solid var(--line); }
-  header h1 { font-size: 16px; font-weight: 600; margin: 0; white-space: nowrap; }
-  header .blurb { color: var(--muted); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  header .facts { display: flex; gap: 18px; }
-  header .facts div { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2; }
-  header .facts b { font-size: 15px; }
-  header .facts span { font-size: 12px; color: var(--faint); }
-  header nav { display: flex; gap: 14px; font-size: 13px; white-space: nowrap; }
-  header nav a { color: var(--muted); text-decoration: none; cursor: pointer; }
-  header nav a:hover { color: var(--ink); }
-  main { display: grid; grid-template-columns: 272px 1fr; min-height: 0; }
-  #rail { border-right: 1px solid var(--line); overflow-y: auto; padding: 6px 0 24px; }
-  #rail .part { font-size: 11px; letter-spacing: .1em; color: var(--faint); padding: 14px 14px 4px; }
-  #rail button { display: grid; grid-template-columns: 28px 1fr auto; gap: 4px; width: 100%; text-align: left;
-    background: none; border: 0; padding: 6px 14px; font: 13px/1.45 var(--sans); color: var(--muted); cursor: pointer; }
-  #rail button.say { padding-left: 42px; font-size: 12px; }
-  #rail button .n, #rail button .t { color: var(--faint); font-variant-numeric: tabular-nums; }
-  #rail button:hover { color: var(--ink); }
-  #rail button[aria-current="true"] { color: var(--ink); font-weight: 600; background: var(--soft); }
-  #stage { display: grid; grid-template-rows: 1fr auto; min-height: 0; }
-  #screen { position: relative; min-height: 0; background: var(--bg); }
-  #player { position: absolute; inset: 0; }
-  #player .ap-wrapper, #player .ap-player { background: #fff; }
-  .overlay { position: absolute; inset: 0; z-index: 20; background: var(--card); overflow-y: auto; }
-  .hidden { display: none !important; }
-  #brief { display: flex; flex-direction: column; justify-content: center; padding: 40px 56px; }
-  #brief .label { font-size: 12px; color: var(--faint); letter-spacing: .08em; margin-bottom: 14px; }
-  #brieftext { font-size: 22px; line-height: 1.9; max-width: 40ch; white-space: pre-wrap; margin: 0 0 12px; }
-  #briefnote { color: var(--muted); font-size: 14px; max-width: 62ch; margin: 0 0 28px; }
-  #brieftext b { font-weight: 700; }
-  .row { display: flex; gap: 12px; align-items: center; }
-  .btn { font: 600 13px var(--sans); letter-spacing: .14em; color: #fff; background: var(--ink); border: 0;
-    padding: 11px 22px; border-radius: 4px; cursor: pointer; }
-  .btn.ghost { color: var(--ink); background: none; border: 1px solid var(--line); letter-spacing: .04em; font-weight: 500; }
-  .sheet { position: absolute; inset: 0; z-index: 30; background: var(--card); padding: 40px 56px; overflow-y: auto; display: none; }
-  .sheet.open { display: block; }
-  .sheet .close { position: absolute; top: 14px; right: 18px; background: none; border: 1px solid var(--line);
-    border-radius: 4px; font: 13px var(--sans); color: var(--muted); padding: 4px 10px; cursor: pointer; }
-  #sheet-about .body { max-width: 66ch; }
-  #sheet-about a { color: var(--ink); }
-  #sheet-about h2 { font-size: 17px; margin: 26px 0 6px; }
-  #sheet-about code { font: 13px var(--mono); background: var(--soft); padding: 1px 4px; border-radius: 3px; }
-  footer { display: flex; align-items: center; gap: 16px; padding: 8px 20px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
-  footer .note { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  footer .hint { font-size: 12px; color: var(--faint); white-space: nowrap; }
-  footer label { display: flex; gap: 6px; align-items: center; white-space: nowrap; cursor: pointer; }
-  kbd { font: 11px var(--mono); border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; }
-  @media (max-width: 1100px) { header .facts { display: none; } }
-  @media (max-width: 760px) {
-    header .blurb, footer .hint { display: none; }
-    main { grid-template-columns: 1fr; grid-template-rows: 160px 1fr; }
-    #rail { border-right: 0; border-bottom: 1px solid var(--line); }
-    header { flex-wrap: wrap; gap: 6px 14px; padding: 8px 16px; }
-    header h1 { white-space: normal; font-size: 15px; flex: 1 1 100%; }
-    .row { flex-wrap: wrap; }
-    footer { padding: 8px 16px; }
-    footer .note { display: none; }
-    #brief, .sheet { padding: 24px 16px; }
-    #brieftext { font-size: 18px; }
-  }
-</style>
-</head>
-<body>
-<div id="app">
-  <header>
-    <h1>從 IRB 到投稿：一個回溯性研究的完整旅程</h1>
-    <div class="blurb">HER2 陽性早期乳癌・術前抗 HER2 治療・pCR / EFS / OS — 用白話 prompt 一路從 IRB 做到期刊接受</div>
-    <div class="facts"><div><b>34</b><span>句 prompt</span></div><div><b>1</b><span>句補充</span></div><div><b>2.8 h</b><span>實際時間</span></div><div><b>39 min</b><span>縮時播放</span></div></div>
-    <nav><a id="about-link">關於這段錄影</a><a href="https://github.com/htlin222/from-irb-to-manuscript">原始碼</a></nav>
-  </header>
-  <main>
-    <div id="rail" role="list"></div>
-    <div id="stage">
-      <div id="screen">
-        <div id="player"></div>
-        <div id="brief" class="overlay">
-          <div class="label" id="brieflabel"></div>
-          <div id="brieftext"></div>
-          <div id="briefnote"></div>
-          <div class="row">
-            <button class="btn" id="btn-start">START</button>
-            <button class="btn ghost" id="btn-peek">先看上一章的回答</button>
-            <button class="btn ghost" id="btn-about2">這是什麼？</button>
-          </div>
-        </div>
-        <div id="sheet-about" class="sheet">
-          <button class="close" id="close-about">關閉</button>
-          <div class="body">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>從 IRB 到投稿：一個回溯性研究的完整旅程</title>
+    <meta name="description" content="HER2 陽性早期乳癌・術前抗 HER2 治療・pCR / EFS / OS — 用白話 prompt 一路從 IRB 做到期刊接受" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/asciinema-player@3.17.0/dist/bundle/asciinema-player.css"
+    />
+    <style>
+      :root {
+        --ink: #1c1917;
+        --muted: #57534e;
+        --faint: #8c8681;
+        --line: #e7e5e4;
+        --bg: #ffffff;
+        --card: #ffffff;
+        --soft: #fafaf9;
+        --sans:
+          ui-sans-serif, -apple-system, "Segoe UI", system-ui, "PingFang TC",
+          "Noto Sans TC", sans-serif;
+        --mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: var(--bg);
+        color: var(--ink);
+        font: 15px/1.6 var(--sans);
+      }
+      ::backdrop {
+        background: #fff;
+      }
+      #app {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        height: 100vh;
+        background: var(--bg);
+      }
+      header {
+        min-width: 0;
+        overflow: hidden;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        min-height: 60px;
+        padding: 10px 20px;
+        border-bottom: 1px solid var(--line);
+      }
+      header h1 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        white-space: nowrap;
+      }
+      header .blurb {
+        color: var(--muted);
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      header .facts {
+        display: flex;
+        gap: 18px;
+      }
+      header .facts div {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        line-height: 1.2;
+      }
+      header .facts b {
+        font-size: 15px;
+      }
+      header .facts span {
+        font-size: 12px;
+        color: var(--faint);
+      }
+      header nav {
+        display: flex;
+        gap: 14px;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+      header nav a {
+        color: var(--muted);
+        text-decoration: none;
+        cursor: pointer;
+      }
+      header nav a:hover {
+        color: var(--ink);
+      }
+      main {
+        display: grid;
+        grid-template-columns: 272px minmax(0, 1fr);
+        min-height: 0;
+      }
+      #rail {
+        border-right: 1px solid var(--line);
+        overflow-y: auto;
+        padding: 6px 0 24px;
+      }
+      #rail .part {
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        color: var(--faint);
+        padding: 14px 14px 4px;
+      }
+      #rail button {
+        display: grid;
+        grid-template-columns: 28px 1fr auto;
+        gap: 4px;
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: 0;
+        padding: 6px 14px;
+        font: 13px/1.45 var(--sans);
+        color: var(--muted);
+        cursor: pointer;
+      }
+      #rail button.say {
+        padding-left: 42px;
+        font-size: 12px;
+      }
+      #rail button .n,
+      #rail button .t {
+        color: var(--faint);
+        font-variant-numeric: tabular-nums;
+      }
+      #rail button:hover {
+        color: var(--ink);
+      }
+      #rail button[aria-current="true"] {
+        color: var(--ink);
+        font-weight: 600;
+        background: var(--soft);
+      }
+      #stage {
+        display: grid;
+        grid-template-rows: 1fr auto;
+        min-height: 0;
+        min-width: 0;
+      }
+      #screen {
+        position: relative;
+        min-height: 0;
+        background: var(--bg);
+      }
+      #player {
+        position: absolute;
+        inset: 0;
+      }
+      #player .ap-wrapper,
+      #player .ap-player {
+        background: #fff;
+      }
+      .overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 20;
+        background: var(--card);
+        overflow-y: auto;
+      }
+      .hidden {
+        display: none !important;
+      }
+      #brief {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 40px 56px;
+      }
+      #brief .label {
+        font-size: 12px;
+        color: var(--faint);
+        letter-spacing: 0.08em;
+        margin-bottom: 14px;
+      }
+      #brieftext {
+        font-size: 22px;
+        line-height: 1.9;
+        max-width: 40ch;
+        white-space: pre-wrap;
+        margin: 0 0 12px;
+      }
+      #briefnote {
+        color: var(--muted);
+        font-size: 14px;
+        max-width: 62ch;
+        margin: 0 0 28px;
+      }
+      #brieftext b {
+        font-weight: 700;
+      }
+      .row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .btn {
+        font: 600 13px var(--sans);
+        letter-spacing: 0.14em;
+        color: #fff;
+        background: var(--ink);
+        border: 0;
+        padding: 11px 22px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .btn.ghost {
+        color: var(--ink);
+        background: none;
+        border: 1px solid var(--line);
+        letter-spacing: 0.04em;
+        font-weight: 500;
+      }
+      .sheet {
+        position: absolute;
+        inset: 0;
+        z-index: 30;
+        background: var(--card);
+        padding: 40px 56px;
+        overflow-y: auto;
+        display: none;
+      }
+      .sheet.open {
+        display: block;
+      }
+      .sheet .close {
+        position: absolute;
+        top: 14px;
+        right: 18px;
+        background: none;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        font: 13px var(--sans);
+        color: var(--muted);
+        padding: 4px 10px;
+        cursor: pointer;
+      }
+      #sheet-about .body {
+        max-width: 66ch;
+      }
+      /* Milestones: what each stage produced, taken from that stage's git version */
+      #sheet-ms .intro {
+        color: var(--muted);
+        max-width: 70ch;
+        margin: 0 0 22px;
+      }
+      .ms {
+        border-top: 1px solid var(--line);
+        padding: 18px 0 20px;
+        scroll-margin-top: 8px;
+      }
+      .ms h2 {
+        font-size: 17px;
+        margin: 0 0 4px;
+        display: flex;
+        gap: 10px;
+        align-items: baseline;
+      }
+      .ms h2 .k {
+        color: var(--faint);
+        font: 13px var(--mono);
+      }
+      .ms .sum {
+        color: var(--muted);
+        margin: 0 0 10px;
+        max-width: 70ch;
+      }
+      .ms .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+        font-size: 13px;
+      }
+      .chip {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 2px 10px;
+        background: none;
+        font: 13px var(--sans);
+        color: var(--ink);
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .chip:hover {
+        background: var(--soft);
+      }
+      .ms .grp {
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        color: var(--faint);
+        margin: 10px 0 4px;
+      }
+      .files {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 8px;
+      }
+      .file {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 8px 10px;
+        background: none;
+        text-align: left;
+        font: 13px/1.4 var(--sans);
+        color: var(--ink);
+        cursor: pointer;
+      }
+      .file:hover {
+        background: var(--soft);
+      }
+      .file .ic {
+        font: 600 10px var(--mono);
+        color: var(--muted);
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        padding: 1px 4px;
+        min-width: 34px;
+        text-align: center;
+      }
+      #viewer {
+        position: absolute;
+        inset: 0;
+        z-index: 40;
+        background: #fff;
+        display: none;
+        grid-template-rows: auto 1fr;
+      }
+      #viewer.open {
+        display: grid;
+      }
+      #viewer .bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        padding: 8px 14px;
+        border-bottom: 1px solid var(--line);
+      }
+      #viewer .bar b {
+        font-size: 14px;
+      }
+      #viewer .bar .src {
+        color: var(--faint);
+        font: 12px var(--mono);
+        flex: 1;
+        min-width: 0;
+      }
+      #v-body {
+        min-height: 0;
+      }
+      #viewer iframe,
+      #viewer .imgwrap {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+      }
+      #viewer .imgwrap {
+        overflow: auto;
+        text-align: center;
+        background: var(--soft);
+      }
+      #viewer .imgwrap img {
+        max-width: 100%;
+        height: auto;
+        margin: 16px auto;
+        box-shadow: 0 0 0 1px var(--line);
+      }
+      #sheet-about a {
+        color: var(--ink);
+      }
+      #sheet-about h2 {
+        font-size: 17px;
+        margin: 26px 0 6px;
+      }
+      #sheet-about code {
+        font: 13px var(--mono);
+        background: var(--soft);
+        padding: 1px 4px;
+        border-radius: 3px;
+      }
+      footer {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 8px 20px;
+        border-top: 1px solid var(--line);
+        font-size: 13px;
+        color: var(--muted);
+      }
+      footer .note {
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      footer .hint {
+        font-size: 12px;
+        color: var(--faint);
+        white-space: nowrap;
+      }
+      footer label {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      kbd {
+        font: 11px var(--mono);
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        padding: 0 4px;
+      }
+      @media (max-width: 1500px) {
+        header .blurb {
+          display: none;
+        }
+      }
+      @media (max-width: 1100px) {
+        header .facts {
+          display: none;
+        }
+      }
+      @media (max-width: 760px) {
+        header .blurb,
+        footer .hint {
+          display: none;
+        }
+        main {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-rows: 160px 1fr;
+        }
+        #rail {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+        header {
+          flex-wrap: wrap;
+          gap: 6px 14px;
+          padding: 8px 16px;
+        }
+        header h1 {
+          white-space: normal;
+          font-size: 15px;
+          flex: 1 1 100%;
+        }
+        .row {
+          flex-wrap: wrap;
+        }
+        footer {
+          padding: 8px 16px;
+        }
+        footer .note {
+          display: none;
+        }
+        #brief,
+        .sheet {
+          padding: 24px 16px;
+        }
+        #brieftext {
+          font-size: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h1>從 IRB 到投稿：一個回溯性研究的完整旅程</h1>
+        <div class="blurb">HER2 陽性早期乳癌・術前抗 HER2 治療・pCR / EFS / OS — 用白話 prompt 一路從 IRB 做到期刊接受</div>
+        <div class="facts"><div><b>34</b><span>句 prompt</span></div><div><b>1</b><span>句補充</span></div><div><b>2.8 h</b><span>實際時間</span></div><div><b>43 min</b><span>縮時播放</span></div></div>
+        <nav>
+          <a id="ms-link"><b>里程碑成品</b></a
+          ><a id="about-link">關於這段錄影</a><a href="https://github.com/htlin222/from-irb-to-manuscript">原始碼</a>
+        </nav>
+      </header>
+      <main>
+        <div id="rail" role="list"></div>
+        <div id="stage">
+          <div id="screen">
+            <div id="player"></div>
+            <div id="brief" class="overlay">
+              <div class="label" id="brieflabel"></div>
+              <div id="brieftext"></div>
+              <div id="briefnote"></div>
+              <div class="row">
+                <button class="btn" id="btn-start">START</button>
+                <button class="btn ghost" id="btn-peek">
+                  先看上一章的回答
+                </button>
+                <button class="btn ghost hidden" id="btn-ms">
+                  這一章的成品
+                </button>
+                <button class="btn ghost" id="btn-about2">這是什麼？</button>
+              </div>
+            </div>
+            <div id="sheet-ms" class="sheet">
+              <button class="close" id="close-ms">關閉</button>
+              <div
+                class="label"
+                style="
+                  font-size: 12px;
+                  color: var(--faint);
+                  letter-spacing: 0.08em;
+                  margin-bottom: 10px;
+                "
+              >
+                里程碑成品
+              </div>
+              <p class="intro">
+                每個階段做出來的東西，都取自<b>當時那一版</b>（git 標籤）——IRB
+                表單、原始資料、表格、圖、
+                往來信件、投稿檔與定稿。點檔案直接預覽；點章節跳到錄影裡做出它的那一段。所有資料與人物皆為模擬。
+              </p>
+              <div id="ms-list"></div>
+            </div>
+            <div id="viewer">
+              <div class="bar">
+                <b id="v-title"></b><span class="src" id="v-src"></span>
+                <a class="chip" id="v-open" target="_blank" rel="noopener"
+                  >開新分頁</a
+                >
+                <a class="chip hidden" id="v-pdf" target="_blank" rel="noopener">PDF 原檔</a>
+                <a class="chip hidden" id="v-dl" download>下載原檔</a>
+                <button class="chip" id="v-close">關閉</button>
+              </div>
+              <div id="v-body"></div>
+            </div>
+            <div id="sheet-about" class="sheet">
+              <button class="close" id="close-about">關閉</button>
+              <div class="body">
 <p><b>這是一段沒有剪接的錄影。</b>一位醫師（由程式代打）把一句一句很短的話送進 Claude Code，
 從 IRB 新案送審、審查意見、複審、拿到院內資料、資料檢查、公平比較兩種治療、寫論文、投稿，
 一路到期刊審稿來回與接受。全部在<b>同一個對話</b>裡完成。</p>
@@ -127,139 +572,219 @@
 病人資料由程式產生，而且產生時就知道「真正的答案」，所以可以回頭檢查 AI 選的統計方法有沒有估對——
 見 repo 裡的 <code>demo/TRUTH.md</code>。</p>
 </div>
+            </div>
+          </div>
+          <footer>
+            <span class="note" id="note"></span>
+            <label
+              ><input type="checkbox" id="pausemode" checked />
+              每章停下來看題目</label
+            >
+            <span class="hint"
+              ><kbd>[</kbd> <kbd>]</kbd> 章節 · <kbd>space</kbd> 播放/暫停 ·
+              <kbd>Esc</kbd> 關閉</span
+            >
+          </footer>
         </div>
-      </div>
-      <footer>
-        <span class="note" id="note"></span>
-        <label><input type="checkbox" id="pausemode" checked> 每章停下來看題目</label>
-        <span class="hint"><kbd>[</kbd> <kbd>]</kbd> 章節 · <kbd>space</kbd> 播放/暫停 · <kbd>Esc</kbd> 關閉</span>
-      </footer>
+      </main>
     </div>
-  </main>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.17.0/dist/bundle/asciinema-player.min.js"></script>
-<script>
-var CHAPTERS = [{"id": "01", "part": "開始之前", "name": "這個專案在做什麼", "prompt": "用三句話告訴我這個專案在做什麼。", "kind": "stage", "t": 3.567, "end": 12.156}, {"id": "02", "part": "開始之前", "name": "題目可行嗎", "prompt": "我的研究想法寫在「研究構想.md」。這個題目可行嗎？最大的困難是什麼？", "kind": "stage", "t": 15.063, "end": 47.921}, {"id": "03", "part": "IRB 初審", "name": "準備新案送審文件", "prompt": "好，幫我開一個新分支，準備 IRB 新案送審文件。", "kind": "stage", "t": 50.933, "end": 139.721}, {"id": "04", "part": "IRB 初審", "name": "看一張表單", "prompt": "產出了哪些文件？挑最重要的一張給我看。", "kind": "stage", "t": 143.353, "end": 160.456}, {"id": "05", "part": "IRB 初審", "name": "存成「IRB 初審」", "prompt": "把這個版本存起來，標記為「IRB 初審」。", "kind": "stage", "t": 164.05, "end": 177.76}, {"id": "06", "part": "IRB 複審", "name": "審查意見來了", "prompt": "IRB 審查意見回來了，放在 inbox。請逐條修改。", "kind": "stage", "t": 181.364, "end": 261.686}, {"id": "07", "part": "IRB 複審", "name": "回覆表＋複審文件", "prompt": "幫我寫審查意見回覆表，產出複審文件，存成「IRB 複審」。", "kind": "stage", "t": 265.323, "end": 301.695}, {"id": "08", "part": "IRB 複審", "name": "IRB 通過", "prompt": "IRB 通過了！核准通知在 inbox，幫我記下來。", "kind": "stage", "t": 305.472, "end": 341.702}, {"id": "09", "part": "拿到資料", "name": "收資料", "prompt": "資訊室把資料放在 inbox 了，幫我收進專案。先不要分析。", "kind": "stage", "t": 345.319, "end": 384.086}, {"id": "10", "part": "拿到資料", "name": "資料可以相信嗎", "prompt": "這份資料可以相信嗎？幫我檢查。", "kind": "stage", "t": 387.713, "end": 458.71}, {"id": "11", "part": "拿到資料", "name": "收案流程圖", "prompt": "有幾位病人符合收案條件？畫一張收案流程圖。", "kind": "stage", "t": 462.334, "end": 534.145}, {"id": "12", "part": "拿到資料", "name": "Table 1", "prompt": "幫我做 Table 1，比較兩種治療的病人。", "kind": "stage", "t": 537.777, "end": 601.275}, {"id": "13", "part": "拿到資料", "name": "資訊室回信", "prompt": "資訊室回信了，在 inbox。ypN0(i+) 就照國際通用的 pCR 定義。", "kind": "stage", "t": 604.937, "end": 666.817}, {"id": "14", "part": "公平比較", "name": "有哪些方法", "prompt": "兩組病人本來就不一樣。要公平比較，有哪些方法？用白話說明，並推薦一個。", "kind": "stage", "t": 670.471, "end": 710.886}, {"id": "15", "part": "公平比較", "name": "先寫分析計畫", "prompt": "就照你的推薦。先寫分析計畫，給我看重點。", "kind": "stage", "t": 714.53, "end": 762.263}, {"id": "16", "part": "公平比較", "name": "開始分析", "prompt": "開始分析：pCR、EFS、OS 都要。", "kind": "stage", "t": 765.891, "end": 850.232}, {"id": "17", "part": "公平比較", "name": "白話結果", "prompt": "用白話告訴我：雙標靶比較好嗎？", "kind": "stage", "t": 853.861, "end": 864.735}, {"id": "18", "part": "公平比較", "name": "結果可靠嗎", "prompt": "這個結果可靠嗎？可能哪裡出錯？", "kind": "stage", "t": 868.323, "end": 910.818}, {"id": "19", "part": "公平比較", "name": "從頭重跑一次", "prompt": "從原始資料整個重跑一次，結果一樣嗎？", "kind": "stage", "t": 914.45, "end": 959.886}, {"id": "20", "part": "公平比較", "name": "存成「分析完成」", "prompt": "存檔，標記為「分析完成」。", "kind": "stage", "t": 963.526, "end": 980.817}, {"id": "21", "part": "IRB 修正案", "name": "送修正案", "prompt": "照你的建議，幫我送 IRB 修正案。", "kind": "stage", "t": 984.418, "end": 1121.195}, {"id": "22", "part": "IRB 修正案", "name": "修正案通過", "prompt": "修正案通過了，通知在 inbox。", "kind": "stage", "t": 1124.847, "end": 1160.676}, {"id": "23", "part": "寫論文", "name": "期刊格式要求", "prompt": "我要投 Journal of Cancer Research and Practice。它的格式要求是什麼？整理起來，之後照這個寫。", "kind": "stage", "t": 1162.285, "end": 1212.706}, {"id": "24", "part": "寫論文", "name": "找文獻", "prompt": "用 OpenEvidence 幫我找討論要用的文獻，每一篇都要查證是真的。", "kind": "stage", "t": 1214.36, "end": 1317.08}, {"id": "25", "part": "寫論文", "name": "寫初稿", "prompt": "開始寫論文初稿。", "kind": "stage", "t": 1318.731, "end": 1505.381}, {"id": "say01", "part": "", "name": "補充", "prompt": "這是教學示範，不會真的投稿。請你把全文寫完，meta.yaml 也用虛構資料填好；論文和 README 都要註明：本示範稿由 AI 撰寫，真實投稿時內文必須由作者親自撰寫。", "kind": "say", "after": "25", "t": 1507.094, "end": 1603.613}, {"id": "26", "part": "寫論文", "name": "產出投稿檔", "prompt": "照期刊格式產出投稿檔案。", "kind": "stage", "t": 1605.305, "end": 1673.456}, {"id": "27", "part": "寫論文", "name": "投稿前檢查", "prompt": "投稿前最後檢查：字數、格式、數字有沒有對上？", "kind": "stage", "t": 1675.125, "end": 1721.671}, {"id": "28", "part": "寫論文", "name": "存成「投稿版」", "prompt": "幫我寫給編輯的 cover letter，然後存成「投稿版」。", "kind": "stage", "t": 1723.376, "end": 1766.017}, {"id": "29", "part": "審稿來回", "name": "審稿意見來了", "prompt": "期刊回信了，在 inbox。先用白話告訴我審稿人說什麼。", "kind": "stage", "t": 1767.689, "end": 1804.56}, {"id": "30", "part": "審稿來回", "name": "逐點修改＋回覆信", "prompt": "請逐點修改，並寫回覆信。", "kind": "stage", "t": 1806.227, "end": 1939.822}, {"id": "31", "part": "審稿來回", "name": "修訂版投稿檔", "prompt": "修改的地方要讓審稿人看得到。產出修訂版投稿檔，存成「第一次修訂」。", "kind": "stage", "t": 1943.497, "end": 2025.866}, {"id": "32", "part": "審稿來回", "name": "第二輪意見", "prompt": "第二輪意見來了，在 inbox。請處理，存成「第二次修訂」。", "kind": "stage", "t": 2027.547, "end": 2192.13}, {"id": "33", "part": "審稿來回", "name": "接受了！", "prompt": "論文接受了！通知在 inbox。接下來還要做什麼？順便準備 IRB 結案文件。", "kind": "stage", "t": 2193.846, "end": 2272.802}, {"id": "34", "part": "回顧", "name": "誰在判斷", "prompt": "回顧整個過程：哪些是 AI 在判斷、哪些是固定的程式？身為醫師，我一定要親自檢查哪些地方？", "kind": "stage", "t": 2274.493, "end": 2312.718}];
-var KEYS = ["IRB", "inbox", "Table 1", "pCR", "EFS", "OS", "OpenEvidence", "cover letter", "「IRB 初審」", "「IRB 複審」", "「分析完成」", "「投稿版」", "「第一次修訂」", "「第二次修訂」"];
-var cur = -1, player = null, pauseMode = true;
-var $ = function (id) { return document.getElementById(id); };
-var THEME = { foreground: "#1c1917", background: "#ffffff",
-  palette: "#1c1917:#cf222e:#1a7f37:#9a6700:#0969da:#8250df:#1b7c83:#57534e:#57534e:#cf222e:#1a7f37:#9a6700:#0969da:#8250df:#1b7c83:#8c8681" };
+    <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.17.0/dist/bundle/asciinema-player.min.js"></script>
+    <script>
+      var CHAPTERS = [{"id": "01", "part": "開始之前", "name": "這個專案在做什麼", "prompt": "用三句話告訴我這個專案在做什麼。", "kind": "stage", "t": 3.567, "end": 12.156}, {"id": "02", "part": "開始之前", "name": "題目可行嗎", "prompt": "我的研究想法寫在「研究構想.md」。這個題目可行嗎？最大的困難是什麼？", "kind": "stage", "t": 21.708, "end": 54.566}, {"id": "03", "part": "IRB 初審", "name": "準備新案送審文件", "prompt": "好，幫我開一個新分支，準備 IRB 新案送審文件。", "kind": "stage", "t": 64.136, "end": 152.924}, {"id": "04", "part": "IRB 初審", "name": "看一張表單", "prompt": "產出了哪些文件？挑最重要的一張給我看。", "kind": "stage", "t": 164.479, "end": 181.582}, {"id": "05", "part": "IRB 初審", "name": "存成「IRB 初審」", "prompt": "把這個版本存起來，標記為「IRB 初審」。", "kind": "stage", "t": 193.052, "end": 206.762}, {"id": "06", "part": "IRB 複審", "name": "審查意見來了", "prompt": "IRB 審查意見回來了，放在 inbox。請逐條修改。", "kind": "stage", "t": 218.194, "end": 298.516}, {"id": "07", "part": "IRB 複審", "name": "回覆表＋複審文件", "prompt": "幫我寫審查意見回覆表，產出複審文件，存成「IRB 複審」。", "kind": "stage", "t": 310.026, "end": 346.398}, {"id": "08", "part": "IRB 複審", "name": "IRB 通過", "prompt": "IRB 通過了！核准通知在 inbox，幫我記下來。", "kind": "stage", "t": 358.041, "end": 394.271}, {"id": "09", "part": "拿到資料", "name": "收資料", "prompt": "資訊室把資料放在 inbox 了，幫我收進專案。先不要分析。", "kind": "stage", "t": 405.733, "end": 444.5}, {"id": "10", "part": "拿到資料", "name": "資料可以相信嗎", "prompt": "這份資料可以相信嗎？幫我檢查。", "kind": "stage", "t": 456.062, "end": 527.059}, {"id": "11", "part": "拿到資料", "name": "收案流程圖", "prompt": "有幾位病人符合收案條件？畫一張收案流程圖。", "kind": "stage", "t": 538.494, "end": 610.304}, {"id": "12", "part": "拿到資料", "name": "Table 1", "prompt": "幫我做 Table 1，比較兩種治療的病人。", "kind": "stage", "t": 621.826, "end": 685.323}, {"id": "13", "part": "拿到資料", "name": "資訊室回信", "prompt": "資訊室回信了，在 inbox。ypN0(i+) 就照國際通用的 pCR 定義。", "kind": "stage", "t": 696.757, "end": 758.637}, {"id": "14", "part": "公平比較", "name": "有哪些方法", "prompt": "兩組病人本來就不一樣。要公平比較，有哪些方法？用白話說明，並推薦一個。", "kind": "stage", "t": 770.115, "end": 810.53}, {"id": "15", "part": "公平比較", "name": "先寫分析計畫", "prompt": "就照你的推薦。先寫分析計畫，給我看重點。", "kind": "stage", "t": 822.064, "end": 869.797}, {"id": "16", "part": "公平比較", "name": "開始分析", "prompt": "開始分析：pCR、EFS、OS 都要。", "kind": "stage", "t": 881.25, "end": 965.591}, {"id": "17", "part": "公平比較", "name": "白話結果", "prompt": "用白話告訴我：雙標靶比較好嗎？", "kind": "stage", "t": 977.086, "end": 987.96}, {"id": "18", "part": "公平比較", "name": "結果可靠嗎", "prompt": "這個結果可靠嗎？可能哪裡出錯？", "kind": "stage", "t": 999.44, "end": 1041.936}, {"id": "19", "part": "公平比較", "name": "從頭重跑一次", "prompt": "從原始資料整個重跑一次，結果一樣嗎？", "kind": "stage", "t": 1053.464, "end": 1098.899}, {"id": "20", "part": "公平比較", "name": "存成「分析完成」", "prompt": "存檔，標記為「分析完成」。", "kind": "stage", "t": 1110.379, "end": 1127.669}, {"id": "21", "part": "IRB 修正案", "name": "送修正案", "prompt": "照你的建議，幫我送 IRB 修正案。", "kind": "stage", "t": 1139.16, "end": 1275.937}, {"id": "22", "part": "IRB 修正案", "name": "修正案通過", "prompt": "修正案通過了，通知在 inbox。", "kind": "stage", "t": 1287.485, "end": 1323.314}, {"id": "23", "part": "寫論文", "name": "期刊格式要求", "prompt": "我要投 Journal of Cancer Research and Practice。它的格式要求是什麼？整理起來，之後照這個寫。", "kind": "stage", "t": 1332.767, "end": 1383.189}, {"id": "24", "part": "寫論文", "name": "找文獻", "prompt": "用 OpenEvidence 幫我找討論要用的文獻，每一篇都要查證是真的。", "kind": "stage", "t": 1392.731, "end": 1495.451}, {"id": "25", "part": "寫論文", "name": "寫初稿", "prompt": "開始寫論文初稿。", "kind": "stage", "t": 1504.97, "end": 1691.62}, {"id": "say01", "part": "", "name": "補充", "prompt": "這是教學示範，不會真的投稿。請你把全文寫完，meta.yaml 也用虛構資料填好；論文和 README 都要註明：本示範稿由 AI 撰寫，真實投稿時內文必須由作者親自撰寫。", "kind": "say", "after": "25", "t": 1701.159, "end": 1797.677}, {"id": "26", "part": "寫論文", "name": "產出投稿檔", "prompt": "照期刊格式產出投稿檔案。", "kind": "stage", "t": 1807.135, "end": 1875.286}, {"id": "27", "part": "寫論文", "name": "投稿前檢查", "prompt": "投稿前最後檢查：字數、格式、數字有沒有對上？", "kind": "stage", "t": 1884.836, "end": 1931.381}, {"id": "28", "part": "寫論文", "name": "存成「投稿版」", "prompt": "幫我寫給編輯的 cover letter，然後存成「投稿版」。", "kind": "stage", "t": 1940.843, "end": 1983.484}, {"id": "29", "part": "審稿來回", "name": "審稿意見來了", "prompt": "期刊回信了，在 inbox。先用白話告訴我審稿人說什麼。", "kind": "stage", "t": 1992.952, "end": 2029.822}, {"id": "30", "part": "審稿來回", "name": "逐點修改＋回覆信", "prompt": "請逐點修改，並寫回覆信。", "kind": "stage", "t": 2039.373, "end": 2172.968}, {"id": "31", "part": "審稿來回", "name": "修訂版投稿檔", "prompt": "修改的地方要讓審稿人看得到。產出修訂版投稿檔，存成「第一次修訂」。", "kind": "stage", "t": 2184.522, "end": 2266.891}, {"id": "32", "part": "審稿來回", "name": "第二輪意見", "prompt": "第二輪意見來了，在 inbox。請處理，存成「第二次修訂」。", "kind": "stage", "t": 2276.435, "end": 2441.018}, {"id": "33", "part": "審稿來回", "name": "接受了！", "prompt": "論文接受了！通知在 inbox。接下來還要做什麼？順便準備 IRB 結案文件。", "kind": "stage", "t": 2450.592, "end": 2529.548}, {"id": "34", "part": "回顧", "name": "誰在判斷", "prompt": "回顧整個過程：哪些是 AI 在判斷、哪些是固定的程式？身為醫師，我一定要親自檢查哪些地方？", "kind": "stage", "t": 2539.099, "end": 2577.323}];
+      var KEYS = ["IRB", "inbox", "Table 1", "pCR", "EFS", "OS", "OpenEvidence", "cover letter", "「IRB 初審」", "「IRB 複審」", "「分析完成」", "「投稿版」", "「第一次修訂」", "「第二次修訂」"];
+      var cur = -1, player = null, pauseMode = true;
+      var $ = function (id) { return document.getElementById(id); };
+      var THEME = { foreground: "#1c1917", background: "#ffffff",
+        palette: "#1c1917:#cf222e:#1a7f37:#9a6700:#0969da:#8250df:#1b7c83:#57534e:#57534e:#cf222e:#1a7f37:#9a6700:#0969da:#8250df:#1b7c83:#8c8681" };
 
-function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
-function emphasise(s) {
-  var h = esc(s);
-  KEYS.forEach(function (k) { if (k) h = h.split(esc(k)).join("<b>" + esc(k) + "</b>"); });
-  return h;
-}
-function clock(t) {
-  t = Math.floor(t); var h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s = t % 60;
-  return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(s).padStart(2, "0");
-}
+      function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
+      function emphasise(s) {
+        var h = esc(s);
+        KEYS.forEach(function (k) { if (k) h = h.split(esc(k)).join("<b>" + esc(k) + "</b>"); });
+        return h;
+      }
+      function clock(t) {
+        t = Math.floor(t); var h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s = t % 60;
+        return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(s).padStart(2, "0");
+      }
 
-function rail() {
-  var lastPart = null;
-  CHAPTERS.forEach(function (c, i) {
-    if (c.kind === "stage" && c.part !== lastPart) {
-      var p = document.createElement("div"); p.className = "part"; p.textContent = c.part; $("rail").appendChild(p);
-      lastPart = c.part;
-    }
-    var b = document.createElement("button");
-    if (c.kind === "say") b.className = "say";
-    b.innerHTML = '<span class="n">' + (c.kind === "say" ? "↳" : c.id) + '</span><span>' + esc(c.kind === "say" ? "補充一句" : c.name) +
-      '</span><span class="t">' + clock(c.t) + '</span>';
-    b.onclick = function () { go(i, true); };
-    $("rail").appendChild(b);
-  });
-}
+      function rail() {
+        var lastPart = null;
+        CHAPTERS.forEach(function (c, i) {
+          if (c.kind === "stage" && c.part !== lastPart) {
+            var p = document.createElement("div"); p.className = "part"; p.textContent = c.part; $("rail").appendChild(p);
+            lastPart = c.part;
+          }
+          var b = document.createElement("button");
+          if (c.kind === "say") b.className = "say";
+          b.innerHTML = '<span class="n">' + (c.kind === "say" ? "↳" : c.id) + '</span><span>' + esc(c.kind === "say" ? "補充一句" : c.name) +
+            '</span><span class="t">' + clock(c.t) + '</span>';
+          b.onclick = function () { go(i, true); };
+          $("rail").appendChild(b);
+        });
+      }
 
-function highlight(i) {
-  cur = i;
-  document.querySelectorAll("#rail button").forEach(function (b, j) {
-    b.setAttribute("aria-current", j === i ? "true" : "false");
-    if (j === i) b.scrollIntoView({ block: "nearest" });
-  });
-  var c = CHAPTERS[i];
-  $("note").textContent = c ? (c.kind === "say" ? "補充：" + c.prompt : c.id + " · " + c.part + " · " + c.name) : "";
-  if (c) history.replaceState(null, "", "#" + c.id);
-}
+      function highlight(i) {
+        cur = i;
+        document.querySelectorAll("#rail button").forEach(function (b, j) {
+          b.setAttribute("aria-current", j === i ? "true" : "false");
+          if (j === i) b.scrollIntoView({ block: "nearest" });
+        });
+        var c = CHAPTERS[i];
+        $("note").textContent = c ? (c.kind === "say" ? "補充：" + c.prompt : c.id + " · " + c.part + " · " + c.name) : "";
+        if (c) history.replaceState(null, "", "#" + c.id);
+      }
 
-function brief(i) {
-  var c = CHAPTERS[i];
-  $("brieflabel").textContent = c.kind === "say" ? "補充一句（不在腳本裡）" : c.part + " · " + c.id + " · " + c.name;
-  $("brieftext").innerHTML = emphasise(c.prompt);
-  $("briefnote").textContent = c.kind === "say"
-    ? "AI 停下來需要回應時，錄影者補上的話。照實保留。"
-    : "這是送進 Claude Code 的原文，一字不改。";
-  $("brief").classList.remove("hidden");
-  $("btn-start").focus();
-}
+      function brief(i) {
+        var c = CHAPTERS[i];
+        $("brieflabel").textContent = c.kind === "say" ? "補充一句（不在腳本裡）" : c.part + " · " + c.id + " · " + c.name;
+        $("brieftext").innerHTML = emphasise(c.prompt);
+        $("briefnote").textContent = c.kind === "say"
+          ? "AI 停下來需要回應時，錄影者補上的話。照實保留。"
+          : "這是送進 Claude Code 的原文，一字不改。";
+        msButton(c);
+        $("brief").classList.remove("hidden");
+        $("btn-start").focus();
+      }
 
-function go(i, seek) {
-  if (i < 0 || i >= CHAPTERS.length) return;
-  highlight(i);
-  closeSheets();
-  if (seek && player) { player.pause(); player.seek({ marker: i }); }
-  brief(i);
-}
+      function go(i, seek) {
+        if (i < 0 || i >= CHAPTERS.length) return;
+        highlight(i);
+        closeSheets();
+        if (seek && player) { player.pause(); player.seek({ marker: i }); }
+        brief(i);
+      }
 
-function start() {
-  $("brief").classList.add("hidden");
-  if (!player) return;
-  // Resume from this chapter's marker: covers the first START (player still at 0)
-  // and a pause on a marker alike, and never re-triggers the same pause.
-  Promise.resolve(player.seek({ marker: cur })).then(function () { player.play(); });
-}
-function closeSheets() { $("sheet-about").classList.remove("open"); }
-function openAbout() { closeSheets(); $("sheet-about").classList.add("open"); }
+      function start() {
+        $("brief").classList.add("hidden");
+        if (!player) return;
+        // Resume from this chapter's marker: covers the first START (player still at 0)
+        // and a pause on a marker alike, and never re-triggers the same pause.
+        Promise.resolve(player.seek({ marker: cur })).then(function () { player.play(); });
+      }
+      function closeSheets() {
+        $("sheet-about").classList.remove("open"); $("sheet-ms").classList.remove("open"); closeViewer();
+      }
 
-function makePlayer() {
-  player = AsciinemaPlayer.create("demo.cast", $("player"), {
-    fit: "both", theme: "her2", terminalFontFamily: "var(--mono)", preload: true,
-    pauseOnMarkers: pauseMode, idleTimeLimit: 2, poster: "npt:0:3"
-  });
-  player.addEventListener("marker", function (e) {
-    highlight(e.index);
-    if (pauseMode) brief(e.index);
-  });
-}
+      // ── Milestones ────────────────────────────────────────────────────────────
+      var MS = [];
+      var KIND = { pdf: "PDF", file: "FILE", image: "IMG", md: "MD", csv: "CSV", docx: "DOCX", text: "TXT", raw: "DATA" };
+      function msFor(id) { return MS.find(function (m) { return m.chapters.indexOf(id) >= 0; }); }
+      function chapterIndex(id) { return CHAPTERS.findIndex(function (c) { return c.id === id; }); }
+      function fileKind(it) { return KIND[it.kind] || "FILE"; }
+      function renderMilestones() {
+        var box = $("ms-list"); box.innerHTML = "";
+        MS.forEach(function (m, k) {
+          var sec = document.createElement("section"); sec.className = "ms"; sec.id = "ms-" + m.id;
+          var chs = m.chapters.map(function (id) {
+            var c = CHAPTERS[chapterIndex(id)]; return c ? '<button class="chip" data-ch="' + id + '">▶ ' + id + " " + esc(c.name) + "</button>" : "";
+          }).join("");
+          sec.innerHTML = '<h2><span class="k">' + String(k + 1).padStart(2, "0") + "</span>" + esc(m.title) + "</h2>" +
+            '<p class="sum">' + esc(m.summary) + "</p>" +
+            '<div class="meta">' + chs + '<a class="chip" target="_blank" rel="noopener" href="' + m.tree + '">git：' + esc(m.ref) + " ↗</a></div>";
+          var groups = {};
+          m.items.forEach(function (it, j) { var g = it.group || ""; (groups[g] = groups[g] || []).push(j); });
+          Object.keys(groups).forEach(function (g) {
+            if (g) { var gh = document.createElement("div"); gh.className = "grp"; gh.textContent = g; sec.appendChild(gh); }
+            var grid = document.createElement("div"); grid.className = "files";
+            groups[g].forEach(function (j) {
+              var it = m.items[j], b = document.createElement("button"); b.className = "file";
+              b.innerHTML = '<span class="ic">' + fileKind(it) + "</span><span>" + esc(it.label) + "</span>";
+              b.onclick = function () { openViewer(m, it); };
+              grid.appendChild(b);
+            });
+            sec.appendChild(grid);
+          });
+          box.appendChild(sec);
+        });
+        box.querySelectorAll("[data-ch]").forEach(function (b) {
+          b.onclick = function () { closeSheets(); go(chapterIndex(b.getAttribute("data-ch")), true); };
+        });
+      }
+      function openMilestones(id) {
+        closeSheets(); if (player) player.pause();
+        $("sheet-ms").classList.add("open");
+        var el = id && document.getElementById("ms-" + id);
+        $("sheet-ms").scrollTop = el ? el.offsetTop - 8 : 0;
+      }
+      function openViewer(m, it) {
+        var url = "milestones/" + m.id + "/" + encodeURIComponent(it.view);
+        $("v-title").textContent = it.label;
+        $("v-src").textContent = it.src + " @ " + it.ref;
+        $("v-open").href = url;
+        if (it.download) { $("v-dl").href = "milestones/" + m.id + "/" + encodeURIComponent(it.download); $("v-dl").classList.remove("hidden"); }
+        else $("v-dl").classList.add("hidden");
+        if (it.pdf) { $("v-pdf").href = "milestones/" + m.id + "/" + encodeURIComponent(it.pdf); $("v-pdf").classList.remove("hidden"); }
+        else $("v-pdf").classList.add("hidden");
+        $("v-body").innerHTML = it.kind === "image"
+          ? '<div class="imgwrap"><img alt="" src="' + url + '"></div>'
+          : '<iframe title="' + esc(it.label) + '" src="' + url + '"></iframe>';
+        $("v-body").style.minHeight = "0"; $("v-body").firstChild.style.height = "100%";
+        $("viewer").classList.add("open");
+      }
+      function msButton(c) {
+        var m = c && c.kind === "stage" ? msFor(c.id) : null;
+        $("btn-ms").classList.toggle("hidden", !m);
+        $("btn-ms").onclick = function () { if (m) openMilestones(m.id); };
+      }
+      function closeViewer() { $("viewer").classList.remove("open"); $("v-body").innerHTML = ""; }
+      function openAbout() { closeSheets(); $("sheet-about").classList.add("open"); }
 
-$("btn-start").onclick = start;
-$("btn-about2").onclick = openAbout;
-// Hide the brief without playing, so the previous answer can be read in full.
-$("btn-peek").onclick = function () { $("brief").classList.add("hidden"); };
-$("close-about").onclick = closeSheets;
-$("about-link").onclick = openAbout;
-$("pausemode").onchange = function (e) {
-  pauseMode = e.target.checked;
-  // pauseOnMarkers is fixed at creation: rebuild at the same position.
-  var at = player ? player.getCurrentTime() : Promise.resolve(0);
-  Promise.resolve(at).then(function (t) {
-    if (player) player.dispose();
-    $("player").innerHTML = "";
-    makePlayer();
-    player.seek(t || 0);
-  });
-};
-document.addEventListener("keydown", function (e) {
-  if (e.target.tagName === "INPUT") return;
-  if (e.key === "]") go(cur + 1, true);
-  else if (e.key === "[") go(cur - 1, true);
-  else if (e.key === "Escape") { closeSheets(); }
-  else if (e.key === " " && !$("brief").classList.contains("hidden")) { e.preventDefault(); start(); }
-});
+      function makePlayer() {
+        player = AsciinemaPlayer.create("demo.cast", $("player"), {
+          fit: "both", theme: "her2", terminalFontFamily: "var(--mono)", preload: true,
+          pauseOnMarkers: pauseMode, idleTimeLimit: 2
+        });
+        player.addEventListener("marker", function (e) {
+          highlight(e.index);
+          if (pauseMode) brief(e.index);
+        });
+      }
 
-var css = document.createElement("style");
-var pal = THEME.palette.split(":");
-css.textContent = ".asciinema-player-theme-her2{--term-color-foreground:" + THEME.foreground +
-  ";--term-color-background:" + THEME.background + ";" +
-  pal.map(function (c, n) { return "--term-color-" + n + ":" + c; }).join(";") + "}";
-document.head.appendChild(css);
+      $("btn-start").onclick = start;
+      $("btn-about2").onclick = openAbout;
+      // Hide the brief without playing, so the previous answer can be read in full.
+      $("btn-peek").onclick = function () { $("brief").classList.add("hidden"); };
+      $("close-about").onclick = closeSheets;
+      $("about-link").onclick = openAbout;
+      $("ms-link").onclick = function () { openMilestones(); };
+      $("close-ms").onclick = closeSheets;
+      $("v-close").onclick = closeViewer;
+      $("pausemode").onchange = function (e) {
+        pauseMode = e.target.checked;
+        // pauseOnMarkers is fixed at creation: rebuild at the same position.
+        var at = player ? player.getCurrentTime() : Promise.resolve(0);
+        Promise.resolve(at).then(function (t) {
+          if (player) player.dispose();
+          $("player").innerHTML = "";
+          makePlayer();
+          player.seek(t || 0);
+        });
+      };
+      document.addEventListener("keydown", function (e) {
+        if (e.target.tagName === "INPUT") return;
+        if (e.key === "]") go(cur + 1, true);
+        else if (e.key === "[") go(cur - 1, true);
+        else if (e.key === "Escape") { if ($("viewer").classList.contains("open")) closeViewer(); else closeSheets(); }
+        else if (e.key === " " && !$("brief").classList.contains("hidden")) { e.preventDefault(); start(); }
+      });
 
-rail();
-makePlayer();
-var h = location.hash.slice(1), i0 = CHAPTERS.findIndex(function (c) { return c.id === h; });
-go(i0 >= 0 ? i0 : 0, i0 > 0);
-</script>
-</body>
+      var css = document.createElement("style");
+      var pal = THEME.palette.split(":");
+      css.textContent = ".asciinema-player-theme-her2{--term-color-foreground:" + THEME.foreground +
+        ";--term-color-background:" + THEME.background + ";" +
+        pal.map(function (c, n) { return "--term-color-" + n + ":" + c; }).join(";") + "}";
+      document.head.appendChild(css);
+
+      rail();
+      makePlayer();
+      fetch("milestones.json").then(function (r) { return r.ok ? r.json() : []; }).then(function (j) {
+        MS = j; renderMilestones();
+        msButton(CHAPTERS[cur]);
+        var mh = location.hash.match(/^#m=([\w-]+)/); if (mh) openMilestones(mh[1]);
+      }).catch(function () { $("ms-link").style.display = "none"; });
+      var h = location.hash.slice(1), i0 = CHAPTERS.findIndex(function (c) { return c.id === h; });
+      go(i0 >= 0 ? i0 : 0, i0 > 0);
+    </script>
+  </body>
 </html>

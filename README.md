@@ -2,6 +2,9 @@
 
 **🎬 看錄影：<https://htlin222.github.io/from-irb-to-manuscript/>**　·　📝 [全部 prompt](PROMPTS.md)　·　🎯 [AI 估得對嗎？](demo/TRUTH.md)
 
+播放頁右上角的 **「里程碑成品」** 可以直接打開每個階段做出來的東西——IRB 表單、原始資料（模擬）、資料檢查報告、
+收案流程圖、Table 1、存活曲線、投稿檔、審稿往來與定稿——全部取自當時那一版的 git 標籤，可以一邊看錄影一邊對照。
+
 一位醫師想知道：**早期 HER2 陽性乳癌，術前用「雙標靶」（trastuzumab + pertuzumab）是不是比「單標靶」好？**
 看的是手術時腫瘤完全消失的比例（pCR）、無事件存活（EFS）與整體存活（OS）。
 
