@@ -1,0 +1,9 @@
+item,group,value
+median_followup_years,all,6.16837782340862
+median_followup_years,single,10.6858316221766
+median_followup_years,dual,5.07871321013005
+adjuvant_tdm1_pct,single,2.51256281407035
+adjuvant_tdm1_pct,dual,31.7307692307692
+adjuvant_tdm1_pct_non_pcr,single,4.58715596330275
+adjuvant_tdm1_pct_non_pcr,dual,59.7285067873303
+efs_events_rare_assumption,all,0
