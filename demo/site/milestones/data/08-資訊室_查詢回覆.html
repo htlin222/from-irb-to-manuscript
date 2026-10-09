@@ -1,0 +1,93 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>資訊室查詢回覆</title>
+<style>
+:root { --ink:#1c1917; --muted:#57534e; --line:#e7e5e4; --soft:#fafaf9; }
+body { margin:0; padding:24px 28px 48px; background:#fff; color:var(--ink);
+  font:15px/1.7 ui-sans-serif,-apple-system,"PingFang TC","Noto Sans TC",sans-serif; }
+main { max-width:880px; margin:0 auto; }
+h1,h2,h3 { line-height:1.35; } h1 { font-size:22px; } h2 { font-size:18px; margin-top:28px; }
+a { color:var(--ink); }
+table { border-collapse:collapse; font-size:13px; margin:12px 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:4px 8px; text-align:left; vertical-align:top; white-space:nowrap; }
+th { background:var(--soft); position:sticky; top:0; }
+pre,code { font:13px ui-monospace,"SF Mono",Menlo,monospace; }
+pre { background:var(--soft); padding:12px; overflow-x:auto; border-radius:4px; white-space:pre-wrap; }
+blockquote { margin:12px 0; padding:4px 14px; border-left:3px solid var(--line); color:var(--muted); }
+.note { color:var(--muted); font-size:13px; margin:0 0 14px; }
+.banner { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; padding:8px 12px; border-radius:4px;
+  font-size:13px; margin-bottom:14px; }
+@media (max-width:600px) { body { padding:16px; } }
+</style></head><body><main><h1 id="資訊室回覆資料查詢結果">資訊室回覆：資料查詢結果</h1>
+<blockquote>
+<p>⚠️ 教學示範用之模擬文件</p>
+</blockquote>
+<p>陳醫師您好，針對您 2026/11 提出的查詢，回覆如下。需要更正的 4
+筆已整理成
+<code>資訊室_資料更正.csv</code>（機器可讀，含病歷號，請依院內規定保管）。原始匯出檔不重新產生。</p>
+<table>
+<thead>
+<tr>
+<th>您的編號</th>
+<th>查詢事項</th>
+<th>查證結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B3</td>
+<td>生日為 1900-01-01</td>
+<td>系統預設值，紙本病歷亦無記載，<strong>無法更正</strong>，請視為缺值</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>生物相似藥在上市前就有醫囑</td>
+<td>2021
+年藥品代碼整併時，系統以<strong>現行品項回填</strong>歷史醫囑。成分皆為
+trastuzumab，原始品牌無法還原</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>劑量欄位是固定值</td>
+<td>為品項<strong>標準劑量</strong>，非實際給藥量</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>死亡後仍有醫囑</td>
+<td>為<strong>預開未執行</strong>的醫囑（系統未自動取消），未實際給藥</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>最後追蹤日早於最後一次醫囑</td>
+<td>「最後追蹤日」只取門診掛號，未含化療與住院；請以**最後一次就醫紀錄（含醫囑）**為準</td>
+</tr>
+<tr>
+<td>E2</td>
+<td>有手術、術後病理空白 18 人</td>
+<td>均為<strong>先手術</strong>個案，沒有術前治療，所以沒有 yp 分期</td>
+</tr>
+<tr>
+<td>E4</td>
+<td>手術日早於診斷日 2 人</td>
+<td>手術日期<strong>年份誤植</strong>，正確日期見更正檔</td>
+</tr>
+<tr>
+<td>F6</td>
+<td>術後復發日期不晚於手術日 2 人</td>
+<td>實為<strong>術前治療期間發現遠端轉移</strong>，類別誤登，見更正檔</td>
+</tr>
+<tr>
+<td>G4</td>
+<td>有用藥、無手術紀錄 30 人</td>
+<td>其中 16
+位在收案名單內：經查<strong>均於他院手術</strong>，本院無病理報告</td>
+</tr>
+<tr>
+<td>—</td>
+<td>pertuzumab 紀錄是否完整</td>
+<td>自費藥品同樣開立醫囑，2012 年起紀錄完整</td>
+</tr>
+</tbody>
+</table>
+<p>如需進一步資料，請再提出申請（需在 IRB 核准範圍內）。</p>
+<p>資訊室 敬上</p>
+</main></body></html>

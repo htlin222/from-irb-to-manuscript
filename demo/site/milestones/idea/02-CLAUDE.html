@@ -1,0 +1,237 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>專案規則 CLAUDE.md</title>
+<style>
+:root { --ink:#1c1917; --muted:#57534e; --line:#e7e5e4; --soft:#fafaf9; }
+body { margin:0; padding:24px 28px 48px; background:#fff; color:var(--ink);
+  font:15px/1.7 ui-sans-serif,-apple-system,"PingFang TC","Noto Sans TC",sans-serif; }
+main { max-width:880px; margin:0 auto; }
+h1,h2,h3 { line-height:1.35; } h1 { font-size:22px; } h2 { font-size:18px; margin-top:28px; }
+a { color:var(--ink); }
+table { border-collapse:collapse; font-size:13px; margin:12px 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:4px 8px; text-align:left; vertical-align:top; white-space:nowrap; }
+th { background:var(--soft); position:sticky; top:0; }
+pre,code { font:13px ui-monospace,"SF Mono",Menlo,monospace; }
+pre { background:var(--soft); padding:12px; overflow-x:auto; border-radius:4px; white-space:pre-wrap; }
+blockquote { margin:12px 0; padding:4px 14px; border-left:3px solid var(--line); color:var(--muted); }
+.note { color:var(--muted); font-size:13px; margin:0 0 14px; }
+.banner { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; padding:8px 12px; border-radius:4px;
+  font-size:13px; margin-bottom:14px; }
+@media (max-width:600px) { body { padding:16px; } }
+</style></head><body><main><h1 id="從-irb-到投稿her2-陽性乳癌術前抗-her2-治療教學示範">從 IRB
+到投稿：HER2 陽性乳癌術前抗 HER2 治療（教學示範）</h1>
+<p>醫師的研究筆記在 <code>研究構想.md</code>。這個專案從 IRB
+送審一路做到期刊投稿。 ⚠️
+所有人名、單位、病人資料都是虛構／模擬的；任何對外文件（論文、投稿檔）都要清楚標示
+「synthetic data for teaching」，不得讓人誤以為是真實研究。</p>
+<h2 id="怎麼跟醫師說話">怎麼跟醫師說話</h2>
+<ul>
+<li>一律用繁體中文、白話。對方是臨床醫師，不熟程式也不熟統計。</li>
+<li>專有名詞第一次出現時，附一句白話解釋。</li>
+<li>資訊足夠就直接做；只有真的需要醫師決定的事才問，問的時候給 2–4
+個選項並標出你的建議。</li>
+<li>做完一步，用幾句話說：做了什麼、產出在哪裡、下一步是什麼。</li>
+</ul>
+<h2 id="資料夾每樣東西只有一個家">資料夾：每樣東西只有一個家</h2>
+<table>
+<thead>
+<tr>
+<th>位置</th>
+<th>放什麼</th>
+<th>進 git？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>inbox/</code></td>
+<td>外面送來的檔案（IRB
+審查意見、資訊室的資料、期刊審稿意見）。暫存區，處理完搬走</td>
+<td>否</td>
+</tr>
+<tr>
+<td><code>correspondence/</code></td>
+<td>與 IRB、期刊往來的文件（意見、回覆、信件）</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>data/raw/</code></td>
+<td>院內原始資料。<strong>唯讀、永不修改</strong>；只把 SHA-256 記在
+<code>data/raw/MANIFEST.sha256</code></td>
+<td>否（只進 MANIFEST）</td>
+</tr>
+<tr>
+<td><code>data/derived/</code></td>
+<td>程式產生的分析資料集，隨時可重建</td>
+<td>否</td>
+</tr>
+<tr>
+<td><code>analysis/</code></td>
+<td>分析程式與分析參數</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>results/</code></td>
+<td>程式產生的表、圖、數字（只有彙總結果，沒有個別病人資料）</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>manuscript/</code></td>
+<td>論文原稿</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>submission/</code></td>
+<td>依期刊格式自動產生的投稿檔，不手改</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>output/</code></td>
+<td>IRB 表單（<code>make all</code> 產生）</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<h2 id="資料科學的五條規矩">資料科學的五條規矩</h2>
+<ol type="1">
+<li><strong>單一來源（SSOT）</strong>：一個事實只寫在一個地方。研究事實（題目、收案期間、人員）在
+<code>config.toml</code>；分析參數在 <code>analysis/</code>
+底下的一個設定檔。其他地方一律讀取，不抄寫。</li>
+<li><strong>不重複（DRY）</strong>：共用定義（pCR
+的定義、藥名對照、終點事件的定義）只寫一次，其他程式引用。</li>
+<li><strong>可稽核</strong>：原始資料有 checksum；每次分析記錄當時的 git
+commit、資料 checksum、軟體版本。
+每張表、每張圖、每個數字都能追到產生它的程式。</li>
+<li><strong>先驗證再分析</strong>：資料進來先過檢查（欄位、範圍、重複、日期先後）；檢查不過就停下來告訴醫師。
+關鍵的推導（治療分組、pCR、存活時間）要有自動化測試。</li>
+<li><strong>數字不手打</strong>：論文裡的每個數字都從
+<code>results/</code> 的機器可讀檔自動帶入。</li>
+</ol>
+<p>其他規矩：</p>
+<ul>
+<li>去識別化在讀資料的第一步完成；之後的檔案不得出現病歷號、生日。</li>
+<li>統計：先寫分析計畫再看結果；之後改計畫要記錄理由。</li>
+<li>參考文獻必須真實存在：每篇都要有 PMID 或 DOI，並查證過（PubMed /
+Crossref）。不可編造。</li>
+<li><code>make</code> 是唯一入口：<code>make analysis</code>
+從原始資料重跑全部分析，<code>make manuscript</code>
+產生論文與投稿檔。</li>
+<li>重要節點用 git commit 存檔，送審／投稿版本打 tag。</li>
+</ul>
+<h2 id="工具">工具</h2>
+<ul>
+<li>IRB 表單：Python（<code>uv</code>），見下方 IRB-in-Hurry 說明。</li>
+<li>統計：R 4.5（已安裝
+survival、WeightIt、MatchIt、cobalt、EValue、gtsummary、ggplot2、survminer、tableone）。</li>
+<li>論文：Quarto（<code>quarto render</code>）→ Word。</li>
+<li>文獻：OpenEvidence（<code>mcp__openevidence__*</code> 工具）。</li>
+</ul>
+<hr />
+<h1 id="irb-in-hurry">IRB-in-Hurry</h1>
+<p>Institution-agnostic IRB form pipeline: study facts
+(<code>config.toml</code>) + an institution profile
+(<code>institutions/&lt;id&gt;/</code>) → that institution's official
+DOCX forms → PDF → layout gate. KFSYSCC is the reference pack
+(<code>institutions/kfsyscc/</code>). Method:
+<code>docs/METHODOLOGY.md</code> · Fork guide:
+<code>docs/ONBOARDING.md</code>.</p>
+<h2 id="quick-start">Quick Start</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Edit config.toml (facts, `institution = &quot;&lt;id&gt;&quot;`), cv.toml (team), 中文計畫摘要.md (prose)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> check                        <span class="co"># Resolve @references + validate</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> templates                    <span class="co"># Once: cache the institution&#39;s blank forms</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> all                          <span class="co"># Generate + PDF + layout gate + dashboard</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> closure                      <span class="co"># = make all PHASE=closure (any phase; file untouched)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> set-phase PHASE=closure      <span class="co"># Persist the phase in config.toml (keeps comments)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> onboard INST=<span class="op">&lt;</span>id<span class="op">&gt;</span>            <span class="co"># New institution: blanks in templates/&lt;id&gt;/ → draft pack</span></span></code></pre></div>
+<h2 id="conventions">Conventions</h2>
+<ul>
+<li><strong>Python</strong>: Managed by <code>uv</code>
+(pyproject.toml), run via <code>uv run</code> or <code>make</code></li>
+<li><strong>Three kinds of data, never mixed</strong>:
+<ul>
+<li>study facts → <code>config.toml</code> (+ the files it
+<code>@</code>-references)</li>
+<li>institution facts (names, IRB-no label, submission address, page,
+margins, font, blank locations) →
+<code>institutions/&lt;id&gt;/profile.toml</code></li>
+<li>form list + routing →
+<code>institutions/&lt;id&gt;/forms.py</code></li>
+</ul></li>
+<li><strong>No institution literals in code</strong>: generators read
+<code>institution()</code> (<code>scripts.docx_utils</code>); shared
+scripts read <code>scripts.institution.current()</code></li>
+<li><strong>Active institution</strong>: <code>IRB_INSTITUTION</code>
+env → <code>institution</code> in config.toml →
+<code>kfsyscc</code></li>
+<li><strong>Generators</strong>: prefer
+<code>template_fill.blank_generator</code> (fill the official blank);
+rebuild with python-docx only when a blank can't be filled</li>
+<li><strong>Font</strong>: the profile's <code>font</code> (KFSYSCC:
+標楷體 / DFKai-SB); no theme fonts (<code>pin_form_font</code>)</li>
+<li><strong>Checkbox</strong>: ■ (U+25A0) = checked, □ (U+25A1) =
+unchecked, via <code>check()</code></li>
+<li><strong>Config (SSOT)</strong>: All study data in plain text, never
+hardcoded. <code>config.toml</code> holds structured fields;
+<code>"@file"</code> / <code>"@file#key"</code> values inline other
+files (<code>@cv.toml#pi</code>, <code>@中文計畫摘要.md</code>). Long
+prose goes in Markdown (<code>## 標題</code> → section key), not TOML
+strings. Loader + validation: <code>scripts/config.py</code>. Never
+re-dump config.toml — use <code>PHASE=</code> for a one-off run, or
+<code>set_phase.py</code> (edits only the <code>phase =</code> line) to
+persist it</li>
+<li><strong>Output</strong>: DOCX → <code>output/</code>, PDF →
+<code>output/</code>, PNG previews → <code>output/preview/</code></li>
+<li><strong>Page</strong>: profile page size + per-form margins, applied
+by <code>generate_all</code></li>
+<li><strong>Blanks</strong>: <code>templates/&lt;id&gt;/</code>
+(gitignored), the gate's ground truth, never edited</li>
+<li><strong>Layout gate</strong>: <code>make validate</code> must show 0
+errors before submission; PDF is the submission copy</li>
+</ul>
+<h2 id="project-structure">Project Structure</h2>
+<ul>
+<li><code>institutions/&lt;id&gt;/</code> — profile.toml, forms.py,
+form_inventory.md (one folder per committee)</li>
+<li><code>scripts/institution.py</code> — Active profile loader</li>
+<li><code>scripts/config.py</code> — config.toml loader (<code>@</code>
+references, Markdown sections, <code>make check</code>) + validation:
+required fields, enums, real booleans, defaults for optional
+sections</li>
+<li><code>scripts/template_fill.py</code> — Generic fill-the-blank
+generator (labels → values, □ → ■)</li>
+<li><code>scripts/onboard.py</code> — Blank forms → draft profile +
+forms.py + inventory</li>
+<li><code>scripts/docx_utils.py</code> — Shared DOCX helpers
+(profile-aware; <code>form_filename</code> for output names)</li>
+<li><code>scripts/form_selector.py</code> — Phase + study type →
+required forms (active pack); shared <code>PHASE_NAMES</code></li>
+<li><code>scripts/generators/</code> — KFSYSCC rebuild generators
+(reference pack)</li>
+<li><code>scripts/generate_all.py</code> — Main orchestrator
+(<code>--phase</code>, <code>--output</code>,
+<code>--verbose</code>)</li>
+<li><code>scripts/set_phase.py</code> — Persist
+<code>phase = "..."</code> in config.toml without losing comments
+(<code>make set-phase</code>)</li>
+<li><code>scripts/checklist.py</code> — ■/□ checklist generator</li>
+<li><code>scripts/convert.py</code> — DOCX→PDF→PNG pipeline</li>
+<li><code>scripts/fetch_templates.py</code> — Scrape or index official
+blanks → <code>templates/&lt;id&gt;/</code></li>
+<li><code>scripts/validate_layout.py</code> — Layout/font safety gate →
+<code>output/layout_report.md</code></li>
+<li><code>examples/</code> — Complete example studies
+(<code>make init EXAMPLE=tdxd-her2low</code>)</li>
+<li><code>.claude/skills/irb/</code> — Claude Code skill set
+(onboarding: <code>references/onboard-institution.md</code>)</li>
+</ul>
+<h2 id="testing">Testing</h2>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> init EXAMPLE=gcsf-retrospective FORCE=1 <span class="kw">&amp;&amp;</span> <span class="fu">make</span> all</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> test   <span class="co"># every example × every phase, config validation, layout gate</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> lint   <span class="co"># ruff; CI runs both on every PR</span></span></code></pre></div>
+<p>New generator: add it to <code>FORM_REGISTRY</code> in
+<code>institutions/&lt;id&gt;/forms.py</code>; the e2e matrix picks it
+up automatically. New config field: document it in
+<code>.claude/skills/irb/references/config-schema.md</code>, and add it
+to <code>DEFAULTS</code> / <code>BOOL_FIELDS</code> in
+<code>scripts/config.py</code> if generators index it directly.</p>
+</main></body></html>

@@ -1,0 +1,652 @@
+[
+ {
+  "id": "idea",
+  "title": "研究構想",
+  "summary": "醫師的一頁筆記：問題、團隊、資料範圍、目標期刊。一切從這裡開始。",
+  "ref": "demo-start",
+  "tree": "https://github.com/htlin222/from-irb-to-manuscript/tree/demo-start",
+  "chapters": [
+   "01",
+   "02"
+  ],
+  "items": [
+   {
+    "label": "研究構想.md",
+    "kind": "md",
+    "ref": "demo-start",
+    "src": "研究構想.md",
+    "view": "01-研究構想.html",
+    "download": "01-研究構想.md"
+   },
+   {
+    "label": "專案規則 CLAUDE.md",
+    "kind": "md",
+    "ref": "demo-start",
+    "src": "CLAUDE.md",
+    "view": "02-CLAUDE.html",
+    "download": "02-CLAUDE.md"
+   }
+  ]
+ },
+ {
+  "id": "irb-initial",
+  "title": "IRB 初審送審",
+  "summary": "AI 把研究構想轉成研究設定檔與中文計畫摘要，產生醫院官方表單。",
+  "ref": "irb-initial-review",
+  "tree": "https://github.com/htlin222/from-irb-to-manuscript/tree/irb-initial-review",
+  "chapters": [
+   "03",
+   "04",
+   "05"
+  ],
+  "items": [
+   {
+    "label": "SF001 新案審查送審資料表",
+    "group": "新案送審表單",
+    "kind": "pdf",
+    "ref": "irb-initial-review",
+    "view": "SF001_新案審查送審資料表.pdf.html",
+    "pdf": "SF001_新案審查送審資料表.pdf",
+    "src": "make all PHASE=new"
+   },
+   {
+    "label": "SF002 研究計畫申請書",
+    "group": "新案送審表單",
+    "kind": "pdf",
+    "ref": "irb-initial-review",
+    "view": "SF002_研究計畫申請書.pdf.html",
+    "pdf": "SF002_研究計畫申請書.pdf",
+    "src": "make all PHASE=new"
+   },
+   {
+    "label": "SF003 簡易審查範圍檢核表",
+    "group": "新案送審表單",
+    "kind": "pdf",
+    "ref": "irb-initial-review",
+    "view": "SF003_簡易審查範圍檢核表.pdf.html",
+    "pdf": "SF003_簡易審查範圍檢核表.pdf",
+    "src": "make all PHASE=new"
+   },
+   {
+    "label": "SF005 免取得知情同意檢核表",
+    "group": "新案送審表單",
+    "kind": "pdf",
+    "ref": "irb-initial-review",
+    "view": "SF005_免取得知情同意檢核表.pdf.html",
+    "pdf": "SF005_免取得知情同意檢核表.pdf",
+    "src": "make all PHASE=new"
+   },
+   {
+    "label": "SF094 顯著財務利益申報表",
+    "group": "新案送審表單",
+    "kind": "pdf",
+    "ref": "irb-initial-review",
+    "view": "SF094_顯著財務利益申報表.pdf.html",
+    "pdf": "SF094_顯著財務利益申報表.pdf",
+    "src": "make all PHASE=new"
+   },
+   {
+    "label": "中文計畫摘要 待核發",
+    "group": "新案送審表單",
+    "kind": "pdf",
+    "ref": "irb-initial-review",
+    "view": "中文計畫摘要_待核發.pdf.html",
+    "pdf": "中文計畫摘要_待核發.pdf",
+    "src": "make all PHASE=new"
+   },
+   {
+    "label": "研究設定檔 config.toml",
+    "kind": "text",
+    "ref": "irb-initial-review",
+    "src": "config.toml",
+    "view": "01-config.html"
+   }
+  ]
+ },
+ {
+  "id": "irb-review",
+  "title": "IRB 複審與核准",
+  "summary": "審查委員五點意見 → 逐條修改、回覆表、複審表單 → 核准。",
+  "ref": "irb-re-review",
+  "tree": "https://github.com/htlin222/from-irb-to-manuscript/tree/irb-re-review",
+  "chapters": [
+   "06",
+   "07",
+   "08"
+  ],
+  "items": [
+   {
+    "label": "SF019 複審案申請表",
+    "group": "複審送審表單",
+    "kind": "pdf",
+    "ref": "irb-re-review",
+    "view": "SF019_複審案申請表.pdf.html",
+    "pdf": "SF019_複審案申請表.pdf",
+    "src": "make all PHASE=re_review"
+   },
+   {
+    "label": "中文計畫摘要 待核發",
+    "group": "複審送審表單",
+    "kind": "pdf",
+    "ref": "irb-re-review",
+    "view": "中文計畫摘要_待核發.pdf.html",
+    "pdf": "中文計畫摘要_待核發.pdf",
+    "src": "make all PHASE=re_review"
+   },
+   {
+    "label": "IRB 審查意見",
+    "kind": "md",
+    "ref": "irb-re-review",
+    "src": "correspondence/IRB初審_審查意見.md",
+    "view": "01-IRB初審_審查意見.html",
+    "download": "01-IRB初審_審查意見.md"
+   },
+   {
+    "label": "審查意見回覆",
+    "kind": "md",
+    "ref": "irb-re-review",
+    "src": "correspondence/IRB初審_回覆.md",
+    "view": "02-IRB初審_回覆.html",
+    "download": "02-IRB初審_回覆.md"
+   },
+   {
+    "label": "核准通知",
+    "kind": "md",
+    "ref": "irb-approved",
+    "src": "correspondence/IRB核准通知.md",
+    "view": "03-IRB核准通知.html",
+    "download": "03-IRB核准通知.md"
+   }
+  ]
+ },
+ {
+  "id": "data",
+  "title": "拿到資料、資料檢查",
+  "summary": "資訊室匯出的原始資料（模擬）→ 自動檢查報告 → 查詢與更正 → 收案流程圖、Table 1。",
+  "ref": "f3210a7",
+  "tree": "https://github.com/htlin222/from-irb-to-manuscript/tree/f3210a7",
+  "chapters": [
+   "09",
+   "10",
+   "11",
+   "12",
+   "13"
+  ],
+  "items": [
+   {
+    "label": "原始資料：癌登",
+    "kind": "raw",
+    "ref": "f3210a7",
+    "src": "make demo-data → data/raw/registry_breast_her2.csv",
+    "view": "01-registry_breast_her2.html"
+   },
+   {
+    "label": "原始資料：藥囑",
+    "kind": "raw",
+    "ref": "f3210a7",
+    "src": "make demo-data → data/raw/chemo_orders.csv",
+    "view": "02-chemo_orders.html"
+   },
+   {
+    "label": "原始資料：手術病理",
+    "kind": "raw",
+    "ref": "f3210a7",
+    "src": "make demo-data → data/raw/surgery_pathology.csv",
+    "view": "03-surgery_pathology.html"
+   },
+   {
+    "label": "原始資料：追蹤",
+    "kind": "raw",
+    "ref": "f3210a7",
+    "src": "make demo-data → data/raw/followup.csv",
+    "view": "04-followup.html"
+   },
+   {
+    "label": "資訊室資料說明",
+    "kind": "md",
+    "ref": "f3210a7",
+    "src": "correspondence/資訊室_資料說明.md",
+    "view": "05-資訊室_資料說明.html",
+    "download": "05-資訊室_資料說明.md"
+   },
+   {
+    "label": "原始資料 checksum",
+    "kind": "text",
+    "ref": "f3210a7",
+    "src": "data/raw/MANIFEST.sha256",
+    "view": "06-MANIFEST.html"
+   },
+   {
+    "label": "資料檢查報告",
+    "kind": "md",
+    "ref": "f3210a7",
+    "src": "results/data_validation.md",
+    "view": "07-data_validation.html",
+    "download": "07-data_validation.md"
+   },
+   {
+    "label": "資訊室查詢回覆",
+    "kind": "md",
+    "ref": "f3210a7",
+    "src": "correspondence/資訊室_查詢回覆.md",
+    "view": "08-資訊室_查詢回覆.html",
+    "download": "08-資訊室_查詢回覆.md"
+   },
+   {
+    "label": "收案流程圖",
+    "kind": "image",
+    "ref": "f3210a7",
+    "src": "results/figures/cohort_flow.png",
+    "view": "09-cohort_flow.png"
+   },
+   {
+    "label": "Table 1",
+    "kind": "csv",
+    "ref": "f3210a7",
+    "src": "results/table1.csv",
+    "view": "10-table1.html",
+    "download": "10-table1.csv"
+   },
+   {
+    "label": "Table 1（Word）",
+    "kind": "docx",
+    "ref": "f3210a7",
+    "src": "results/table1.docx",
+    "view": "11-table1.pdf.html",
+    "pdf": "11-table1.pdf",
+    "download": "11-table1.docx"
+   }
+  ]
+ },
+ {
+  "id": "analysis",
+  "title": "公平比較：分析計畫與結果",
+  "summary": "先寫分析計畫並鎖定（sap-v1.0），再跑重疊加權、敏感度分析；從原始資料重跑結果逐位元相同。",
+  "ref": "analysis-complete",
+  "tree": "https://github.com/htlin222/from-irb-to-manuscript/tree/analysis-complete",
+  "chapters": [
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "19",
+   "20"
+  ],
+  "items": [
+   {
+    "label": "統計分析計畫 SAP",
+    "kind": "md",
+    "ref": "sap-v1.0",
+    "src": "analysis/SAP.md",
+    "view": "01-SAP.html",
+    "download": "01-SAP.md"
+   },
+   {
+    "label": "決策紀錄",
+    "kind": "md",
+    "ref": "analysis-complete",
+    "src": "analysis/decision_log.md",
+    "view": "02-decision_log.html",
+    "download": "02-decision_log.md"
+   },
+   {
+    "label": "傾向分數重疊圖（審稿後新增）",
+    "kind": "image",
+    "ref": "jcrp-revision-1",
+    "src": "results/figures/ps_overlap.png",
+    "view": "03-ps_overlap.png"
+   },
+   {
+    "label": "加權前後平衡圖",
+    "kind": "image",
+    "ref": "analysis-complete",
+    "src": "results/figures/love_plot.png",
+    "view": "04-love_plot.png"
+   },
+   {
+    "label": "EFS 存活曲線",
+    "kind": "image",
+    "ref": "analysis-complete",
+    "src": "results/figures/km_efs.png",
+    "view": "05-km_efs.png"
+   },
+   {
+    "label": "OS 存活曲線",
+    "kind": "image",
+    "ref": "analysis-complete",
+    "src": "results/figures/km_os.png",
+    "view": "06-km_os.png"
+   },
+   {
+    "label": "pCR 結果",
+    "kind": "csv",
+    "ref": "analysis-complete",
+    "src": "results/outcomes_pcr.csv",
+    "view": "07-outcomes_pcr.html",
+    "download": "07-outcomes_pcr.csv"
+   },
+   {
+    "label": "存活結果",
+    "kind": "csv",
+    "ref": "analysis-complete",
+    "src": "results/outcomes_survival.csv",
+    "view": "08-outcomes_survival.html",
+    "download": "08-outcomes_survival.csv"
+   },
+   {
+    "label": "AI 估計 vs. 模擬真值",
+    "kind": "md",
+    "ref": "v1.0",
+    "src": "demo/TRUTH.md",
+    "view": "09-TRUTH.html",
+    "download": "09-TRUTH.md"
+   }
+  ]
+ },
+ {
+  "id": "amendment",
+  "title": "IRB 修正案",
+  "summary": "分析方法與原核准計畫不同 → 送修正案（含修正前後對照表）→ 核准。",
+  "ref": "irb-amendment-1",
+  "tree": "https://github.com/htlin222/from-irb-to-manuscript/tree/irb-amendment-1",
+  "chapters": [
+   "21",
+   "22"
+  ],
+  "items": [
+   {
+    "label": "SF014 修正案審查送審資料表",
+    "group": "修正案表單",
+    "kind": "pdf",
+    "ref": "irb-amendment-1",
+    "view": "SF014_修正案審查送審資料表.pdf.html",
+    "pdf": "SF014_修正案審查送審資料表.pdf",
+    "src": "make all PHASE=amendment"
+   },
+   {
+    "label": "SF015 修正案申請表",
+    "group": "修正案表單",
+    "kind": "pdf",
+    "ref": "irb-amendment-1",
+    "view": "SF015_修正案申請表.pdf.html",
+    "pdf": "SF015_修正案申請表.pdf",
+    "src": "make all PHASE=amendment"
+   },
+   {
+    "label": "SF016 修正前後對照表",
+    "group": "修正案表單",
+    "kind": "pdf",
+    "ref": "irb-amendment-1",
+    "view": "SF016_修正前後對照表.pdf.html",
+    "pdf": "SF016_修正前後對照表.pdf",
+    "src": "make all PHASE=amendment"
+   },
+   {
+    "label": "SF094 DEMO-2026-0412",
+    "group": "修正案表單",
+    "kind": "pdf",
+    "ref": "irb-amendment-1",
+    "view": "SF094_DEMO-2026-0412.pdf.html",
+    "pdf": "SF094_DEMO-2026-0412.pdf",
+    "src": "make all PHASE=amendment"
+   },
+   {
+    "label": "中文計畫摘要 DEMO-2026-0412",
+    "group": "修正案表單",
+    "kind": "pdf",
+    "ref": "irb-amendment-1",
+    "view": "中文計畫摘要_DEMO-2026-0412.pdf.html",
+    "pdf": "中文計畫摘要_DEMO-2026-0412.pdf",
+    "src": "make all PHASE=amendment"
+   },
+   {
+    "label": "修正說明",
+    "kind": "md",
+    "ref": "irb-amendment-1",
+    "src": "correspondence/IRB修正案1_修正說明.md",
+    "view": "01-IRB修正案1_修正說明.html",
+    "download": "01-IRB修正案1_修正說明.md"
+   },
+   {
+    "label": "修正案核准通知",
+    "kind": "md",
+    "ref": "irb-amendment-1-approved",
+    "src": "correspondence/IRB修正案1_核准通知.md",
+    "view": "02-IRB修正案1_核准通知.html",
+    "download": "02-IRB修正案1_核准通知.md"
+   }
+  ]
+ },
+ {
+  "id": "submission",
+  "title": "投稿版",
+  "summary": "照 JCRP 規定產出：首頁、匿名正文、JPEG 圖、STROBE、補充資料、cover letter；文獻逐篇查證。",
+  "ref": "jcrp-submission-v1",
+  "tree": "https://github.com/htlin222/from-irb-to-manuscript/tree/jcrp-submission-v1",
+  "chapters": [
+   "23",
+   "24",
+   "25",
+   "26",
+   "27",
+   "28"
+  ],
+  "items": [
+   {
+    "label": "匿名正文（Blinded article）",
+    "kind": "docx",
+    "ref": "jcrp-submission-v1",
+    "src": "submission/JCRP_blinded_article.docx",
+    "view": "01-JCRP_blinded_article.pdf.html",
+    "pdf": "01-JCRP_blinded_article.pdf",
+    "download": "01-JCRP_blinded_article.docx"
+   },
+   {
+    "label": "首頁（Title page）",
+    "kind": "docx",
+    "ref": "jcrp-submission-v1",
+    "src": "submission/JCRP_title_page.docx",
+    "view": "02-JCRP_title_page.pdf.html",
+    "pdf": "02-JCRP_title_page.pdf",
+    "download": "02-JCRP_title_page.docx"
+   },
+   {
+    "label": "Cover letter",
+    "kind": "docx",
+    "ref": "jcrp-submission-v1",
+    "src": "submission/JCRP_cover_letter.docx",
+    "view": "03-JCRP_cover_letter.pdf.html",
+    "pdf": "03-JCRP_cover_letter.pdf",
+    "download": "03-JCRP_cover_letter.docx"
+   },
+   {
+    "label": "Figure 1",
+    "kind": "image",
+    "ref": "jcrp-submission-v1",
+    "src": "submission/figures/Figure_1.jpg",
+    "view": "04-Figure_1.jpg"
+   },
+   {
+    "label": "Figure 2",
+    "kind": "image",
+    "ref": "jcrp-submission-v1",
+    "src": "submission/figures/Figure_2.jpg",
+    "view": "05-Figure_2.jpg"
+   },
+   {
+    "label": "Figure 3",
+    "kind": "image",
+    "ref": "jcrp-submission-v1",
+    "src": "submission/figures/Figure_3.jpg",
+    "view": "06-Figure_3.jpg"
+   },
+   {
+    "label": "STROBE 檢核表",
+    "kind": "docx",
+    "ref": "jcrp-submission-v1",
+    "src": "submission/JCRP_STROBE_checklist.docx",
+    "view": "07-JCRP_STROBE_checklist.pdf.html",
+    "pdf": "07-JCRP_STROBE_checklist.pdf",
+    "download": "07-JCRP_STROBE_checklist.docx"
+   },
+   {
+    "label": "補充資料",
+    "kind": "docx",
+    "ref": "jcrp-submission-v1",
+    "src": "submission/JCRP_supplementary_material.docx",
+    "view": "08-JCRP_supplementary_material.pdf.html",
+    "pdf": "08-JCRP_supplementary_material.pdf",
+    "download": "08-JCRP_supplementary_material.docx"
+   },
+   {
+    "label": "文獻查證紀錄",
+    "kind": "csv",
+    "ref": "jcrp-submission-v1",
+    "src": "manuscript/references_verification.csv",
+    "view": "09-references_verification.html",
+    "download": "09-references_verification.csv"
+   },
+   {
+    "label": "投稿前自動檢查",
+    "kind": "md",
+    "ref": "jcrp-submission-v1",
+    "src": "submission/check_report.md",
+    "view": "10-check_report.html",
+    "download": "10-check_report.md"
+   }
+  ]
+ },
+ {
+  "id": "revision1",
+  "title": "第一輪審稿：Major revision",
+  "summary": "編輯與兩位審稿人的意見 → 事後分析（標明 post hoc）、逐點回覆信、標示修改處的修訂稿。",
+  "ref": "jcrp-revision-1",
+  "tree": "https://github.com/htlin222/from-irb-to-manuscript/tree/jcrp-revision-1",
+  "chapters": [
+   "29",
+   "30",
+   "31"
+  ],
+  "items": [
+   {
+    "label": "期刊來信（第一輪）",
+    "kind": "md",
+    "ref": "jcrp-revision-1",
+    "src": "correspondence/JCRP_decision_round1.md",
+    "view": "01-JCRP_decision_round1.html",
+    "download": "01-JCRP_decision_round1.md"
+   },
+   {
+    "label": "逐點回覆信",
+    "kind": "docx",
+    "ref": "jcrp-revision-1",
+    "src": "submission/revision1/JCRP_response_to_reviewers.docx",
+    "view": "02-JCRP_response_to_reviewers.pdf.html",
+    "pdf": "02-JCRP_response_to_reviewers.pdf",
+    "download": "02-JCRP_response_to_reviewers.docx"
+   },
+   {
+    "label": "修訂稿（標示修改處）",
+    "kind": "docx",
+    "ref": "jcrp-revision-1",
+    "src": "submission/revision1/JCRP_revised_article_marked.docx",
+    "view": "03-JCRP_revised_article_marked.pdf.html",
+    "pdf": "03-JCRP_revised_article_marked.pdf",
+    "download": "03-JCRP_revised_article_marked.docx"
+   }
+  ]
+ },
+ {
+  "id": "accepted",
+  "title": "第二輪、接受、IRB 結案",
+  "summary": "Minor revision → 接受刊登 → IRB 結案報告。最後的定稿在這裡。",
+  "ref": "jcrp-accepted",
+  "tree": "https://github.com/htlin222/from-irb-to-manuscript/tree/jcrp-accepted",
+  "chapters": [
+   "32",
+   "33",
+   "34"
+  ],
+  "items": [
+   {
+    "label": "SF023 資料及安全性監測計畫報告書",
+    "group": "結案表單",
+    "kind": "pdf",
+    "ref": "326bbf4",
+    "view": "SF023_資料及安全性監測計畫報告書.pdf.html",
+    "pdf": "SF023_資料及安全性監測計畫報告書.pdf",
+    "src": "make all PHASE=closure"
+   },
+   {
+    "label": "SF036 結案審查送審資料表",
+    "group": "結案表單",
+    "kind": "pdf",
+    "ref": "326bbf4",
+    "view": "SF036_結案審查送審資料表.pdf.html",
+    "pdf": "SF036_結案審查送審資料表.pdf",
+    "src": "make all PHASE=closure"
+   },
+   {
+    "label": "SF037 結案報告摘要表",
+    "group": "結案表單",
+    "kind": "pdf",
+    "ref": "326bbf4",
+    "view": "SF037_結案報告摘要表.pdf.html",
+    "pdf": "SF037_結案報告摘要表.pdf",
+    "src": "make all PHASE=closure"
+   },
+   {
+    "label": "SF038 結案報告書",
+    "group": "結案表單",
+    "kind": "pdf",
+    "ref": "326bbf4",
+    "view": "SF038_結案報告書.pdf.html",
+    "pdf": "SF038_結案報告書.pdf",
+    "src": "make all PHASE=closure"
+   },
+   {
+    "label": "期刊來信（第二輪）",
+    "kind": "md",
+    "ref": "jcrp-accepted",
+    "src": "correspondence/JCRP_decision_round2.md",
+    "view": "01-JCRP_decision_round2.html",
+    "download": "01-JCRP_decision_round2.md"
+   },
+   {
+    "label": "第二輪回覆信",
+    "kind": "docx",
+    "ref": "jcrp-accepted",
+    "src": "submission/revision2/JCRP_response_to_reviewers.docx",
+    "view": "02-JCRP_response_to_reviewers.pdf.html",
+    "pdf": "02-JCRP_response_to_reviewers.pdf",
+    "download": "02-JCRP_response_to_reviewers.docx"
+   },
+   {
+    "label": "接受通知",
+    "kind": "md",
+    "ref": "326bbf4",
+    "src": "correspondence/JCRP_decision_accept.md",
+    "view": "03-JCRP_decision_accept.html",
+    "download": "03-JCRP_decision_accept.md"
+   },
+   {
+    "label": "定稿（接受版）",
+    "kind": "docx",
+    "ref": "jcrp-accepted",
+    "src": "submission/revision2/JCRP_revised_article_clean.docx",
+    "view": "04-JCRP_revised_article_clean.pdf.html",
+    "pdf": "04-JCRP_revised_article_clean.pdf",
+    "download": "04-JCRP_revised_article_clean.docx"
+   },
+   {
+    "label": "IRB 結案報告內容",
+    "kind": "md",
+    "ref": "326bbf4",
+    "src": "results/irb_closure.md",
+    "view": "05-irb_closure.html",
+    "download": "05-irb_closure.md"
+   }
+  ]
+ }
+]

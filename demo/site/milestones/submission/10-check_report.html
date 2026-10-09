@@ -1,0 +1,254 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>投稿前自動檢查</title>
+<style>
+:root { --ink:#1c1917; --muted:#57534e; --line:#e7e5e4; --soft:#fafaf9; }
+body { margin:0; padding:24px 28px 48px; background:#fff; color:var(--ink);
+  font:15px/1.7 ui-sans-serif,-apple-system,"PingFang TC","Noto Sans TC",sans-serif; }
+main { max-width:880px; margin:0 auto; }
+h1,h2,h3 { line-height:1.35; } h1 { font-size:22px; } h2 { font-size:18px; margin-top:28px; }
+a { color:var(--ink); }
+table { border-collapse:collapse; font-size:13px; margin:12px 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:4px 8px; text-align:left; vertical-align:top; white-space:nowrap; }
+th { background:var(--soft); position:sticky; top:0; }
+pre,code { font:13px ui-monospace,"SF Mono",Menlo,monospace; }
+pre { background:var(--soft); padding:12px; overflow-x:auto; border-radius:4px; white-space:pre-wrap; }
+blockquote { margin:12px 0; padding:4px 14px; border-left:3px solid var(--line); color:var(--muted); }
+.note { color:var(--muted); font-size:13px; margin:0 0 14px; }
+.banner { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; padding:8px 12px; border-radius:4px;
+  font-size:13px; margin-bottom:14px; }
+@media (max-width:600px) { body { padding:16px; } }
+</style></head><body><main><h1 id="投稿檔檢查報告jcrp">投稿檔檢查報告（JCRP）</h1>
+<blockquote>
+<p>依 <code>manuscript/journal.yaml</code>。■ 通過　□ 必須修正（make
+submission 會擋下）　⚠ 請人工確認</p>
+</blockquote>
+<ul>
+<li>待修正 0 項、請確認 2 項、通過 40 項</li>
+<li>字數：摘要 222；前言 89；正文 1917；前言＋討論 728；匿名正文檔 18
+頁</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>項目</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>■</td>
+<td>正文佔位文字已全部改寫</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>meta.yaml（首頁資訊）已填完</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>摘要 ≤ 250 字</td>
+<td>目前 222 字</td>
+</tr>
+<tr>
+<td>■</td>
+<td>摘要四段標題齊全且依序</td>
+<td>Background / Materials and Methods / Results / Conclusion</td>
+</tr>
+<tr>
+<td>■</td>
+<td>前言 75–100 字</td>
+<td>目前 89 字</td>
+</tr>
+<tr>
+<td>■</td>
+<td>正文 ≤ 4000 字（不含摘要、參考文獻、表格）</td>
+<td>目前 1917 字</td>
+</tr>
+<tr>
+<td>■</td>
+<td>每則圖說 ≤ 40 字</td>
+<td>Figure 1：12 字；Figure 2：26 字；Figure 3：26 字</td>
+</tr>
+<tr>
+<td>■</td>
+<td>關鍵字 ≥ 3 個</td>
+<td>目前 6 個</td>
+</tr>
+<tr>
+<td>■</td>
+<td>作者 ≤ 6 位</td>
+<td>目前 3 位</td>
+</tr>
+<tr>
+<td>■</td>
+<td>Table 1：≤ 25 列、≤ 10 欄</td>
+<td>24 列 × 4 欄</td>
+</tr>
+<tr>
+<td>■</td>
+<td>Table 2：≤ 25 列、≤ 10 欄</td>
+<td>7 列 × 7 欄</td>
+</tr>
+<tr>
+<td>■</td>
+<td>Table 3：≤ 25 列、≤ 10 欄</td>
+<td>12 列 × 6 欄</td>
+</tr>
+<tr>
+<td>■</td>
+<td>引用的文獻都在 references.yaml 且已查證</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>參考文獻約 50 篇以內</td>
+<td>目前引用 22 篇</td>
+</tr>
+<tr>
+<td>■</td>
+<td>引用放在標點之後（如 ...trials.[@key]）</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>匿名正文不含作者姓名、單位、IRB 編號</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>沒有自我揭露身分的寫法（如 our previous study）</td>
+<td></td>
+</tr>
+<tr>
+<td>⚠ 請確認</td>
+<td>避免非統計意義的 significant</td>
+<td>出現 1 次，請確認皆指統計顯著</td>
+</tr>
+<tr>
+<td>■</td>
+<td>P 值寫精確值（不寫 P &lt; 0.05）</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>P 值用大寫斜體 <em>P</em>（代號 {{..._p}} 已處理）</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>1 到 10 的數字用英文拼寫（one … ten）</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>資料可取得性聲明已撰寫</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>生成式 AI 使用揭露已撰寫</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>兩個檔案都有「synthetic data for teaching」標示</td>
+<td></td>
+</tr>
+<tr>
+<td>⚠ 請確認</td>
+<td>本稿為 AI
+撰寫之教學示範稿（不得投稿；真實投稿時內文須由作者親自撰寫）</td>
+<td>兩個檔案都標示了 AI
+撰寫，符合教學示範；真實投稿前須由作者重寫並移除標示</td>
+</tr>
+<tr>
+<td>■</td>
+<td>首頁檔沒有中文字（英文投稿）</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>匿名正文檔 ≤ 1 MB</td>
+<td>0.03 MB</td>
+</tr>
+<tr>
+<td>■</td>
+<td>Figure_1.jpg：JPEG、≤ 1 MB、≤ 1600×1200 像素</td>
+<td>0.10 MB，1000×1200</td>
+</tr>
+<tr>
+<td>■</td>
+<td>Figure_2.jpg：JPEG、≤ 1 MB、≤ 1600×1200 像素</td>
+<td>0.09 MB，1300×1000</td>
+</tr>
+<tr>
+<td>■</td>
+<td>Figure_3.jpg：JPEG、≤ 1 MB、≤ 1600×1200 像素</td>
+<td>0.09 MB，1300×1000</td>
+</tr>
+<tr>
+<td>■</td>
+<td>Figure_S1.jpg：JPEG、≤ 1 MB、≤ 1600×1200 像素</td>
+<td>0.10 MB，1200×1100</td>
+</tr>
+<tr>
+<td>■</td>
+<td>Cover letter 提及未曾發表／未投他刊、會議報告、經費來源（JCRP
+檢核表）</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>Cover letter 有教學示範標示</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>Table S1a：≤ 25 列、≤ 10 欄</td>
+<td>21 列 × 5 欄</td>
+</tr>
+<tr>
+<td>■</td>
+<td>Table S1b：≤ 25 列、≤ 10 欄</td>
+<td>22 列 × 5 欄</td>
+</tr>
+<tr>
+<td>■</td>
+<td>Table S1c：≤ 25 列、≤ 10 欄</td>
+<td>4 列 × 5 欄</td>
+</tr>
+<tr>
+<td>■</td>
+<td>Table S2：≤ 25 列、≤ 10 欄</td>
+<td>2 列 × 5 欄</td>
+</tr>
+<tr>
+<td>■</td>
+<td>Table S3：≤ 25 列、≤ 10 欄</td>
+<td>2 列 × 3 欄</td>
+</tr>
+<tr>
+<td>■</td>
+<td>補充資料不含作者姓名、單位、IRB 編號</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>STROBE 每一項都找得到所在頁碼</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>分析程式補充檔不含任何資料檔</td>
+<td></td>
+</tr>
+<tr>
+<td>■</td>
+<td>投稿檔總大小 ≤ 25 MB（超過另收費）</td>
+<td>0.6 MB</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>

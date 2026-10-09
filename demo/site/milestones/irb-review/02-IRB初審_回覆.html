@@ -1,0 +1,65 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>審查意見回覆</title>
+<style>
+:root { --ink:#1c1917; --muted:#57534e; --line:#e7e5e4; --soft:#fafaf9; }
+body { margin:0; padding:24px 28px 48px; background:#fff; color:var(--ink);
+  font:15px/1.7 ui-sans-serif,-apple-system,"PingFang TC","Noto Sans TC",sans-serif; }
+main { max-width:880px; margin:0 auto; }
+h1,h2,h3 { line-height:1.35; } h1 { font-size:22px; } h2 { font-size:18px; margin-top:28px; }
+a { color:var(--ink); }
+table { border-collapse:collapse; font-size:13px; margin:12px 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:4px 8px; text-align:left; vertical-align:top; white-space:nowrap; }
+th { background:var(--soft); position:sticky; top:0; }
+pre,code { font:13px ui-monospace,"SF Mono",Menlo,monospace; }
+pre { background:var(--soft); padding:12px; overflow-x:auto; border-radius:4px; white-space:pre-wrap; }
+blockquote { margin:12px 0; padding:4px 14px; border-left:3px solid var(--line); color:var(--muted); }
+.note { color:var(--muted); font-size:13px; margin:0 0 14px; }
+.banner { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; padding:8px 12px; border-radius:4px;
+  font-size:13px; margin-bottom:14px; }
+@media (max-width:600px) { body { padding:16px; } }
+</style></head><body><main><h1 id="irb-初審-審查意見回覆">IRB 初審 審查意見回覆</h1>
+<!--
+教學示範：模擬文件。
+config.toml 的 [re_review] responses 讀取本檔，產生 SF019 複審案申請表的「審查意見回覆」表格。
+每條意見一節（## 意見 N）：第一段是審查意見原文（照抄 IRB審查意見_初審.md），其後是回覆。
+回覆裡的 {closure.data_safety.retention_years} 這類大括號會自動帶入 config.toml 的值，不要手打。
+-->
+
+<h2 id="意見-1">意見 1</h2>
+<p><strong>審查意見：</strong>
+本研究比較不同年代所使用之治療。請說明年代差異（例如支持性照護進步、術後治療改變）可能造成之干擾，以及計畫如何處理。</p>
+<p><strong>回覆：</strong>
+感謝委員指正。兩組治療年代不同，化療方案、支持性照護、病理判讀及術後治療（如術後殘存腫瘤者改用T-DM1）之演變均可能干擾比較。
+本計畫之處理：（1）主要終點採pCR，於手術時判定，不受術後治療改變影響；（2）傾向分數納入治療年份及化療方案；
+（3）敏感度分析限縮於兩種治療並行之年份，EFS並依術後是否使用T-DM1分層；（4）以E-value評估未測量干擾之影響。
+已補充於中文計畫摘要「五、研究設計」及「九、統計分析」。</p>
+<h2 id="意見-2">意見 2</h2>
+<p><strong>審查意見：</strong>
+請說明預計收案人數之依據，或提供檢定力（power）評估。</p>
+<p><strong>回覆：</strong>
+本研究納入資料期間內全部符合條件之病人，非抽樣；預計人數係資訊室依癌登資料之初步估計（約600–700人）。
+依NeoSphere試驗pCR約29%對46%估計，總數600–700人時，即使兩組人數比為1:3，雙尾α=0.05下檢定力仍逾95%；
+若真實差距僅10個百分點，檢定力約57–77%，屆時將如實報告效應值及95%信賴區間。
+EFS與OS事件數有限，分列次要及探索性終點，不作正式檢定力宣稱。已補充於「九、統計分析」。</p>
+<h2 id="意見-3">意見 3</h2>
+<p><strong>審查意見：</strong>
+請具體說明去識別化流程：病歷號與研究編號對照表由何人保管、存放於何處、研究結束後如何銷毀。</p>
+<p><strong>回覆：</strong>
+已補充於「十、資料保護及安全監測」：資訊室以病歷號擷取資料後，於讀入研究資料庫之第一步即以隨機研究編號取代病歷號，並刪除姓名、身分證字號及出生日期（僅保留診斷時年齡）。
+對照表由計畫主持人保管，以加密檔案存放於院內電腦之獨立資料夾，與研究資料分開存放；其他研究人員（含統計分析人員）僅取得去識別化資料。
+研究結束時，對照表及含病歷號之原始擷取檔即予永久刪除，並由計畫主持人留存銷毀紀錄。</p>
+<h2 id="意見-4">意見 4</h2>
+<p><strong>審查意見：</strong>
+主要終點「無事件存活（EFS）」之定義不明確，請說明起算時間點及納入之事件種類。</p>
+<p><strong>回覆：</strong>
+謝謝委員提醒。本研究之主要終點為病理完全反應（pCR，ypT0/is
+ypN0），EFS為次要終點，已於計畫摘要統一用語。
+EFS定義已補充於「七、研究方法」之研究終點：起算點為術前治療首次給藥日；
+事件包括術前治療期間疾病進展致無法手術、局部或區域復發、遠端轉移、對側侵襲性乳癌、第二原發侵襲性惡性腫瘤及任何原因死亡；
+未發生事件者於最後追蹤日或追蹤截止日設限（censored）。</p>
+<h2 id="意見-5">意見 5</h2>
+<p><strong>審查意見：</strong> 研究資料之保存年限請明列於計畫書。</p>
+<p><strong>回覆：</strong>
+已明列於「十、資料保護及安全監測」：去識別化分析資料於研究結束後保存{closure.data_safety.retention_years}年，期滿後以安全刪除方式銷毀；
+對照表及含病歷號之原始擷取檔則於研究結束時即銷毀（見意見3回覆）。</p>
+</main></body></html>

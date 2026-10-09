@@ -1,0 +1,139 @@
+# 播放頁「里程碑」的唯一來源：每個階段的成品，取自當時的 git 版本。
+# demo/rec/build_milestones.py 讀這個檔，把檔案轉成瀏覽器看得到的格式放到 demo/site/milestones/。
+#
+#   ref       這個階段的 git 標籤或 commit；每個檔案都從這個版本取出（item 可用 ref 覆寫）
+#   chapters  對應的錄影章節（stages.toml 的 id）
+#   irb       在 ref 上重新產生 IRB 表單 PDF：phase 與表單代號（output/ 不進 git，所以要重產）
+#   items     src 是 repo 內路徑；"demo-data:" 開頭表示 make demo-data 產生的模擬院內資料
+#             kind 省略時依副檔名：pdf/png/jpg 原樣、md→HTML、csv→表格預覽、docx→PDF 預覽＋原檔
+
+[[milestone]]
+id = "idea"
+title = "研究構想"
+summary = "醫師的一頁筆記：問題、團隊、資料範圍、目標期刊。一切從這裡開始。"
+ref = "demo-start"
+chapters = ["01", "02"]
+items = [
+  { label = "研究構想.md", src = "研究構想.md" },
+  { label = "專案規則 CLAUDE.md", src = "CLAUDE.md" },
+]
+
+[[milestone]]
+id = "irb-initial"
+title = "IRB 初審送審"
+summary = "AI 把研究構想轉成研究設定檔與中文計畫摘要，產生醫院官方表單。"
+ref = "irb-initial-review"
+chapters = ["03", "04", "05"]
+irb = { phase = "new", label = "新案送審表單" }
+items = [
+  { label = "研究設定檔 config.toml", src = "config.toml", kind = "text" },
+]
+
+[[milestone]]
+id = "irb-review"
+title = "IRB 複審與核准"
+summary = "審查委員五點意見 → 逐條修改、回覆表、複審表單 → 核准。"
+ref = "irb-re-review"
+chapters = ["06", "07", "08"]
+irb = { phase = "re_review", label = "複審送審表單" }
+items = [
+  { label = "IRB 審查意見", src = "correspondence/IRB初審_審查意見.md" },
+  { label = "審查意見回覆", src = "correspondence/IRB初審_回覆.md" },
+  { label = "核准通知", src = "correspondence/IRB核准通知.md", ref = "irb-approved" },
+]
+
+[[milestone]]
+id = "data"
+title = "拿到資料、資料檢查"
+summary = "資訊室匯出的原始資料（模擬）→ 自動檢查報告 → 查詢與更正 → 收案流程圖、Table 1。"
+ref = "f3210a7"
+chapters = ["09", "10", "11", "12", "13"]
+items = [
+  { label = "原始資料：癌登", src = "demo-data:registry_breast_her2.csv", kind = "raw" },
+  { label = "原始資料：藥囑", src = "demo-data:chemo_orders.csv", kind = "raw" },
+  { label = "原始資料：手術病理", src = "demo-data:surgery_pathology.csv", kind = "raw" },
+  { label = "原始資料：追蹤", src = "demo-data:followup.csv", kind = "raw" },
+  { label = "資訊室資料說明", src = "correspondence/資訊室_資料說明.md" },
+  { label = "原始資料 checksum", src = "data/raw/MANIFEST.sha256", kind = "text" },
+  { label = "資料檢查報告", src = "results/data_validation.md" },
+  { label = "資訊室查詢回覆", src = "correspondence/資訊室_查詢回覆.md" },
+  { label = "收案流程圖", src = "results/figures/cohort_flow.png" },
+  { label = "Table 1", src = "results/table1.csv" },
+  { label = "Table 1（Word）", src = "results/table1.docx" },
+]
+
+[[milestone]]
+id = "analysis"
+title = "公平比較：分析計畫與結果"
+summary = "先寫分析計畫並鎖定（sap-v1.0），再跑重疊加權、敏感度分析；從原始資料重跑結果逐位元相同。"
+ref = "analysis-complete"
+chapters = ["14", "15", "16", "17", "18", "19", "20"]
+items = [
+  { label = "統計分析計畫 SAP", src = "analysis/SAP.md", ref = "sap-v1.0" },
+  { label = "決策紀錄", src = "analysis/decision_log.md" },
+  { label = "傾向分數重疊圖（審稿後新增）", src = "results/figures/ps_overlap.png", ref = "jcrp-revision-1" },
+  { label = "加權前後平衡圖", src = "results/figures/love_plot.png" },
+  { label = "EFS 存活曲線", src = "results/figures/km_efs.png" },
+  { label = "OS 存活曲線", src = "results/figures/km_os.png" },
+  { label = "pCR 結果", src = "results/outcomes_pcr.csv" },
+  { label = "存活結果", src = "results/outcomes_survival.csv" },
+  { label = "AI 估計 vs. 模擬真值", src = "demo/TRUTH.md", ref = "v1.0" },
+]
+
+[[milestone]]
+id = "amendment"
+title = "IRB 修正案"
+summary = "分析方法與原核准計畫不同 → 送修正案（含修正前後對照表）→ 核准。"
+ref = "irb-amendment-1"
+chapters = ["21", "22"]
+irb = { phase = "amendment", label = "修正案表單" }
+items = [
+  { label = "修正說明", src = "correspondence/IRB修正案1_修正說明.md" },
+  { label = "修正案核准通知", src = "correspondence/IRB修正案1_核准通知.md", ref = "irb-amendment-1-approved" },
+]
+
+[[milestone]]
+id = "submission"
+title = "投稿版"
+summary = "照 JCRP 規定產出：首頁、匿名正文、JPEG 圖、STROBE、補充資料、cover letter；文獻逐篇查證。"
+ref = "jcrp-submission-v1"
+chapters = ["23", "24", "25", "26", "27", "28"]
+items = [
+  { label = "匿名正文（Blinded article）", src = "submission/JCRP_blinded_article.docx" },
+  { label = "首頁（Title page）", src = "submission/JCRP_title_page.docx" },
+  { label = "Cover letter", src = "submission/JCRP_cover_letter.docx" },
+  { label = "Figure 1", src = "submission/figures/Figure_1.jpg" },
+  { label = "Figure 2", src = "submission/figures/Figure_2.jpg" },
+  { label = "Figure 3", src = "submission/figures/Figure_3.jpg" },
+  { label = "STROBE 檢核表", src = "submission/JCRP_STROBE_checklist.docx" },
+  { label = "補充資料", src = "submission/JCRP_supplementary_material.docx" },
+  { label = "文獻查證紀錄", src = "manuscript/references_verification.csv" },
+  { label = "投稿前自動檢查", src = "submission/check_report.md" },
+]
+
+[[milestone]]
+id = "revision1"
+title = "第一輪審稿：Major revision"
+summary = "編輯與兩位審稿人的意見 → 事後分析（標明 post hoc）、逐點回覆信、標示修改處的修訂稿。"
+ref = "jcrp-revision-1"
+chapters = ["29", "30", "31"]
+items = [
+  { label = "期刊來信（第一輪）", src = "correspondence/JCRP_decision_round1.md" },
+  { label = "逐點回覆信", src = "submission/revision1/JCRP_response_to_reviewers.docx" },
+  { label = "修訂稿（標示修改處）", src = "submission/revision1/JCRP_revised_article_marked.docx" },
+]
+
+[[milestone]]
+id = "accepted"
+title = "第二輪、接受、IRB 結案"
+summary = "Minor revision → 接受刊登 → IRB 結案報告。最後的定稿在這裡。"
+ref = "jcrp-accepted"
+chapters = ["32", "33", "34"]
+irb = { phase = "closure", label = "結案表單", ref = "326bbf4" }
+items = [
+  { label = "期刊來信（第二輪）", src = "correspondence/JCRP_decision_round2.md" },
+  { label = "第二輪回覆信", src = "submission/revision2/JCRP_response_to_reviewers.docx" },
+  { label = "接受通知", src = "correspondence/JCRP_decision_accept.md", ref = "326bbf4" },
+  { label = "定稿（接受版）", src = "submission/revision2/JCRP_revised_article_clean.docx" },
+  { label = "IRB 結案報告內容", src = "results/irb_closure.md", ref = "326bbf4" },
+]

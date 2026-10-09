@@ -1,0 +1,125 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>決策紀錄</title>
+<style>
+:root { --ink:#1c1917; --muted:#57534e; --line:#e7e5e4; --soft:#fafaf9; }
+body { margin:0; padding:24px 28px 48px; background:#fff; color:var(--ink);
+  font:15px/1.7 ui-sans-serif,-apple-system,"PingFang TC","Noto Sans TC",sans-serif; }
+main { max-width:880px; margin:0 auto; }
+h1,h2,h3 { line-height:1.35; } h1 { font-size:22px; } h2 { font-size:18px; margin-top:28px; }
+a { color:var(--ink); }
+table { border-collapse:collapse; font-size:13px; margin:12px 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:4px 8px; text-align:left; vertical-align:top; white-space:nowrap; }
+th { background:var(--soft); position:sticky; top:0; }
+pre,code { font:13px ui-monospace,"SF Mono",Menlo,monospace; }
+pre { background:var(--soft); padding:12px; overflow-x:auto; border-radius:4px; white-space:pre-wrap; }
+blockquote { margin:12px 0; padding:4px 14px; border-left:3px solid var(--line); color:var(--muted); }
+.note { color:var(--muted); font-size:13px; margin:0 0 14px; }
+.banner { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; padding:8px 12px; border-radius:4px;
+  font-size:13px; margin-bottom:14px; }
+@media (max-width:600px) { body { padding:16px; } }
+</style></head><body><main><h1 id="分析決定紀錄">分析決定紀錄</h1>
+<p>每一項影響分析的決定：日期、決定者、內容、理由、依據。統計分析計畫（SAP）定稿後，
+任何修改也記在這裡並註明理由。</p>
+<blockquote>
+<p>教學示範：人員與資料皆為虛構（synthetic data for teaching）。</p>
+</blockquote>
+<h2 id="2026-10-09-pcr-定義ypn0i-不算-pcr">2026-10-09　pCR
+定義：ypN0(i+) 不算 pCR</h2>
+<ul>
+<li><strong>決定者</strong>：計畫主持人</li>
+<li><strong>決定</strong>：pCR 採國際通用定義 ypT0/is
+ypN0。淋巴結僅有孤立腫瘤細胞（ypN0(i+)）或微轉移（ypN1mi）
+都<strong>不算</strong> pCR；乳房只剩原位癌（ypTis）算
+pCR。未手術者（術前惡化）為非 pCR。</li>
+<li><strong>理由</strong>：孤立腫瘤細胞仍是殘留的癌細胞，且與較差的預後相關；國際共識明確排除於
+pCR 之外。 與 IRB
+核准計畫「術後乳房及腋下淋巴結無侵襲性癌殘留」一致，不需修正案。</li>
+<li><strong>影響</strong>：收案名單中 27 位為 ypN0(i+)，歸為非
+pCR。</li>
+<li><strong>依據</strong>（OpenEvidence 查詢，DOI 經 Crossref 驗證）：
+<ul>
+<li>Provenzano E, et al. Standardization of pathologic evaluation and
+reporting of postneoadjuvant specimens in clinical trials of breast
+cancer: recommendations from an international working group. <em>Mod
+Pathol</em>. 2015;28(9):1185-1201. doi:10.1038/modpathol.2015.74</li>
+<li>Bossuyt V, et al. Recommendations for standardized pathological
+characterization of residual disease for neoadjuvant clinical trials of
+breast cancer by the BIG-NABCG collaboration. <em>Ann Oncol</em>.
+2015;26(7):1280-1291. doi:10.1093/annonc/mdv161</li>
+<li>Bossuyt V, et al. A dedicated structured data set for reporting of
+invasive carcinoma of the breast in the setting of neoadjuvant therapy:
+recommendations from the International Collaboration on Cancer Reporting
+(ICCR). <em>Histopathology</em>. 2024;84(7):1111-1129.
+doi:10.1111/his.15165</li>
+</ul></li>
+<li><strong>程式</strong>：<code>analysis/R/definitions.R</code> 的
+<code>pcr()</code>；測試
+<code>analysis/tests/test_definitions.R</code></li>
+</ul>
+<h2
+id="2026-10-09-資訊室查證後的資料處理">2026-10-09　資訊室查證後的資料處理</h2>
+<p>依資訊室回覆（<code>correspondence/資訊室_查詢回覆.md</code>），逐項處理記於
+<code>analysis/data_queries.yaml</code>。 影響分析定義的兩項：</p>
+<ul>
+<li><strong>死亡後的醫囑</strong>為預開未執行，不視為給藥（<code>drop_unexecuted_orders()</code>）。</li>
+<li><strong>追蹤終點</strong>取最後一次就醫（最後門診與最後一次醫囑取較晚者），死亡者取死亡日，不超過追蹤截止日
+（<code>followup_end()</code>）。限制：存活者若有預開未執行的醫囑，追蹤時間可能略為高估。</li>
+</ul>
+<h2
+id="2026-10-09-統計分析計畫-v10-草案與-irb-核准計畫書的差異">2026-10-09　統計分析計畫
+v1.0 草案：與 IRB 核准計畫書的差異</h2>
+<p>計畫書指 IRB 核准的 <code>中文計畫摘要.md</code>（tag
+<code>irb-approved</code>）。以下差異都是在看任何療效結果之前決定的。</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>計畫書</th>
+<th>SAP v1.0</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>主分析用 IPTW</td>
+<td><strong>重疊加權</strong>（ATO）；IPTW 不採用</td>
+<td>兩組治療年代幾乎不重疊。設計階段試算（只用基期資料）顯示 IPTW
+下單標靶組的有效樣本數僅約 5
+人，且加權後仍不平衡；重疊加權可讓所有共變項完全平衡</td>
+</tr>
+<tr>
+<td>2</td>
+<td>傾向分數共變項：年齡、T/N、荷爾蒙受體、分級、化療方案、年份</td>
+<td>另外加入停經狀態、ECOG、BMI、LVEF、HER2 判定方式、Ki-67</td>
+<td>都是治療前特徵，可能影響治療選擇；涵蓋原列的所有變項</td>
+</tr>
+<tr>
+<td>3</td>
+<td>EFS 依術後是否使用 T-DM1 分層</td>
+<td>只做描述性報告</td>
+<td>術後 T-DM1 取決於術前治療反應，屬治療後變項，分層會造成偏差</td>
+</tr>
+<tr>
+<td>4</td>
+<td>EFS 事件含對側侵襲性乳癌、第二原發癌</td>
+<td>不含</td>
+<td>資料中沒有這兩個欄位；列為研究限制</td>
+</tr>
+<tr>
+<td>5</td>
+<td>樣本數段落：檢定力逾 95%</td>
+<td>依有效樣本數估計，約 60%</td>
+<td>重疊加權後的有效樣本數遠小於全部人數；結果以效應值與信賴區間為主</td>
+</tr>
+<tr>
+<td>6</td>
+<td>（無）</td>
+<td>新增敏感度分析：pCR 改用 ypT0
+ypN0、傳統多變項迴歸、完整個案分析；新增探索性次族群（荷爾蒙受體）</td>
+<td>增加結果的可信度</td>
+</tr>
+</tbody>
+</table>
+<p>是否需要向 IRB 提出修正案：待計畫主持人決定。</p>
+</main></body></html>
