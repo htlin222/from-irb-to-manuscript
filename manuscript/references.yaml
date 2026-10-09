@@ -1,0 +1,179 @@
+# 參考文獻清單（單一來源）。只手寫 DOI 與預期的第一作者／年份；書目內容一律由
+# manuscript/verify_references.py 從 Crossref 與 PubMed 取得並互相比對，產生 references.bib。
+# 來源：OpenEvidence 查詢（2026-10-09；article id 見 found_via）。
+# role：論文中用來支持什麼（給作者參考，引用前請讀原文摘要確認）。
+
+- key: gianni2012neosphere
+  doi: 10.1016/S1470-2045(11)70336-9
+  expect: {first_author: Gianni, year: 2012}
+  topic: rct
+  role: NeoSphere — adding pertuzumab to trastuzumab + docetaxel increased breast pCR (29% to 46%)
+  found_via: f2f69976
+- key: gianni2016neosphere5y
+  doi: 10.1016/S1470-2045(16)00163-7
+  expect: {first_author: Gianni, year: 2016}
+  topic: rct
+  role: NeoSphere 5-year PFS/DFS — numerically favoured pertuzumab, not powered; total pCR associated with longer PFS
+  found_via: 7b12408a
+- key: schneeweiss2013tryphaena
+  doi: 10.1093/annonc/mdt182
+  expect: {first_author: Schneeweiss, year: 2013}
+  topic: rct
+  role: TRYPHAENA — high pCR with anthracycline-containing and carboplatin-based dual-blockade regimens; cardiac safety
+  found_via: 7b12408a
+- key: shao2020peony
+  doi: 10.1001/jamaoncol.2019.3692
+  expect: {first_author: Shao, year: 2020}
+  topic: rct
+  role: PEONY — Asian phase 3 trial; pertuzumab increased total pCR
+  found_via: f2f69976
+- key: huang2024peonyfinal
+  doi: 10.1038/s41467-024-45591-7
+  expect: {first_author: Huang, year: 2024}
+  topic: rct
+  role: PEONY final analysis — 5-year EFS 84.8% vs 73.7% (HR 0.53)
+  found_via: 6a386ce5
+- key: cortazar2014ctneobc
+  doi: 10.1016/S0140-6736(13)62422-8
+  expect: {first_author: Cortazar, year: 2014}
+  topic: pcr
+  role: CTNeoBC — patient-level association of pCR (ypT0/is ypN0) with EFS/OS, strongest in HER2+; trial-level surrogacy not shown
+  found_via: f2f69976
+- key: vonminckwitz2017aphinity
+  doi: 10.1056/NEJMoa1703643
+  expect: {first_author: von Minckwitz, year: 2017}
+  topic: rct
+  role: APHINITY — adjuvant pertuzumab improved invasive DFS modestly
+  found_via: f2f69976
+- key: loibl2024aphinityos
+  doi: 10.1200/JCO.23.02505
+  expect: {first_author: Loibl, year: 2024}
+  topic: rct
+  role: APHINITY third interim OS analysis (8.4-year follow-up)
+  found_via: f2f69976
+- key: bilici2023her2path
+  doi: 10.1080/0284186X.2023.2202330
+  expect: {first_author: Bilici, year: 2023}
+  topic: real_world
+  role: HER2PATH multicentre real-world study — pCR 66.4% with THP vs 56.8% with TH
+  found_via: 6a386ce5
+- key: fabbri2023neopearl
+  doi: 10.3389/fonc.2023.1177681
+  expect: {first_author: Fabbri, year: 2023}
+  topic: real_world
+  role: Neopearl (Italy) — pCR 62% vs 49%; 5-year EFS 93% vs 81%; propensity-matched results concordant
+  found_via: 6a386ce5
+- key: cheng2022csbrs015
+  doi: 10.1097/CM9.0000000000002197
+  expect: {first_author: Cheng, year: 2022}
+  topic: real_world
+  role: CSBrS-015 (China) — pCR 57.9% with THP vs 34.5% with TH
+  found_via: 6a386ce5
+- key: diazredondo2019pam50
+  doi: 10.3389/fonc.2019.01178
+  expect: {first_author: Díaz-Redondo, year: 2019}
+  topic: real_world
+  role: Spanish real-world cohort — pCR 61% vs 39%; benefit by PAM50 subtype
+  found_via: 6a386ce5
+- key: spring2018realworld
+  doi: 10.1007/s10549-018-4959-8
+  expect: {first_author: Spring, year: 2018}
+  topic: real_world
+  role: Single-institution real-world effectiveness of neoadjuvant pertuzumab-containing regimens
+  found_via: 7b12408a
+- key: matsas2026metaanalysis
+  doi: 10.31557/APJCP.2026.27.3.813
+  expect: {first_author: Matsas, year: 2026}
+  topic: real_world
+  role: Meta-analysis of 18 real-world studies — pooled OR for pCR 1.81 (95% CI 1.56-2.09)
+  found_via: 6a386ce5
+- key: vonminckwitz2019katherine
+  doi: 10.1056/NEJMoa1814017
+  expect: {first_author: von Minckwitz, year: 2019}
+  topic: residual
+  role: KATHERINE — adjuvant T-DM1 for residual disease improved invasive DFS (explains era effect on EFS)
+  found_via: 03ac975a
+- key: geyer2025katherineos
+  doi: 10.1056/NEJMoa2406070
+  expect: {first_author: Geyer, year: 2025}
+  topic: residual
+  role: KATHERINE final analysis — overall survival benefit (HR 0.66)
+  found_via: 03ac975a
+- key: yau2022rcb
+  doi: 10.1016/S1470-2045(21)00589-1
+  expect: {first_author: Yau, year: 2022}
+  topic: residual
+  role: Residual cancer burden prognostic across subtypes (5161 patients)
+  found_via: 03ac975a
+- key: wong2019itc
+  doi: 10.1245/s10434-019-07517-2
+  expect: {first_author: Wong, year: 2019}
+  topic: residual
+  role: Residual nodal ITCs/micrometastases after NAC associated with worse DFS than ypN0
+  found_via: 03ac975a
+- key: montagna2025icaro
+  doi: 10.1200/JCO.24.01052
+  expect: {first_author: Montagna, year: 2025}
+  topic: residual
+  role: OPBC-05/ICARO — outcomes of ypN0(i+) after neoadjuvant chemotherapy
+  found_via: 3b0b9afa
+- key: provenzano2015bignabcg
+  doi: 10.1038/modpathol.2015.74
+  expect: {first_author: Provenzano, year: 2015}
+  topic: pcr
+  role: BIG-NABCG — ITCs and micrometastases after NAST are not pCR (also cited in decision_log)
+  found_via: 3b0b9afa
+- key: bossuyt2015bignabcg
+  doi: 10.1093/annonc/mdv161
+  expect: {first_author: Bossuyt, year: 2015}
+  topic: pcr
+  role: BIG-NABCG recommendations (Annals of Oncology version)
+  found_via: 3b0b9afa
+- key: bossuyt2024iccr
+  doi: 10.1111/his.15165
+  expect: {first_author: Bossuyt, year: 2024}
+  topic: pcr
+  role: ICCR dataset — absence of ITCs in all sampled nodes required for pCR
+  found_via: 3b0b9afa
+- key: li2018overlap
+  doi: 10.1080/01621459.2016.1260466
+  expect: {first_author: Li, year: 2018}
+  topic: methods
+  role: Overlap weights — original methodology (JASA)
+  found_via: f2f69976
+- key: li2019extreme
+  doi: 10.1093/aje/kwy201
+  expect: {first_author: Li, year: 2019}
+  topic: methods
+  role: Overlap weights to address extreme propensity scores
+  found_via: d6d5a830
+- key: thomas2020overlapjama
+  doi: 10.1001/jama.2020.7819
+  expect: {first_author: Thomas, year: 2020}
+  topic: methods
+  role: JAMA Guide to Statistics and Methods — overlap weighting
+  found_via: d6d5a830
+- key: hernan2016targettrial
+  doi: 10.1093/aje/kwv254
+  expect: {first_author: Hernán, year: 2016}
+  topic: methods
+  role: Target trial emulation
+  found_via: d6d5a830
+- key: vanderweele2017evalue
+  doi: 10.7326/M16-2607
+  expect: {first_author: VanderWeele, year: 2017}
+  topic: methods
+  role: E-value for unmeasured confounding
+  found_via: d6d5a830
+- key: leyrat2019mips
+  doi: 10.1177/0962280217713032
+  expect: {first_author: Leyrat, year: 2019}
+  topic: methods
+  role: Multiple imputation with propensity scores (estimate within each imputed dataset, then pool)
+  found_via: f2f69976
+- key: vonelm2007strobe
+  doi: 10.1016/S0140-6736(07)61602-X
+  expect: {first_author: von Elm, year: 2007}
+  topic: methods
+  role: STROBE reporting guideline (required by JCRP for observational studies)
+  found_via: d6d5a830

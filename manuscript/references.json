@@ -1,0 +1,3230 @@
+[
+  {
+    "id": "gianni2012neosphere",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Gianni",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Pienkowski",
+        "given": "T",
+        "parse-names": false
+      },
+      {
+        "family": "Im",
+        "given": "YH",
+        "parse-names": false
+      },
+      {
+        "family": "Roman",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Tseng",
+        "given": "LM",
+        "parse-names": false
+      },
+      {
+        "family": "Liu",
+        "given": "MC",
+        "parse-names": false
+      },
+      {
+        "family": "Lluch",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Staroslawska",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "de la Haba-Rodriguez",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Im",
+        "given": "SA",
+        "parse-names": false
+      },
+      {
+        "family": "Pedrini",
+        "given": "JL",
+        "parse-names": false
+      },
+      {
+        "family": "Poirier",
+        "given": "B",
+        "parse-names": false
+      },
+      {
+        "family": "Morandi",
+        "given": "P",
+        "parse-names": false
+      },
+      {
+        "family": "Semiglazov",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Srimuninnimit",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Bianchi",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Szado",
+        "given": "T",
+        "parse-names": false
+      },
+      {
+        "family": "Ratnayake",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Ross",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Valagussa",
+        "given": "P",
+        "parse-names": false
+      }
+    ],
+    "title": "Efficacy and safety of neoadjuvant pertuzumab and trastuzumab in women with locally advanced, inflammatory, or early HER2-positive breast cancer (NeoSphere): a randomised multicentre, open-label, phase 2 trial",
+    "container-title": "Lancet Oncol",
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "volume": "13",
+    "page": "25-32",
+    "DOI": "10.1016/s1470-2045(11)70336-9",
+    "PMID": "22153890"
+  },
+  {
+    "id": "gianni2016neosphere5y",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Gianni",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Pienkowski",
+        "given": "T",
+        "parse-names": false
+      },
+      {
+        "family": "Im",
+        "given": "YH",
+        "parse-names": false
+      },
+      {
+        "family": "Tseng",
+        "given": "LM",
+        "parse-names": false
+      },
+      {
+        "family": "Liu",
+        "given": "MC",
+        "parse-names": false
+      },
+      {
+        "family": "Lluch",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Starosławska",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "de la Haba-Rodriguez",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Im",
+        "given": "SA",
+        "parse-names": false
+      },
+      {
+        "family": "Pedrini",
+        "given": "JL",
+        "parse-names": false
+      },
+      {
+        "family": "Poirier",
+        "given": "B",
+        "parse-names": false
+      },
+      {
+        "family": "Morandi",
+        "given": "P",
+        "parse-names": false
+      },
+      {
+        "family": "Semiglazov",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Srimuninnimit",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Bianchi",
+        "given": "GV",
+        "parse-names": false
+      },
+      {
+        "family": "Magazzù",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "McNally",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Douthwaite",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Ross",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Valagussa",
+        "given": "P",
+        "parse-names": false
+      }
+    ],
+    "title": "5-year analysis of neoadjuvant pertuzumab and trastuzumab in patients with locally advanced, inflammatory, or early-stage HER2-positive breast cancer (NeoSphere): a multicentre, open-label, phase 2 randomised trial",
+    "container-title": "Lancet Oncol",
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "volume": "17",
+    "page": "791-800",
+    "DOI": "10.1016/s1470-2045(16)00163-7",
+    "PMID": "27179402"
+  },
+  {
+    "id": "schneeweiss2013tryphaena",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Schneeweiss",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Chia",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Hickish",
+        "given": "T",
+        "parse-names": false
+      },
+      {
+        "family": "Harvey",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Eniu",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Hegg",
+        "given": "R",
+        "parse-names": false
+      },
+      {
+        "family": "Tausch",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Seo",
+        "given": "JH",
+        "parse-names": false
+      },
+      {
+        "family": "Tsai",
+        "given": "YF",
+        "parse-names": false
+      },
+      {
+        "family": "Ratnayake",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "McNally",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Ross",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Cortés",
+        "given": "J",
+        "parse-names": false
+      }
+    ],
+    "title": "Pertuzumab plus trastuzumab in combination with standard neoadjuvant anthracycline-containing and anthracycline-free chemotherapy regimens in patients with HER2-positive early breast cancer: a randomized phase II cardiac safety study (TRYPHAENA)",
+    "container-title": "Ann Oncol",
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "volume": "24",
+    "page": "2278-84",
+    "DOI": "10.1093/annonc/mdt182",
+    "PMID": "23704196"
+  },
+  {
+    "id": "shao2020peony",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Shao",
+        "given": "Z",
+        "parse-names": false
+      },
+      {
+        "family": "Pang",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "Yang",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Li",
+        "given": "W",
+        "parse-names": false
+      },
+      {
+        "family": "Wang",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Cui",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Liao",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Wang",
+        "given": "Y",
+        "parse-names": false
+      },
+      {
+        "family": "Wang",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Chang",
+        "given": "YC",
+        "parse-names": false
+      },
+      {
+        "family": "Wang",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Kang",
+        "given": "SY",
+        "parse-names": false
+      },
+      {
+        "family": "Seo",
+        "given": "JH",
+        "parse-names": false
+      },
+      {
+        "family": "Shen",
+        "given": "K",
+        "parse-names": false
+      },
+      {
+        "family": "Laohawiriyakamol",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Jiang",
+        "given": "Z",
+        "parse-names": false
+      },
+      {
+        "family": "Li",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Zhou",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Althaus",
+        "given": "B",
+        "parse-names": false
+      },
+      {
+        "family": "Mao",
+        "given": "Y",
+        "parse-names": false
+      },
+      {
+        "family": "Eng-Wong",
+        "given": "J",
+        "parse-names": false
+      }
+    ],
+    "title": "Efficacy, Safety, and Tolerability of Pertuzumab, Trastuzumab, and Docetaxel for Patients With Early or Locally Advanced ERBB2-Positive Breast Cancer in Asia: The PEONY Phase 3 Randomized Clinical Trial",
+    "container-title": "JAMA Oncol",
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "volume": "6",
+    "page": "e193692",
+    "DOI": "10.1001/jamaoncol.2019.3692",
+    "PMID": "31647503"
+  },
+  {
+    "id": "huang2024peonyfinal",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Huang",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Pang",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "Yang",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Li",
+        "given": "W",
+        "parse-names": false
+      },
+      {
+        "family": "Wang",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Cui",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Liao",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Wang",
+        "given": "Y",
+        "parse-names": false
+      },
+      {
+        "family": "Wang",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Chang",
+        "given": "YC",
+        "parse-names": false
+      },
+      {
+        "family": "Wang",
+        "given": "HC",
+        "parse-names": false
+      },
+      {
+        "family": "Kang",
+        "given": "SY",
+        "parse-names": false
+      },
+      {
+        "family": "Seo",
+        "given": "JH",
+        "parse-names": false
+      },
+      {
+        "family": "Shen",
+        "given": "K",
+        "parse-names": false
+      },
+      {
+        "family": "Laohawiriyakamol",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Jiang",
+        "given": "Z",
+        "parse-names": false
+      },
+      {
+        "family": "Wang",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Lamour",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Song",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Curran",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Duan",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Lysbet de Haas",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Restuccia",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Shao",
+        "given": "Z",
+        "parse-names": false
+      }
+    ],
+    "title": "Neoadjuvant-adjuvant pertuzumab in HER2-positive early breast cancer: final analysis of the randomized phase III PEONY trial",
+    "container-title": "Nat Commun",
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "volume": "15",
+    "page": "2153",
+    "DOI": "10.1038/s41467-024-45591-7",
+    "PMID": "38461323"
+  },
+  {
+    "id": "cortazar2014ctneobc",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Cortazar",
+        "given": "P",
+        "parse-names": false
+      },
+      {
+        "family": "Zhang",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Untch",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Mehta",
+        "given": "K",
+        "parse-names": false
+      },
+      {
+        "family": "Costantino",
+        "given": "JP",
+        "parse-names": false
+      },
+      {
+        "family": "Wolmark",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Bonnefoi",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Cameron",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "Gianni",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Valagussa",
+        "given": "P",
+        "parse-names": false
+      },
+      {
+        "family": "Swain",
+        "given": "SM",
+        "parse-names": false
+      },
+      {
+        "family": "Prowell",
+        "given": "T",
+        "parse-names": false
+      },
+      {
+        "family": "Loibl",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Wickerham",
+        "given": "DL",
+        "parse-names": false
+      },
+      {
+        "family": "Bogaerts",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Baselga",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Perou",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Blumenthal",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Blohmer",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Mamounas",
+        "given": "EP",
+        "parse-names": false
+      },
+      {
+        "family": "Bergh",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Semiglazov",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Justice",
+        "given": "R",
+        "parse-names": false
+      },
+      {
+        "family": "Eidtmann",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Paik",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Piccart",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Sridhara",
+        "given": "R",
+        "parse-names": false
+      },
+      {
+        "family": "Fasching",
+        "given": "PA",
+        "parse-names": false
+      },
+      {
+        "family": "Slaets",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Tang",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Gerber",
+        "given": "B",
+        "parse-names": false
+      },
+      {
+        "family": "Geyer",
+        "given": "CE",
+        "suffix": "Jr",
+        "parse-names": false
+      },
+      {
+        "family": "Pazdur",
+        "given": "R",
+        "parse-names": false
+      },
+      {
+        "family": "Ditsch",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Rastogi",
+        "given": "P",
+        "parse-names": false
+      },
+      {
+        "family": "Eiermann",
+        "given": "W",
+        "parse-names": false
+      },
+      {
+        "family": "von Minckwitz",
+        "given": "G",
+        "parse-names": false
+      }
+    ],
+    "title": "Pathological complete response and long-term clinical benefit in breast cancer: the CTNeoBC pooled analysis",
+    "container-title": "Lancet",
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "volume": "384",
+    "page": "164-72",
+    "DOI": "10.1016/s0140-6736(13)62422-8",
+    "PMID": "24529560"
+  },
+  {
+    "id": "vonminckwitz2017aphinity",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "von Minckwitz",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Procter",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "de Azambuja",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Zardavas",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "Benyunes",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Viale",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Suter",
+        "given": "T",
+        "parse-names": false
+      },
+      {
+        "family": "Arahmani",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Rouchet",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Clark",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Knott",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Lang",
+        "given": "I",
+        "parse-names": false
+      },
+      {
+        "family": "Levy",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Yardley",
+        "given": "DA",
+        "parse-names": false
+      },
+      {
+        "family": "Bines",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Gelber",
+        "given": "RD",
+        "parse-names": false
+      },
+      {
+        "family": "Piccart",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Baselga",
+        "given": "J",
+        "parse-names": false
+      }
+    ],
+    "title": "Adjuvant Pertuzumab and Trastuzumab in Early HER2-Positive Breast Cancer",
+    "container-title": "N Engl J Med",
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "volume": "377",
+    "page": "122-131",
+    "DOI": "10.1056/nejmoa1703643",
+    "PMID": "28581356"
+  },
+  {
+    "id": "loibl2024aphinityos",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Loibl",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Jassem",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Sonnenblick",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Parlier",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "Winer",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Bergh",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Gelber",
+        "given": "RD",
+        "parse-names": false
+      },
+      {
+        "family": "Restuccia",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Im",
+        "given": "YH",
+        "parse-names": false
+      },
+      {
+        "family": "Huang",
+        "given": "CS",
+        "parse-names": false
+      },
+      {
+        "family": "Dalenc",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Calvo",
+        "given": "I",
+        "parse-names": false
+      },
+      {
+        "family": "Procter",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Caballero",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Clark",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Raimbault",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "McConnell",
+        "given": "R",
+        "parse-names": false
+      },
+      {
+        "family": "Monturus",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "de Azambuja",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Gomez",
+        "given": "HL",
+        "parse-names": false
+      },
+      {
+        "family": "Bliss",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Viale",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Bines",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Piccart",
+        "given": "M",
+        "parse-names": false
+      }
+    ],
+    "title": "Adjuvant Pertuzumab and Trastuzumab in Early Human Epidermal Growth Factor Receptor 2-Positive Breast Cancer in the APHINITY Trial: Third Interim Overall Survival Analysis With Efficacy Update",
+    "container-title": "J Clin Oncol",
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "volume": "42",
+    "page": "3643-3651",
+    "DOI": "10.1200/jco.23.02505",
+    "PMID": "39259927"
+  },
+  {
+    "id": "bilici2023her2path",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Bilici",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Olmez",
+        "given": "OF",
+        "parse-names": false
+      },
+      {
+        "family": "Kaplan",
+        "given": "MA",
+        "parse-names": false
+      },
+      {
+        "family": "Oksuzoglu",
+        "given": "B",
+        "parse-names": false
+      },
+      {
+        "family": "Sezer",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Karadurmus",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Cubukcu",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Sendur",
+        "given": "MAN",
+        "parse-names": false
+      },
+      {
+        "family": "Aksoy",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Erdem",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "Basaran",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Cakar",
+        "given": "B",
+        "parse-names": false
+      },
+      {
+        "family": "Shbair",
+        "given": "ATM",
+        "parse-names": false
+      },
+      {
+        "family": "Arslan",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Sumbul",
+        "given": "AT",
+        "parse-names": false
+      },
+      {
+        "family": "Sezgin Goksu",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Karadag",
+        "given": "I",
+        "parse-names": false
+      },
+      {
+        "family": "Cicin",
+        "given": "I",
+        "parse-names": false
+      },
+      {
+        "family": "Gumus",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Selcukbiricik",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Harputluoglu",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Demirci",
+        "given": "U",
+        "parse-names": false
+      }
+    ],
+    "title": "Impact of adding pertuzumab to trastuzumab plus chemotherapy in neoadjuvant treatment of HER2 positive breast cancer patients: a multicenter real-life HER2PATH study",
+    "container-title": "Acta Oncol",
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "volume": "62",
+    "page": "381-390",
+    "DOI": "10.1080/0284186x.2023.2202330",
+    "PMID": "37083566"
+  },
+  {
+    "id": "fabbri2023neopearl",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Fabbri",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Nelli",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Botticelli",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Giannarelli",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "Marrucci",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Fiore",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Virtuoso",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Scagnoli",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Pisegna",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Alesini",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "Sini",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Orlandi",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Fabi",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Piacentini",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Moscetti",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "D'Auria",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Gamucci",
+        "given": "T",
+        "parse-names": false
+      },
+      {
+        "family": "Mazzotta",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Pizzuti",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Vici",
+        "given": "P",
+        "parse-names": false
+      },
+      {
+        "family": "Cretella",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Scavina",
+        "given": "P",
+        "parse-names": false
+      },
+      {
+        "family": "La Cesa",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Persano",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Atzori",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Ruggeri",
+        "given": "EM",
+        "parse-names": false
+      }
+    ],
+    "title": "Pathologic response and survival after neoadjuvant chemotherapy with or without pertuzumab in patients with HER2-positive breast cancer: the Neopearl nationwide collaborative study",
+    "container-title": "Front Oncol",
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "volume": "13",
+    "page": "1177681",
+    "DOI": "10.3389/fonc.2023.1177681",
+    "PMID": "37441419"
+  },
+  {
+    "id": "cheng2022csbrs015",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Cheng",
+        "given": "Y",
+        "parse-names": false
+      },
+      {
+        "family": "Xiang",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Xin",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Duan",
+        "given": "X",
+        "parse-names": false
+      },
+      {
+        "family": "Liu",
+        "given": "Y",
+        "parse-names": false
+      }
+    ],
+    "title": "Neoadjuvant therapy for early human epidermal growth factor receptor 2 positive breast cancer in China: A multicenter real-world study (CSBrS-015)",
+    "container-title": "Chin Med J (Engl)",
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "volume": "135",
+    "page": "2311-2318",
+    "DOI": "10.1097/cm9.0000000000002197",
+    "PMID": "36535009"
+  },
+  {
+    "id": "diazredondo2019pam50",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Díaz-Redondo",
+        "given": "T",
+        "parse-names": false
+      },
+      {
+        "family": "Lavado-Valenzuela",
+        "given": "R",
+        "parse-names": false
+      },
+      {
+        "family": "Jimenez",
+        "given": "B",
+        "parse-names": false
+      },
+      {
+        "family": "Pascual",
+        "given": "T",
+        "parse-names": false
+      },
+      {
+        "family": "Gálvez",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Falcón",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Alamo",
+        "given": "MDC",
+        "parse-names": false
+      },
+      {
+        "family": "Morales",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Amerigo",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Pascual",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Sanchez-Muñoz",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "González-Guerrero",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Vicioso",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Laborda",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Ortega",
+        "given": "MV",
+        "parse-names": false
+      },
+      {
+        "family": "Perez",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Fernandez-Martinez",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Chic",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Jerez",
+        "given": "JM",
+        "parse-names": false
+      },
+      {
+        "family": "Alvarez",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Prat",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Ribelles",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Alba",
+        "given": "E",
+        "parse-names": false
+      }
+    ],
+    "title": "Different Pathological Complete Response Rates According to PAM50 Subtype in HER2+ Breast Cancer Patients Treated With Neoadjuvant Pertuzumab/Trastuzumab vs. Trastuzumab Plus Standard Chemotherapy: An Analysis of Real-World Data",
+    "container-title": "Front Oncol",
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "volume": "9",
+    "page": "1178",
+    "DOI": "10.3389/fonc.2019.01178",
+    "PMID": "31750258"
+  },
+  {
+    "id": "spring2018realworld",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Spring",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Niemierko",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Haddad",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Yuen",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Comander",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Reynolds",
+        "given": "K",
+        "parse-names": false
+      },
+      {
+        "family": "Shin",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Bahn",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Brachtel",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Specht",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Smith",
+        "given": "BL",
+        "parse-names": false
+      },
+      {
+        "family": "Taghian",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Jimenez",
+        "given": "R",
+        "parse-names": false
+      },
+      {
+        "family": "Peppercorn",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Isakoff",
+        "given": "SJ",
+        "parse-names": false
+      },
+      {
+        "family": "Moy",
+        "given": "B",
+        "parse-names": false
+      },
+      {
+        "family": "Bardia",
+        "given": "A",
+        "parse-names": false
+      }
+    ],
+    "title": "Effectiveness and tolerability of neoadjuvant pertuzumab-containing regimens for HER2-positive localized breast cancer",
+    "container-title": "Breast Cancer Res Treat",
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "volume": "172",
+    "page": "733-740",
+    "DOI": "10.1007/s10549-018-4959-8",
+    "PMID": "30220055"
+  },
+  {
+    "id": "matsas2026metaanalysis",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Matsas",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Zembala",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Ruiz Simões",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Giuliani Schmitt",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Abdou",
+        "given": "Y",
+        "parse-names": false
+      },
+      {
+        "family": "Del Giglio",
+        "given": "A",
+        "parse-names": false
+      }
+    ],
+    "title": "Pertuzumab and Pathological Complete Response in Early HER2+ Breast Cancer: A Systematic Review and Meta-analysis of Real-World Studies",
+    "container-title": "Asian Pac J Cancer Prev",
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "volume": "27",
+    "page": "813-821",
+    "DOI": "10.31557/apjcp.2026.27.3.813",
+    "PMID": "41793659"
+  },
+  {
+    "id": "vonminckwitz2019katherine",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "von Minckwitz",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Huang",
+        "given": "CS",
+        "parse-names": false
+      },
+      {
+        "family": "Mano",
+        "given": "MS",
+        "parse-names": false
+      },
+      {
+        "family": "Loibl",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Mamounas",
+        "given": "EP",
+        "parse-names": false
+      },
+      {
+        "family": "Untch",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Wolmark",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Rastogi",
+        "given": "P",
+        "parse-names": false
+      },
+      {
+        "family": "Schneeweiss",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Redondo",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Fischer",
+        "given": "HH",
+        "parse-names": false
+      },
+      {
+        "family": "Jacot",
+        "given": "W",
+        "parse-names": false
+      },
+      {
+        "family": "Conlin",
+        "given": "AK",
+        "parse-names": false
+      },
+      {
+        "family": "Arce-Salinas",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Wapnir",
+        "given": "IL",
+        "parse-names": false
+      },
+      {
+        "family": "Jackisch",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "DiGiovanna",
+        "given": "MP",
+        "parse-names": false
+      },
+      {
+        "family": "Fasching",
+        "given": "PA",
+        "parse-names": false
+      },
+      {
+        "family": "Crown",
+        "given": "JP",
+        "parse-names": false
+      },
+      {
+        "family": "Wülfing",
+        "given": "P",
+        "parse-names": false
+      },
+      {
+        "family": "Shao",
+        "given": "Z",
+        "parse-names": false
+      },
+      {
+        "family": "Rota Caremoli",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Wu",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Lam",
+        "given": "LH",
+        "parse-names": false
+      },
+      {
+        "family": "Tesarowski",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "Smitt",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Douthwaite",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Singel",
+        "given": "SM",
+        "parse-names": false
+      },
+      {
+        "family": "Geyer",
+        "given": "CE",
+        "suffix": "Jr",
+        "parse-names": false
+      }
+    ],
+    "title": "Trastuzumab Emtansine for Residual Invasive HER2-Positive Breast Cancer",
+    "container-title": "N Engl J Med",
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "volume": "380",
+    "page": "617-628",
+    "DOI": "10.1056/nejmoa1814017",
+    "PMID": "30516102"
+  },
+  {
+    "id": "geyer2025katherineos",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Geyer",
+        "given": "CE",
+        "suffix": "Jr",
+        "parse-names": false
+      },
+      {
+        "family": "Untch",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Huang",
+        "given": "CS",
+        "parse-names": false
+      },
+      {
+        "family": "Mano",
+        "given": "MS",
+        "parse-names": false
+      },
+      {
+        "family": "Mamounas",
+        "given": "EP",
+        "parse-names": false
+      },
+      {
+        "family": "Wolmark",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Rastogi",
+        "given": "P",
+        "parse-names": false
+      },
+      {
+        "family": "Schneeweiss",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Redondo",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Fischer",
+        "given": "HH",
+        "parse-names": false
+      },
+      {
+        "family": "D'Hondt",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Conlin",
+        "given": "AK",
+        "parse-names": false
+      },
+      {
+        "family": "Guarneri",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Wapnir",
+        "given": "IL",
+        "parse-names": false
+      },
+      {
+        "family": "Jackisch",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Arce-Salinas",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Fasching",
+        "given": "PA",
+        "parse-names": false
+      },
+      {
+        "family": "DiGiovanna",
+        "given": "MP",
+        "parse-names": false
+      },
+      {
+        "family": "Crown",
+        "given": "JP",
+        "parse-names": false
+      },
+      {
+        "family": "Wuelfing",
+        "given": "P",
+        "parse-names": false
+      },
+      {
+        "family": "Shao",
+        "given": "Z",
+        "parse-names": false
+      },
+      {
+        "family": "Rota Caremoli",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Bonnefoi",
+        "given": "HR",
+        "parse-names": false
+      },
+      {
+        "family": "Hennessy",
+        "given": "BT",
+        "parse-names": false
+      },
+      {
+        "family": "Stamatovic",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Castro-Salguero",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Brufsky",
+        "given": "AM",
+        "parse-names": false
+      },
+      {
+        "family": "Knott",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Siddiqui",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Lambertini",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Boulet",
+        "given": "T",
+        "parse-names": false
+      },
+      {
+        "family": "Nyawira",
+        "given": "B",
+        "parse-names": false
+      },
+      {
+        "family": "Restuccia",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Loibl",
+        "given": "S",
+        "parse-names": false
+      }
+    ],
+    "title": "Survival with Trastuzumab Emtansine in Residual HER2-Positive Breast Cancer",
+    "container-title": "N Engl J Med",
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "volume": "392",
+    "page": "249-257",
+    "DOI": "10.1056/nejmoa2406070",
+    "PMID": "39813643"
+  },
+  {
+    "id": "yau2022rcb",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Yau",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Osdoit",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "van der Noordaa",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Shad",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Wei",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "de Croze",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "Hamy",
+        "given": "AS",
+        "parse-names": false
+      },
+      {
+        "family": "Laé",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Reyal",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Sonke",
+        "given": "GS",
+        "parse-names": false
+      },
+      {
+        "family": "Steenbruggen",
+        "given": "TG",
+        "parse-names": false
+      },
+      {
+        "family": "van Seijen",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Wesseling",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Martín",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Del Monte-Millán",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "López-Tarruella",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Boughey",
+        "given": "JC",
+        "parse-names": false
+      },
+      {
+        "family": "Goetz",
+        "given": "MP",
+        "parse-names": false
+      },
+      {
+        "family": "Hoskin",
+        "given": "T",
+        "parse-names": false
+      },
+      {
+        "family": "Gould",
+        "given": "R",
+        "parse-names": false
+      },
+      {
+        "family": "Valero",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Edge",
+        "given": "SB",
+        "parse-names": false
+      },
+      {
+        "family": "Abraham",
+        "given": "JE",
+        "parse-names": false
+      },
+      {
+        "family": "Bartlett",
+        "given": "JMS",
+        "parse-names": false
+      },
+      {
+        "family": "Caldas",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Dunn",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Earl",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Hayward",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Hiller",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Provenzano",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Sammut",
+        "given": "SJ",
+        "parse-names": false
+      },
+      {
+        "family": "Thomas",
+        "given": "JS",
+        "parse-names": false
+      },
+      {
+        "family": "Cameron",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "Graham",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Hall",
+        "given": "P",
+        "parse-names": false
+      },
+      {
+        "family": "Mackintosh",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Fan",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Godwin",
+        "given": "AK",
+        "parse-names": false
+      },
+      {
+        "family": "Schwensen",
+        "given": "K",
+        "parse-names": false
+      },
+      {
+        "family": "Sharma",
+        "given": "P",
+        "parse-names": false
+      },
+      {
+        "family": "DeMichele",
+        "given": "AM",
+        "parse-names": false
+      },
+      {
+        "family": "Cole",
+        "given": "K",
+        "parse-names": false
+      },
+      {
+        "family": "Pusztai",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Kim",
+        "given": "MO",
+        "parse-names": false
+      },
+      {
+        "family": "van 't Veer",
+        "given": "LJ",
+        "parse-names": false
+      },
+      {
+        "family": "Esserman",
+        "given": "LJ",
+        "parse-names": false
+      },
+      {
+        "family": "Symmans",
+        "given": "WF",
+        "parse-names": false
+      }
+    ],
+    "title": "Residual cancer burden after neoadjuvant chemotherapy and long-term survival outcomes in breast cancer: a multicentre pooled analysis of 5161 patients",
+    "container-title": "Lancet Oncol",
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "volume": "23",
+    "page": "149-160",
+    "DOI": "10.1016/s1470-2045(21)00589-1",
+    "PMID": "34902335"
+  },
+  {
+    "id": "wong2019itc",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Wong",
+        "given": "SM",
+        "parse-names": false
+      },
+      {
+        "family": "Almana",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Choi",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Hu",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Gagnon",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Natsuhara",
+        "given": "K",
+        "parse-names": false
+      },
+      {
+        "family": "Shen",
+        "given": "AH",
+        "parse-names": false
+      },
+      {
+        "family": "DeSantis",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Dominici",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Golshan",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Weiss",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Bellon",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Mittendorf",
+        "given": "EA",
+        "parse-names": false
+      },
+      {
+        "family": "King",
+        "given": "TA",
+        "parse-names": false
+      }
+    ],
+    "title": "Prognostic Significance of Residual Axillary Nodal Micrometastases and Isolated Tumor Cells After Neoadjuvant Chemotherapy for Breast Cancer",
+    "container-title": "Ann Surg Oncol",
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "volume": "26",
+    "page": "3502-3509",
+    "DOI": "10.1245/s10434-019-07517-2",
+    "PMID": "31228134"
+  },
+  {
+    "id": "montagna2025icaro",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Montagna",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Laws",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Ferrucci",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Mrdutt",
+        "given": "MM",
+        "parse-names": false
+      },
+      {
+        "family": "Sun",
+        "given": "SX",
+        "parse-names": false
+      },
+      {
+        "family": "Bademler",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Balbaloglu",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Balint-Lahat",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Banys-Paluchowski",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Barrio",
+        "given": "AV",
+        "parse-names": false
+      },
+      {
+        "family": "Benson",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Bese",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Boughey",
+        "given": "JC",
+        "parse-names": false
+      },
+      {
+        "family": "Boyle",
+        "given": "MK",
+        "parse-names": false
+      },
+      {
+        "family": "Diego",
+        "given": "EJ",
+        "parse-names": false
+      },
+      {
+        "family": "Eden",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Eller",
+        "given": "R",
+        "parse-names": false
+      },
+      {
+        "family": "Goldschmidt",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Hlavin",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Heidinger",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Jelinska",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Karadeniz Cakmak",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Kesmodel",
+        "given": "SB",
+        "parse-names": false
+      },
+      {
+        "family": "King",
+        "given": "TA",
+        "parse-names": false
+      },
+      {
+        "family": "Kuerer",
+        "given": "HM",
+        "parse-names": false
+      },
+      {
+        "family": "Loesch",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Milardi",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Murawa",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "Moo",
+        "given": "TA",
+        "parse-names": false
+      },
+      {
+        "family": "Menes",
+        "given": "TS",
+        "parse-names": false
+      },
+      {
+        "family": "Passeri",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "Pastoriza",
+        "given": "JM",
+        "parse-names": false
+      },
+      {
+        "family": "Perhavec",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Pislar",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Polidorio",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Rami",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Ryu",
+        "given": "JM",
+        "parse-names": false
+      },
+      {
+        "family": "Schulz",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Sevilimedu",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Ugurlu",
+        "given": "MU",
+        "parse-names": false
+      },
+      {
+        "family": "Uras",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "van Hemert",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Wong",
+        "given": "SM",
+        "parse-names": false
+      },
+      {
+        "family": "Yoo",
+        "given": "TR",
+        "parse-names": false
+      },
+      {
+        "family": "Zhang",
+        "given": "JQ",
+        "parse-names": false
+      },
+      {
+        "family": "Karanlik",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Cabioğlu",
+        "given": "N",
+        "parse-names": false
+      },
+      {
+        "family": "Peeters",
+        "given": "MV",
+        "parse-names": false
+      },
+      {
+        "family": "Morrow",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Weber",
+        "given": "WP",
+        "parse-names": false
+      }
+    ],
+    "title": "Nodal Burden and Oncologic Outcomes in Patients With Residual Isolated Tumor Cells After Neoadjuvant Chemotherapy (ypN0i+): The OPBC-05/ICARO Study",
+    "container-title": "J Clin Oncol",
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "volume": "43",
+    "page": "810-820",
+    "DOI": "10.1200/jco.24.01052",
+    "PMID": "39509672"
+  },
+  {
+    "id": "provenzano2015bignabcg",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Provenzano",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Bossuyt",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Viale",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Cameron",
+        "given": "D",
+        "parse-names": false
+      },
+      {
+        "family": "Badve",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Denkert",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "MacGrogan",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Penault-Llorca",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Boughey",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Curigliano",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Dixon",
+        "given": "JM",
+        "parse-names": false
+      },
+      {
+        "family": "Esserman",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Fastner",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Kuehn",
+        "given": "T",
+        "parse-names": false
+      },
+      {
+        "family": "Peintinger",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "von Minckwitz",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "White",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Yang",
+        "given": "W",
+        "parse-names": false
+      },
+      {
+        "family": "Symmans",
+        "given": "WF",
+        "parse-names": false
+      }
+    ],
+    "title": "Standardization of pathologic evaluation and reporting of postneoadjuvant specimens in clinical trials of breast cancer: recommendations from an international working group",
+    "container-title": "Mod Pathol",
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "volume": "28",
+    "page": "1185-201",
+    "DOI": "10.1038/modpathol.2015.74",
+    "PMID": "26205180"
+  },
+  {
+    "id": "bossuyt2015bignabcg",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Bossuyt",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Provenzano",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Symmans",
+        "given": "WF",
+        "parse-names": false
+      },
+      {
+        "family": "Boughey",
+        "given": "JC",
+        "parse-names": false
+      },
+      {
+        "family": "Coles",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Curigliano",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Dixon",
+        "given": "JM",
+        "parse-names": false
+      },
+      {
+        "family": "Esserman",
+        "given": "LJ",
+        "parse-names": false
+      },
+      {
+        "family": "Fastner",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Kuehn",
+        "given": "T",
+        "parse-names": false
+      },
+      {
+        "family": "Peintinger",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "von Minckwitz",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "White",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Yang",
+        "given": "W",
+        "parse-names": false
+      },
+      {
+        "family": "Badve",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Denkert",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "MacGrogan",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Penault-Llorca",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Viale",
+        "given": "G",
+        "parse-names": false
+      },
+      {
+        "family": "Cameron",
+        "given": "D",
+        "parse-names": false
+      }
+    ],
+    "title": "Recommendations for standardized pathological characterization of residual disease for neoadjuvant clinical trials of breast cancer by the BIG-NABCG collaboration",
+    "container-title": "Ann Oncol",
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "volume": "26",
+    "page": "1280-91",
+    "DOI": "10.1093/annonc/mdv161",
+    "PMID": "26019189"
+  },
+  {
+    "id": "bossuyt2024iccr",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Bossuyt",
+        "given": "V",
+        "parse-names": false
+      },
+      {
+        "family": "Provenzano",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Symmans",
+        "given": "WF",
+        "parse-names": false
+      },
+      {
+        "family": "Webster",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Allison",
+        "given": "KH",
+        "parse-names": false
+      },
+      {
+        "family": "Dang",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Gobbi",
+        "given": "H",
+        "parse-names": false
+      },
+      {
+        "family": "Kulka",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Lakhani",
+        "given": "SR",
+        "parse-names": false
+      },
+      {
+        "family": "Moriya",
+        "given": "T",
+        "parse-names": false
+      },
+      {
+        "family": "Quinn",
+        "given": "CM",
+        "parse-names": false
+      },
+      {
+        "family": "Sapino",
+        "given": "A",
+        "parse-names": false
+      },
+      {
+        "family": "Schnitt",
+        "given": "S",
+        "parse-names": false
+      },
+      {
+        "family": "Sibbering",
+        "given": "DM",
+        "parse-names": false
+      },
+      {
+        "family": "Slodkowska",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Yang",
+        "given": "W",
+        "parse-names": false
+      },
+      {
+        "family": "Tan",
+        "given": "PH",
+        "parse-names": false
+      },
+      {
+        "family": "Ellis",
+        "given": "I",
+        "parse-names": false
+      }
+    ],
+    "title": "A dedicated structured data set for reporting of invasive carcinoma of the breast in the setting of neoadjuvant therapy: recommendations from the International Collaboration on Cancer Reporting (ICCR)",
+    "container-title": "Histopathology",
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "volume": "84",
+    "page": "1111-1129",
+    "DOI": "10.1111/his.15165",
+    "PMID": "38443320"
+  },
+  {
+    "id": "li2018overlap",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Li",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Morgan",
+        "given": "KL",
+        "parse-names": false
+      },
+      {
+        "family": "Zaslavsky",
+        "given": "AM",
+        "parse-names": false
+      }
+    ],
+    "title": "Balancing Covariates via Propensity Score Weighting",
+    "container-title": "Journal of the American Statistical Association",
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "volume": "113",
+    "page": "390-400",
+    "DOI": "10.1080/01621459.2016.1260466"
+  },
+  {
+    "id": "li2019extreme",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Li",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Thomas",
+        "given": "LE",
+        "parse-names": false
+      },
+      {
+        "family": "Li",
+        "given": "F",
+        "parse-names": false
+      }
+    ],
+    "title": "Addressing Extreme Propensity Scores via the Overlap Weights",
+    "container-title": "Am J Epidemiol",
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "volume": "188",
+    "page": "250-257",
+    "DOI": "10.1093/aje/kwy201",
+    "PMID": "30189042"
+  },
+  {
+    "id": "thomas2020overlapjama",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Thomas",
+        "given": "LE",
+        "parse-names": false
+      },
+      {
+        "family": "Li",
+        "given": "F",
+        "parse-names": false
+      },
+      {
+        "family": "Pencina",
+        "given": "MJ",
+        "parse-names": false
+      }
+    ],
+    "title": "Overlap Weighting: A Propensity Score Method That Mimics Attributes of a Randomized Clinical Trial",
+    "container-title": "JAMA",
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "volume": "323",
+    "page": "2417-2418",
+    "DOI": "10.1001/jama.2020.7819",
+    "PMID": "32369102"
+  },
+  {
+    "id": "hernan2016targettrial",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Hernán",
+        "given": "MA",
+        "parse-names": false
+      },
+      {
+        "family": "Robins",
+        "given": "JM",
+        "parse-names": false
+      }
+    ],
+    "title": "Using Big Data to Emulate a Target Trial When a Randomized Trial Is Not Available",
+    "container-title": "Am J Epidemiol",
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "volume": "183",
+    "page": "758-64",
+    "DOI": "10.1093/aje/kwv254",
+    "PMID": "26994063"
+  },
+  {
+    "id": "vanderweele2017evalue",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "VanderWeele",
+        "given": "TJ",
+        "parse-names": false
+      },
+      {
+        "family": "Ding",
+        "given": "P",
+        "parse-names": false
+      }
+    ],
+    "title": "Sensitivity Analysis in Observational Research: Introducing the E-Value",
+    "container-title": "Ann Intern Med",
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "volume": "167",
+    "page": "268-274",
+    "DOI": "10.7326/m16-2607",
+    "PMID": "28693043"
+  },
+  {
+    "id": "leyrat2019mips",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Leyrat",
+        "given": "C",
+        "parse-names": false
+      },
+      {
+        "family": "Seaman",
+        "given": "SR",
+        "parse-names": false
+      },
+      {
+        "family": "White",
+        "given": "IR",
+        "parse-names": false
+      },
+      {
+        "family": "Douglas",
+        "given": "I",
+        "parse-names": false
+      },
+      {
+        "family": "Smeeth",
+        "given": "L",
+        "parse-names": false
+      },
+      {
+        "family": "Kim",
+        "given": "J",
+        "parse-names": false
+      },
+      {
+        "family": "Resche-Rigon",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Carpenter",
+        "given": "JR",
+        "parse-names": false
+      },
+      {
+        "family": "Williamson",
+        "given": "EJ",
+        "parse-names": false
+      }
+    ],
+    "title": "Propensity score analysis with partially observed covariates: How should multiple imputation be used?",
+    "container-title": "Stat Methods Med Res",
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "volume": "28",
+    "page": "3-19",
+    "DOI": "10.1177/0962280217713032",
+    "PMID": "28573919"
+  },
+  {
+    "id": "vonelm2007strobe",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "von Elm",
+        "given": "E",
+        "parse-names": false
+      },
+      {
+        "family": "Altman",
+        "given": "DG",
+        "parse-names": false
+      },
+      {
+        "family": "Egger",
+        "given": "M",
+        "parse-names": false
+      },
+      {
+        "family": "Pocock",
+        "given": "SJ",
+        "parse-names": false
+      },
+      {
+        "family": "Gøtzsche",
+        "given": "PC",
+        "parse-names": false
+      },
+      {
+        "family": "Vandenbroucke",
+        "given": "JP",
+        "parse-names": false
+      }
+    ],
+    "title": "The Strengthening the Reporting of Observational Studies in Epidemiology (STROBE) statement: guidelines for reporting observational studies",
+    "container-title": "Lancet",
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "volume": "370",
+    "page": "1453-7",
+    "DOI": "10.1016/s0140-6736(07)61602-x",
+    "PMID": "18064739"
+  }
+]

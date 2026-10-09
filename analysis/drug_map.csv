@@ -1,0 +1,26 @@
+raw_name,agent,agent_class,market_from
+Herceptin,trastuzumab,anti_her2,
+HERCEPTIN 440MG INJ,trastuzumab,anti_her2,
+Trastuzumab,trastuzumab,anti_her2,
+Herzuma 150mg,trastuzumab,anti_her2,2014-01-01
+trastuzumab (Ontruzant),trastuzumab,anti_her2,2017-01-01
+Perjeta,pertuzumab,anti_her2,2012-06-01
+PERJETA 420MG/14ML,pertuzumab,anti_her2,2012-06-01
+Pertuzumab,pertuzumab,anti_her2,2012-06-01
+Phesgo 1200/600 SC,pertuzumab,anti_her2,2020-06-01
+Phesgo 1200/600 SC,trastuzumab,anti_her2,2020-06-01
+Kadcyla,trastuzumab_emtansine,anti_her2_adc,2013-02-01
+T-DM1 (Kadcyla) 160mg,trastuzumab_emtansine,anti_her2_adc,2013-02-01
+Trastuzumab emtansine,trastuzumab_emtansine,anti_her2_adc,2013-02-01
+Docetaxel,docetaxel,taxane,
+DOCETAXEL 80MG,docetaxel,taxane,
+Taxotere,docetaxel,taxane,
+Paclitaxel,paclitaxel,taxane,
+Taxol,paclitaxel,taxane,
+Genexol,paclitaxel,taxane,
+Carboplatin,carboplatin,platinum,
+Paraplatin,carboplatin,platinum,
+Epirubicin,epirubicin,anthracycline,
+Pharmorubicin,epirubicin,anthracycline,
+Cyclophosphamide,cyclophosphamide,alkylating,
+Endoxan,cyclophosphamide,alkylating,

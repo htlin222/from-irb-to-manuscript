@@ -4,7 +4,6 @@ Required for new case submission. Max 2 pages.
 11 sections per KFSYSCC official template.
 """
 import os
-import re
 
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -17,6 +16,7 @@ from scripts.docx_utils import (
     form_filename,
     init_doc,
     institution,
+    prose_text,
 )
 
 
@@ -84,13 +84,7 @@ def generate_proposal_summary(config, output_dir):
     prop = config.get("proposal") or {}
 
     def _text(key, placeholder):
-        v = prop.get(key)
-        if isinstance(v, list):
-            return "\n".join(f"{i}. {x}" for i, x in enumerate(v, 1))
-        # Wrapped source lines leave spaces; drop them next to CJK, keep newlines
-        v = re.sub(r"[^\S\n]*([\u3000-\u303f\u4e00-\u9fff\uff00-\uffef])[^\S\n]*", r"\1",
-                   (v or "").strip())
-        return v or placeholder
+        return prose_text(prop.get(key), placeholder)
 
     # Section 一、研究主題
     add_p(doc, "一、研究主題", True, 11, sa=Pt(4), sb=Pt(4))
@@ -181,6 +175,7 @@ def generate_proposal_summary(config, output_dir):
         safety_text += f"■ 資料保存期限：研究結束後{ds['retention_years']}年\n"
     if ds.get("authorized_personnel"):
         safety_text += f"■ 資料存取授權人員：{ds['authorized_personnel']}\n"
+    safety_text += _text("data_protection", "")
     if not safety_text:
         safety_text = "（請說明資料保密措施及受試者安全監測計畫。）"
     add_p(doc, safety_text.strip(), size=10, sa=Pt(2))

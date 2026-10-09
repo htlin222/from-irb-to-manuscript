@@ -2,12 +2,15 @@
 
 Generates SF014, SF015, SF016 forms from config dict.
 """
+import difflib
 import os
+import subprocess
 
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.shared import Pt
+from docx.shared import Cm, Pt
 
+from scripts.config import SECTION_KEYS, parse_markdown
 from scripts.docx_utils import (
     add_ct,
     add_footer,
@@ -18,7 +21,60 @@ from scripts.docx_utils import (
     init_doc,
     institution,
     set_cell_shading,
+    set_run_font,
 )
+
+# SF015「修正原因」的勾選項；amendment.reasons 中不在此列者歸入「其他」
+REASONS = ("研究設計變更", "收案條件變更", "受試者同意書變更", "研究人員變更")
+HEADINGS = {key: heading for heading, key in SECTION_KEYS.items()}
+
+
+def _as_text(value):
+    """Markdown section (string or list) → plain text; lists are numbered like the proposal form."""
+    if isinstance(value, list):
+        return "\n".join(f"{i}. {x}" for i, x in enumerate(value, 1))
+    return (value or "").strip()
+
+
+def baseline_text(spec):
+    """'<git revision>:<path>' (e.g. 'irb-approved:中文計畫摘要.md') → that file's content at that revision."""
+    try:
+        return subprocess.run(["git", "show", spec], capture_output=True, text=True, check=True).stdout
+    except (OSError, subprocess.CalledProcessError) as e:
+        raise RuntimeError(f"amendment.baseline: cannot read {spec!r} from git") from e
+
+
+def proposal_changes(baseline_md, current):
+    """Approved vs current 中文計畫摘要 → [(item, before, after)], one row per changed section."""
+    old = parse_markdown(baseline_md)
+    rows = []
+    for key in list(current) + [k for k in old if k not in current]:
+        before, after = _as_text(old.get(key)), _as_text(current.get(key))
+        if before != after:
+            rows.append((f"中文計畫摘要：{HEADINGS.get(key, key)}", before or "（無）", after or "（刪除）"))
+    return rows
+
+
+def _marked_cell(cell, text, other, mark):
+    """Write text into a cell; characters not shared with `other` get struck (before) or underlined (after)."""
+    p = cell.paragraphs[0]
+    p.clear()
+    p.paragraph_format.space_after = Pt(2)
+    p.paragraph_format.space_before = Pt(2)
+    a, b = (text, other) if mark == "strike" else (other, text)
+    ops = difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes()
+    for tag, i1, i2, j1, j2 in ops:
+        seg = a[i1:i2] if mark == "strike" else b[j1:j2]
+        if not seg:
+            continue
+        run = p.add_run(seg)
+        set_run_font(run, size=9)
+        if tag != "equal":
+            if mark == "strike":
+                run.font.strike = True
+            else:
+                run.font.underline = True
+                run.bold = True
 
 # ---------------------------------------------------------------------------
 # SF014 — 修正案審查送審資料表 (v10, 2025.03.03)
@@ -123,18 +179,20 @@ def generate_sf015(config, output_dir):
     add_ct(tbl1.rows[3].cells[0], "單位/職稱", bold=True, size=10)
     add_ct(tbl1.rows[3].cells[1], pi["dept"], size=10)
     add_ct(tbl1.rows[4].cells[0], "修正案編號", bold=True, size=10)
-    add_ct(tbl1.rows[4].cells[1], "第＿次修正", size=10)
+    number = amendment.get("number")
+    add_ct(tbl1.rows[4].cells[1], f"第{number}次修正" if number else "第＿次修正", size=10)
     apply_tb(tbl1)
     doc.add_paragraph()
 
     # ---- 二、修正原因 ----
     add_p(doc, "二、修正原因", bold=True, size=12, sa=Pt(6))
-    add_p(doc, "□ 研究設計變更　□ 收案條件變更　□ 受試者同意書變更",
-          size=10, sa=Pt(2))
-    add_p(doc, "□ 研究人員變更　□ 其他（請說明）",
-          size=10, sa=Pt(4))
+    reasons = amendment.get("reasons") or []
+    others = "、".join(r for r in reasons if r not in REASONS)
+    add_p(doc, "　".join(f"{check(r in reasons)} {r}" for r in REASONS[:3]), size=10, sa=Pt(2))
+    add_p(doc, f"{check(REASONS[3] in reasons)} {REASONS[3]}　{check(bool(others))} 其他（請說明）"
+               f"{'：' + others if others else ''}", size=10, sa=Pt(4))
 
-    desc = amendment.get("change_description", "（請說明修正內容）")
+    desc = _as_text(amendment.get("change_description")) or "（請說明修正內容）"
     add_p(doc, f"修正說明：{desc}", size=10, sa=Pt(8))
     doc.add_paragraph()
 
@@ -191,9 +249,11 @@ def generate_sf016(config, output_dir):
     # Instruction
     add_p(doc, "請以表格方式列出修正前後之對照內容", size=12, sa=Pt(8))
 
-    # Comparison table: 4 columns, header + 5 empty rows
+    # Comparison table: one row per changed proposal section (amendment.baseline), else 5 empty rows
     cols = ["項次", "修正項目", "修正前內容", "修正後內容"]
-    num_rows = 5
+    base = config["amendment"].get("baseline")
+    changes = proposal_changes(baseline_text(base), config.get("proposal") or {}) if base else []
+    num_rows = len(changes) or 5
     tbl = doc.add_table(rows=1 + num_rows, cols=4)
     tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
 
@@ -204,19 +264,25 @@ def generate_sf016(config, output_dir):
                alignment=WD_ALIGN_PARAGRAPH.CENTER)
         set_cell_shading(cell, "D9E2F3")
 
-    # Empty rows with row numbers
     for ri in range(1, num_rows + 1):
         add_ct(tbl.rows[ri].cells[0], str(ri), size=10,
                alignment=WD_ALIGN_PARAGRAPH.CENTER)
-        add_ct(tbl.rows[ri].cells[1], "", size=10)
-        add_ct(tbl.rows[ri].cells[2], "", size=10)
-        add_ct(tbl.rows[ri].cells[3], "", size=10)
+        item, before, after = changes[ri - 1] if ri <= len(changes) else ("", "", "")
+        add_ct(tbl.rows[ri].cells[1], item, size=10)
+        _marked_cell(tbl.rows[ri].cells[2], before, after, "strike")
+        _marked_cell(tbl.rows[ri].cells[3], after, before, "underline")
+    tbl.autofit = False
+    for col, width in zip(tbl.columns, (Cm(1.0), Cm(2.6), Cm(6.4), Cm(6.4)), strict=True):
+        col.width = width
+        for cell in col.cells:
+            cell.width = width
 
     apply_tb(tbl)
     doc.add_paragraph()
 
     # Note
-    add_p(doc, "請以劃線方式標示修正處", size=10, sa=Pt(8))
+    add_p(doc, "請以劃線方式標示修正處" + ("（刪除文字加刪除線；新增文字加粗底線）" if changes else ""),
+          size=10, sa=Pt(8))
 
     # Signature block
     add_p(doc, "計畫主持人簽名：＿＿＿＿＿＿＿＿＿＿　日期：＿＿＿＿年＿＿月＿＿日",

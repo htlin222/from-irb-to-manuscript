@@ -1,0 +1,136 @@
+---
+# JCRP「Blinded Article file」：Abstract 至 References（含 Tables、Figure legends）。不含作者、單位、致謝。
+# 由 make manuscript 產生；正文請改 manuscript/text/*.md，不要改輸出的 Word 檔。
+format:
+  docx:
+    reference-doc: style/reference.docx
+    number-sections: false
+    toc: false
+bibliography: _build/references_pandoc.json
+csl: style/jcrp-vancouver.csl
+link-citations: false
+lang: en-US
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+```
+
+```{r load}
+source("manuscript/R/render_helpers.R")
+tabs <- manuscript_tables()
+```
+
+```{r response}
+# 修訂版：JCRP 要求逐條回覆放在修訂稿最前面（MS_RESPONSE 由 build_revision.R 設定）
+if (nzchar(Sys.getenv("MS_RESPONSE"))) {   # 檔案第一頁也要有教學示範標示
+  knitr::asis_output(paste0(demo_labels(), section_file(Sys.getenv("MS_RESPONSE")), "\n\n{{< pagebreak >}}\n\n"))
+}
+```
+
+```{r title-block, results="asis"}
+cat("**", cfg$study$title_en, "**\n\n", sep = "")
+```
+
+```{r}
+demo_labels()
+```
+
+# Abstract
+
+```{r}
+section("abstract")
+```
+
+```{r, results="asis"}
+cat("**Keywords:**", paste(meta$keywords, collapse = ", "), "\n")
+```
+
+{{< pagebreak >}}
+
+# Introduction
+
+```{r}
+section("introduction")
+```
+
+# Materials and Methods
+
+```{r}
+section("methods")
+```
+
+# Results
+
+```{r}
+section("results")
+```
+
+# Discussion
+
+```{r}
+section("discussion")
+```
+
+```{r}
+section("statements")
+```
+
+# References
+
+::: {#refs}
+:::
+
+{{< pagebreak >}}
+
+```{r, results="asis"}
+cat("**", tabs[[1]]$title, "**\n", sep = "")
+```
+
+```{r}
+ft(tabs[[1]])
+```
+
+```{r}
+footnotes(tabs[[1]])
+```
+
+{{< pagebreak >}}
+
+```{r, results="asis"}
+cat("**", tabs[[2]]$title, "**\n", sep = "")
+```
+
+```{r}
+ft(tabs[[2]])
+```
+
+```{r}
+footnotes(tabs[[2]])
+```
+
+{{< pagebreak >}}
+
+```{r, results="asis"}
+cat("**", tabs[[3]]$title, "**\n", sep = "")
+```
+
+```{r}
+ft(tabs[[3]])
+```
+
+```{r}
+footnotes(tabs[[3]])
+```
+
+{{< pagebreak >}}
+
+# Figure Legends
+
+```{r}
+section("figure_legends")
+```

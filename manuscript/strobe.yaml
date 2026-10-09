@@ -1,0 +1,25 @@
+# STROBE 檢核表（世代研究）：每一項寫在論文哪裡。section 必須是正文裡的小標題（依出現順序比對頁碼）。
+# 項目名稱依 STROBE statement（von Elm 2007）；完整條文見 https://www.strobe-statement.org/checklists/
+- {item: "1a", topic: "Title and abstract: design indicated", section: Abstract}
+- {item: "1b", topic: "Title and abstract: informative summary", section: Abstract}
+- {item: "2", topic: "Background/rationale", section: Introduction}
+- {item: "3", topic: "Objectives", section: Introduction}
+- {item: "4", topic: "Study design", section: Study Design and Data Sources}
+- {item: "5", topic: "Setting (locations, dates of recruitment and follow-up)", section: Patients}
+- {item: "6a", topic: "Participants: eligibility criteria, sources and methods of selection, follow-up", section: Patients}
+- {item: "7", topic: "Variables: outcomes, exposures, confounders", section: Treatment Groups and Outcomes}
+- {item: "8", topic: "Data sources/measurement", section: Study Design and Data Sources}
+- {item: "9", topic: "Bias", section: Statistical Analysis}
+- {item: "10", topic: "Study size", section: Patients}
+- {item: "11", topic: "Quantitative variables", section: Statistical Analysis}
+- {item: "12a-e", topic: "Statistical methods, subgroups, missing data, loss to follow-up, sensitivity analyses", section: Statistical Analysis}
+- {item: "13", topic: "Participants: numbers at each stage, reasons for non-participation, flow diagram", section: Patients, results: true}
+- {item: "14", topic: "Descriptive data, missing data, follow-up time", section: Patients, results: true}
+- {item: "15", topic: "Outcome data", section: Pathologic Complete Response}
+- {item: "16", topic: "Main results: adjusted estimates with precision", section: Pathologic Complete Response}
+- {item: "17", topic: "Other analyses: subgroups, interactions, sensitivity analyses", section: Sensitivity and Subgroup Analyses}
+- {item: "18", topic: "Key results", section: Discussion}
+- {item: "19", topic: "Limitations", section: Discussion}
+- {item: "20", topic: "Interpretation", section: Discussion}
+- {item: "21", topic: "Generalisability", section: Discussion}
+- {item: "22", topic: "Funding", section: Title page (Source(s) of support)}

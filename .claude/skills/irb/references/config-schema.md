@@ -145,6 +145,7 @@ Full example: `examples/tdxd-her2low/中文計畫摘要.md`.
 | `variables` / `endpoints` | `資料收集項目` / `研究終點` | 七、研究方法 (retrospective) |
 | `methods` | `研究方法` | 七、研究方法 (prospective / trials) |
 | `statistics` | `統計分析` | 九、統計分析 |
+| `data_protection` | `資料保護` | 十、資料保護及安全監測 (appended after the generated `closure.data_safety` bullets) |
 | `attachments` | `附件` | 十一、附件 (string or list) |
 
 ## `closure` (when phase=closure)
@@ -159,12 +160,22 @@ Full example: `examples/tdxd-her2low/中文計畫摘要.md`.
 | `data_safety.encrypted` | bool | Data is encrypted |
 | `data_safety.retention_years` | int | Years to retain data |
 | `data_safety.authorized_personnel` | string | Who can access data |
+| `report` | Markdown | SF038 結案報告書 content, usually `"@<file>.md"`: `## 研究參與者`, `## 研究方法`, `## 研究結果分析與討論`, `## 結論`, `## 參考文獻` (also `## 研究背景` / `## 研究目的` / `## 研究設計`, which otherwise come from `proposal`). Missing sections keep the placeholder. A study with an analysis pipeline can generate this file so that its numbers come from results (this study: `結案報告.md` → `make closure-report` → `results/irb_closure.md`) |
+
+Any value can be an `@` reference, so enrolment counts can also come from a generated file, e.g.
+`actual_n = "@results/irb_closure.toml#actual_n"` and `{ name = "…", n = "@results/irb_closure.toml#n_dual" }`.
 
 ## `amendment` (when phase=amendment)
+
+The amendment phase also emits the revised 中文計畫摘要 (PROPOSAL).
 
 | Field | Type | Description |
 |---|---|---|
 | `change_description` | string | Description of changes (or `"@修正說明.md"`) |
+| `number` | int | 第幾次修正 (SF015) |
+| `reasons` | list | 修正原因: 研究設計變更／收案條件變更／受試者同意書變更／研究人員變更 tick their box; anything else goes under 其他 (SF015) |
+| `baseline` | string | `"<git revision>:<file>"` of the approved proposal, e.g. `"irb-approved:中文計畫摘要.md"`. SF016 then lists every changed section (before vs current), striking deleted and underlining added text. Blank → 5 empty rows |
+| `approval_date` | string | Date the IRB approved this amendment (record only; not printed on amendment forms) |
 | `affects_consent` | bool | Changes affect consent form |
 | `affects_risk` | bool | Changes affect risk level |
 
@@ -175,3 +186,15 @@ Full example: `examples/tdxd-her2low/中文計畫摘要.md`.
 | `enrollment_status` | string | Current enrollment status |
 | `deviations` | int | Number of protocol deviations |
 | `extension_requested` | bool | Requesting study extension |
+
+## `re_review` (when phase=re_review)
+
+| Field | Type | Description |
+|---|---|---|
+| `original_phase` | string | 原審查類別: `new` / `amendment` / `continuing`, or free text for 其他 |
+| `review_date` | string | 原審查日期 (blank → underscores to fill by hand) |
+| `responses` | Markdown | Usually `"@correspondence/<name>_回覆.md"`: one `## 意見 N` section per comment; first paragraph = the committee's comment (`審查意見：` prefix optional), rest = the reply (`回覆：` prefix optional). `{dotted.key}` in a reply is filled from config (e.g. `{closure.data_safety.retention_years}`) |
+| `revised_documents` | list | Revised documents attached; 研究計畫書／受試者同意書／個案報告表 tick their own box, anything else goes under 其他 |
+
+The `re_review` phase generates SF019 plus the revised 中文計畫摘要 (PROPOSAL).
+

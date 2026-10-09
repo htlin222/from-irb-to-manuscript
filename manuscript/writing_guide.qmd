@@ -1,0 +1,175 @@
+---
+title: "論文寫作指引（JCRP 原著論文）"
+subtitle: "給作者用，不投稿。由 make manuscript 依最新結果自動產生。"
+format:
+  html:
+    embed-resources: true
+    toc: true
+    toc-depth: 2
+lang: zh-Hant
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+```
+
+```{r}
+suppressPackageStartupMessages(library(data.table))
+source("manuscript/R/tokens.R")
+tk <- manuscript_tokens()
+refs <- rbindlist(lapply(yaml::read_yaml("manuscript/references.yaml"), function(r) data.table(ref = r$key, topic = r$topic, role = r$role)))
+ver <- fread("manuscript/references_verification.csv")
+refs <- merge(refs, ver[, .(ref = citation_key, pmid, year, journal)], by = "ref", sort = FALSE)
+cite_table <- function(topics) knitr::kable(refs[topic %in% topics, .(`引用寫法` = paste0("[@", ref, "]"), `年份` = year, `期刊` = journal, `用途` = role)])
+tok <- function(...) { n <- c(...); knitr::kable(data.table(`代號` = paste0("{{", n, "}}"), `目前的值` = unname(tk[n]))) }
+```
+
+> ⚠️ 教學示範：資料為模擬（synthetic data for teaching），論文需清楚標示，不得當作真實研究投稿。
+>
+> **本專案的論文示範稿（`manuscript/text/`）由 AI 撰寫，僅供教學；真實投稿時，內文必須由作者親自撰寫。** 本指引說明真實投稿時作者應如何撰寫。
+>
+> **本專案的論文示範稿（`manuscript/text/`）由 AI 撰寫，僅供教學；真實投稿時，內文必須由作者親自撰寫。** 本指引說明真實投稿時作者應如何撰寫。
+
+# 分工與 JCRP 的生成式 AI 規定
+
+JCRP 規定生成式 AI **不得撰寫整篇論文或其中相當部分（如方法、結果、分析）**，否則以學術不端處理；
+AI 協助的用途要具名揭露（工具名稱、版本、時間、用法），並建議把 AI 協助產生的程式附為補充資料。
+
+| 由程式／AI 準備（已完成） | 由作者撰寫 |
+|---|---|
+| 兩個投稿檔的格式與架構、表 1–3、圖 1–3、參考文獻格式、所有數字（代號自動帶入）、格式與字數檢查 | `manuscript/text/` 下每一段的正文、`manuscript/meta.yaml` 的首頁資訊 |
+| 文獻搜尋（OpenEvidence）與查證（Crossref、PubMed） | 讀過原文摘要後決定要引用哪些文獻、怎麼解讀 |
+
+## 怎麼寫
+
+1. 用任何文字編輯器打開 `manuscript/text/*.md`，把 `[TO BE WRITTEN BY AUTHORS]` 換成您的英文段落。
+2. **數字不手打**：寫 `{{pcr_or}}`，產生 Word 檔時會換成 `r tk[["pcr_or"]]`。代號表見下面各節，寫錯代號會直接報錯。
+   放在圓括號裡面時寫 `{{pcr_or|b}}`，信賴區間會改用方括號，避免括號套括號。
+3. **引用文獻**：寫 `[@cortazar2014ctneobc]`，放在**標點之後**（JCRP 規定），例如 `...long-term outcomes.[@cortazar2014ctneobc]`。
+   多篇用分號：`[@gianni2012neosphere; @shao2020peony]`。只能引用 `references.yaml` 裡已查證的文獻；要加新文獻，在該檔加 DOI 後執行 `make references`。
+4. 執行 `make manuscript`，看 `manuscript/_build/check_report.md`：字數、表格、雙盲、用詞都會自動檢查。
+5. 全部通過後執行 `make submission`，投稿檔寫入 `submission/`。
+
+## JCRP 寫作規則重點
+
+- 美式英文；小標題首字大寫（title case）；1 到 10 的數字用英文拼寫；句首數字拼寫。
+- 縮寫在標題、摘要、關鍵字、正文**各自**第一次出現時寫全名。
+- P 值寫精確值、大寫斜體（代號已處理）；比例附人數；OR、HR 附 95% CI。
+- 避免非統計意義的 *significant*、*random*、*normal*、*correlation*、*sample*。
+- **雙盲**：正文不能出現醫院名稱、作者姓名、IRB 編號、「our previous study」。倫理聲明寫「the institutional review board of the participating institution」，詳細資料放首頁檔（已自動帶入）。
+
+# 摘要（≤ 250 字）
+
+四段標題固定：**Background / Materials and Methods / Results / Conclusion**（已放在 `abstract.md`）。
+
+- Background：一句背景＋一句目的。
+- Materials and Methods：設計（單中心回溯性世代、模擬目標試驗）、收案期間、主要終點定義、重疊加權。
+- Results：人數、未加權與加權後的 pCR、OR、EFS／OS 的 HR。
+- Conclusion：pCR 較高，與隨機試驗一致；長期結果證據不足。**不要寫超過資料能支持的結論**。
+
+```{r}
+tok("n_cohort", "n_dual", "n_single", "enroll_start", "enroll_end", "pcr_w_dual", "pcr_w_single", "pcr_or", "pcr_p", "efs_hr", "os_hr", "median_fu")
+```
+
+# 前言（75–100 字，非常短）
+
+建議三句：隨機試驗已證明 pertuzumab 提高 pCR → 亞洲／本土真實世界、跨年代的比較資料有限 → 本研究目的。
+**不要宣稱「首次」**（JCRP：避免 claiming priority）。
+
+```{r}
+cite_table(c("rct", "pcr"))
+```
+
+# 材料與方法（STROBE 第 4–12 項）
+
+每項都已在 `analysis/SAP.md`（v1.0，IRB 修正案已核准）寫好，請用自己的話改寫成英文，**不要直接貼上**。
+
+| STROBE | 要交代的事 | 依據 |
+|---|---|---|
+| 4 設計 | 單中心回溯性世代研究，以模擬目標試驗架構描述 | SAP §1 |
+| 5 場域 | 收案期間、追蹤截止日、資料來源（癌登、醫囑、病理、追蹤） | `{{enroll_start}}`–`{{enroll_end}}`，追蹤至 `{{fu_cutoff}}` |
+| 6 對象 | 納入／排除條件；指標日＝第一次術前給藥 | SAP §2 |
+| 7 變項 | 分組定義（術前含任一 pertuzumab，含 Phesgo）；pCR＝ypT0/is ypN0、**ypN0(i+) 不算**；EFS 事件與設限；OS | SAP §3 |
+| 8 測量 | 病理分期依 AJCC 第 8 版；荷爾蒙受體 ≥ 1% | SAP §4 |
+| 9 偏差 | 兩組年代不同 → 重疊加權、敏感度分析 | SAP §5、§8 |
+| 10 樣本數 | 納入期間內全部符合條件者；有效樣本數與檢定力 | SAP §5 |
+| 11 定量變項 | 連續變項取線性項 | SAP §4 |
+| 12 統計方法 | 13 個傾向分數共變項；重疊加權（M-estimation 標準誤）；多重插補 `{{imputations}}` 組；加權 KM 與 Cox；S1–S6；荷爾蒙受體次族群；E-value；R `{{r_version}}`（WeightIt、mice、survival、cobalt、EValue） | SAP §4–§10 |
+
+- **倫理**：IRB 核准並免除知情同意；依赫爾辛基宣言（1975，2013 修訂）。
+- **AI 揭露**：見下方「聲明」一節。
+
+```{r}
+cite_table("methods")
+```
+
+# 結果（STROBE 第 13–17 項）
+
+## 一定要寫、而且要寫清楚的一件事：未加權 vs 加權
+
+未加權時兩組 pCR 幾乎相同（`{{pcr_crude_dual}}` vs `{{pcr_crude_single}}`），重疊加權後為 `{{pcr_w_dual}}` vs `{{pcr_w_single}}`。
+原因是兩種治療用在不同年代：每個年代內雙標靶的 pCR 都較高，但近年整體 pCR 較低，而近年幾乎全是雙標靶。
+審稿人一定會看到未加權的數字（JCRP 要求附絕對人數），請在結果寫出兩者，並在討論說明。
+
+```{r}
+tok("n_records", "n_duplicates", "n_patients", "n_excl_stage", "n_excl_m1", "n_excl_her2", "n_excl_no_orders",
+    "n_excl_surgery_elsewhere", "n_cohort", "n_dual", "n_single", "smd_period_table1", "smd_anthracycline_table1",
+    "max_smd_after", "ess_dual", "ess_single", "pcr_crude_dual", "pcr_crude_single", "pcr_w_dual", "pcr_w_single",
+    "pcr_rd", "pcr_or", "pcr_p", "median_fu", "median_fu_dual", "median_fu_single",
+    "efs_events_dual", "efs_events_single", "efs_hr", "efs_p", "efs_5y_dual", "efs_5y_single",
+    "os_events_dual", "os_events_single", "os_hr", "os_p", "os_5y_dual", "os_5y_single",
+    "pcr_or_s1", "pcr_or_s2", "pcr_or_s3", "pcr_or_s4", "pcr_or_s6", "n_s1_dual", "n_s1_single", "n_s2_pairs",
+    "or_hr_negative", "or_hr_positive", "p_interaction_hr", "evalue_pcr", "evalue_pcr_ci",
+    "tdm1_non_pcr_dual", "tdm1_non_pcr_single")
+```
+
+- 依序：收案流程（Figure 1）→ 基期特徵與加權後平衡（Table 1）→ pCR（Table 2）→ EFS／OS（Table 3、Figure 2–3）→ 敏感度與次族群。
+- 不要在正文重複表格裡的每個數字，挑重點。
+
+# 討論（STROBE 第 18–21 項）
+
+建議順序：主要發現 → 與隨機試驗及真實世界研究比較 → 為何 EFS／OS 無法下結論 → 優點與限制 → 結論。
+
+**必須誠實寫出的限制**（來自 2026-10-09 的可靠性檢查）：
+
+1. 兩種治療年代幾乎不重疊；結果主要來自 2016–2019 年的轉換期病人（重疊加權的估計對象）。
+2. 未加權與加權結果差異大，結論依賴對年代的調整；E-value `{{evalue_pcr}}`（信賴區間 `{{evalue_pcr_ci}}`）表示中等強度的未測量干擾即可能推翻。
+3. 配對分析（S2，僅 `{{n_s2_pairs}}` 對）效果較小：`{{pcr_or_s2}}`。
+4. EFS／OS：雙標靶組追蹤較短（`{{median_fu_dual}}` vs `{{median_fu_single}}` 年）；單標靶組較多提早失聯；術後 T-DM1 使用不同（非 pCR 者 `{{tdm1_non_pcr_dual}}` vs `{{tdm1_non_pcr_single}}`）。
+5. EFS 未包含對側乳癌與第二原發癌（資料無此欄位）。
+6. 無法套用「其他活動性癌症」「參與臨床試驗」兩項排除條件；單一中心；缺值以多重插補處理（假設隨機缺失）。
+7. 事後檢查（不在 SAP 內，若要寫須標明 post hoc）：pertuzumab 晚加入不影響分組（無單標靶病人於第 84 天前惡化）；年份改用樣條，OR 不變。
+
+```{r}
+cite_table(c("real_world", "residual", "rct"))
+```
+
+# 聲明（放在參考文獻之前）
+
+**資料可取得性**：JCRP 只接受規定句型，建議用：
+*The datasets generated and/or analyzed during the current study are not publicly available due to patient privacy and institutional regulations but are available from the corresponding author on reasonable request.*
+
+**生成式 AI 使用揭露**：請依實際情況撰寫並確認，至少包含：
+
+- 工具與版本：Claude Opus 5.5（Anthropic），用於撰寫並測試統計分析程式、資料檢查、表格與圖的產生、論文格式架構與格式檢查；OpenEvidence 用於文獻搜尋（所有文獻經 Crossref／PubMed 查證）。
+- 使用期間：2026 年 10 月起。
+- 作者責任：分析計畫由作者事先訂定並經 IRB 核准；作者審閱全部程式與結果，並撰寫全部正文；作者對內容負全責。
+- 補充資料：分析程式（`analysis/`）可作為補充資料提供。
+
+**作者貢獻、經費、利益衝突、致謝**：填在 `manuscript/meta.yaml`（只出現在首頁檔）。
+
+# 表與圖
+
+| 編號 | 內容 | 狀態 |
+|---|---|---|
+| Table 1 | 基期特徵（≤ 25 列版） | 自動產生 |
+| Table 2 | pCR：主分析與敏感度分析 | 自動產生 |
+| Table 3 | EFS／OS | 自動產生 |
+| Figure 1 | 收案流程圖 | 自動轉成 JPEG；**圖說由作者寫**（≤ 40 字） |
+| Figure 2 | EFS 加權 Kaplan-Meier 曲線 | 同上 |
+| Figure 3 | OS 加權 Kaplan-Meier 曲線 | 同上 |
+| 補充資料 | 完整版 Table 1、加權前後平衡圖（Figure S1）、次族群、E-value、分析程式 | 待整理 |

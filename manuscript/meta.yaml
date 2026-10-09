@@ -1,0 +1,38 @@
+# 論文首頁（Title Page）資訊。題目、作者姓名、Email、電話、IRB 編號與核准日讀自 config.toml / cv.toml，不在此重寫。
+# 教學示範：以下人員、單位、地址全部虛構（synthetic data for teaching）；單位不得使用真實醫院名稱。
+# 本示範稿由 AI 撰寫；真實投稿時，內文與本檔內容必須由作者親自撰寫與確認。
+
+article_type: Original Article
+running_title: "Neoadjuvant dual HER2 blockade in routine practice"
+keywords:          # MeSH 詞
+  - Breast neoplasms
+  - Receptor, ErbB-2
+  - Neoadjuvant therapy
+  - Pertuzumab
+  - Trastuzumab
+  - Propensity score
+
+authors:           # 依 cv.toml 的英文姓名對應；順序 = 作者順序
+  - name_en: Yi-Chun Chen
+    degrees: MD
+    designation: Attending Physician
+    affiliation: "Division of Medical Oncology, Formosa Demonstration Cancer Hospital (fictional), Taipei, Taiwan"
+    corresponding: true
+    address: "No. 1, Demonstration Road, Taipei, Taiwan (fictional)"
+    contributions: [concept, design, definition of intellectual content, literature search, data acquisition, manuscript preparation]
+    guarantor: true
+  - name_en: Chia-Hao Chang
+    degrees: MD
+    designation: Attending Surgeon
+    affiliation: "Department of Breast Surgery, Formosa Demonstration Cancer Hospital (fictional), Taipei, Taiwan"
+    contributions: [clinical studies, data acquisition, manuscript review]
+  - name_en: Shu-Fen Huang
+    degrees: MS
+    designation: Biostatistician
+    affiliation: "Clinical Research Center, Formosa Demonstration Cancer Hospital (fictional), Taipei, Taiwan"
+    contributions: [design, data analysis, statistical analysis, manuscript editing]
+
+funding: "None."
+acknowledgements: "The authors thank the hospital information office for data extraction and verification (fictional)."
+prior_presentation: "None."
+conflicts_of_interest: "The authors declare no conflicts of interest."

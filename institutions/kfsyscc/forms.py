@@ -81,13 +81,13 @@ PHASE_FORMS = {
         ],
     },
     "amendment": {
-        "base": ["SF014", "SF015", "SF016", "SF094"],
+        "base": ["SF014", "SF015", "SF016", "SF094", "PROPOSAL"],
         "conditions": [
             (lambda c: c["study"]["drug_device"], ["SF011"]),
         ],
     },
     "re_review": {
-        "base": ["SF019"],
+        "base": ["SF019", "PROPOSAL"],
         "conditions": [],
     },
     "continuing": {

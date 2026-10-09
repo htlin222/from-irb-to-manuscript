@@ -1,0 +1,40 @@
+---
+# JCRP Cover letter（不匿名）。正文在 manuscript/text/cover_letter.md。
+format:
+  docx:
+    reference-doc: style/reference.docx
+lang: en-US
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+```
+
+```{r load}
+source("manuscript/R/render_helpers.R")
+```
+
+```{r}
+demo_labels()
+```
+
+Date: to be added on submission
+
+To: The Editor-in-Chief, *Journal of Cancer Research and Practice*
+
+```{r}
+section("cover_letter")
+```
+
+Sincerely,
+
+```{r, results="asis"}
+corr <- Filter(function(a) isTRUE(a$corresponding), meta$authors)[[1]]
+p <- Filter(function(x) identical(x$name_en, corr$name_en), c(list(cv$pi), cv$co_pi))[[1]]
+cat(corr$name_en, ", ", corr$degrees, "  \n", corr$designation, ", ", corr$affiliation, "  \n", corr$address, "  \n",
+    "E-mail: ", p$email, "; Telephone: ", p$phone_en %||% p$phone, "  \n", "On behalf of all authors\n", sep = "")
+```

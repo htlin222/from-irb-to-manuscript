@@ -16,10 +16,10 @@ co_pi    = "@cv.toml#co_pi"
 proposal = "@中文計畫摘要.md"
 
 [study]
-irb_no       = ""          # blank until the IRB assigns one
+irb_no       = "DEMO-2026-0412"   # correspondence/IRB核准通知.md
 project_no   = "不適用"
-title_zh     = "晚期非小細胞肺癌患者接受表皮生長因子受體酪氨酸激酶抑制劑治療之皮膚毒性與治療反應相關性分析：單中心回溯性研究"
-title_en     = "Association Between Skin Toxicity and Treatment Response in Advanced Non-Small Cell Lung Cancer Patients Treated with EGFR-TKI: A Single-Center Retrospective Study"
+title_zh     = "早期HER2陽性乳癌患者術前化學治療合併Trastuzumab與Pertuzumab雙標靶相較於單用Trastuzumab之臨床預後比較：單中心回溯性世代研究"
+title_en     = "Neoadjuvant Chemotherapy with Trastuzumab plus Pertuzumab versus Trastuzumab Alone in Early HER2-Positive Breast Cancer: A Single-Center Retrospective Cohort Study"
 type         = "retrospective"   # retrospective | prospective | clinical_trial | genetic
 design       = "cohort"          # cohort | case_control | cross_sectional | rct | single_arm
 review_type  = "expedited"       # exempt | expedited | full_board
@@ -28,39 +28,50 @@ genetic      = false
 multicenter  = false
 
 [dates]
-study_start       = "2026年04月01日"
-study_end         = "2027年03月31日"
-data_period       = "2019年01月01日 至 2024年12月31日"
-irb_approval_date = ""
+study_start       = "2026年11月16日"   # IRB 核准執行期間（correspondence/IRB核准通知.md）
+study_end         = "2027年11月15日"   # 結案報告須於結束後三個月內提出
+data_period       = "2012年01月01日 至 2023年12月31日（追蹤至2025年12月31日）"
+irb_approval_date = "2026年11月16日"
 
 [subjects]
-planned_n             = 150
-actual_n              = 0
+planned_n             = 700   # 資訊室初估 600–700 人，取上限
+actual_n              = "@results/irb_closure.toml#actual_n"   # make closure-report 由分析結果產生
 consent_waiver        = true
 vulnerable_population = false
 groups = [
-  { name = "皮膚毒性組", n = 0 },
-  { name = "無皮膚毒性組", n = 0 },
+  { name = "雙標靶組（化療＋trastuzumab＋pertuzumab）", n = "@results/irb_closure.toml#n_dual" },
+  { name = "單標靶組（化療＋trastuzumab）", n = "@results/irb_closure.toml#n_single" },
 ]
 
 [closure]
 extensions = 0
-amendments = 0
+amendments = 1   # 已核准的修正案次數（結案報告用）
 sae_count  = 0
 specimens  = false
+report     = "@results/irb_closure.md"   # SF038 各節內容：結案報告.md 經 make closure-report 填入數字
 
 [closure.data_safety]
 deidentified         = true
 encrypted            = true
 retention_years      = 7
-authorized_personnel = "王大明（計畫主持人）"
+authorized_personnel = "陳怡君（計畫主持人）、黃淑芬（協同主持人，生物統計師）"
 
 [amendment]
-change_description = ""   # or "@修正說明.md"
+number             = 1
+reasons            = ["研究設計變更", "統計分析方法與研究終點用語"]   # 不在 SF015 勾選項者列入「其他」
+change_description = "@correspondence/IRB修正案1_修正說明.md"
+baseline           = "irb-approved:中文計畫摘要.md"   # SF016：核准版（git tag:檔案）vs 目前版，自動逐段比對
 affects_consent    = false
 affects_risk       = false
+approval_date      = "2026年12月07日"   # 第 1 次修正案核准（correspondence/IRB修正案1_核准通知.md）
 
 [continuing_review]
 enrollment_status   = ""
 deviations          = 0
 extension_requested = false
+
+[re_review]
+original_phase = "new"   # 原審查類別：new | amendment | continuing | 其他（自填文字）
+review_date    = ""      # 原審查日期；IRB 通知未載明，留白待填
+responses      = "@correspondence/IRB初審_回覆.md"   # ## 意見 N：審查意見原文 + 回覆
+revised_documents = ["中文計畫摘要"]   # 隨複審附上的修正後文件；研究計畫書／受試者同意書／個案報告表以外的列入「其他」

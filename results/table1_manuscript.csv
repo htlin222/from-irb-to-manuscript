@@ -1,0 +1,25 @@
+variable,characteristic,Trastuzumab + pertuzumab (n = 416),Trastuzumab alone (n = 199),smd
+age,"Age at diagnosis, years, median (IQR)",50.7 (43.8–59.0),51.5 (42.6–57.7),0.05
+postmenopausal,Postmenopausal,232 (55.8),116 (58.3),0.05
+ecog_ge1,ECOG performance status ≥1,107 (25.7),58 (29.1),0.08
+bmi,"BMI, kg/m², median (IQR)",24.1 (21.5–26.8),24.0 (21.2–26.4),0.08
+lvef,"Baseline LVEF, %, median (IQR)",65.0 (61.0–68.0),65.0 (62.0–68.0),0.08
+ct,Clinical T category,"","",0.09
+"",  T1,32 (7.7),17 (8.5),""
+"",  T2,237 (57.0),111 (55.8),""
+"",  T3,97 (23.3),42 (21.1),""
+"",  T4,50 (12.0),29 (14.6),""
+cn,Clinical N category,"","",0.00
+"",  N0,122 (29.3),58 (29.1),""
+"",  N1,196 (47.1),94 (47.2),""
+"",  N2,56 (13.5),27 (13.6),""
+"",  N3,42 (10.1),20 (10.1),""
+hr_positive,Hormone receptor positive (ER or PR ≥1%),240 (57.7),116 (58.3),0.01
+her2_ihc3,"HER2 IHC 3+ (vs IHC 2+, ISH amplified)",320 (76.9),155 (77.9),0.02
+grade3,Histologic grade 3*,201 (51.9),88 (48.6),0.07
+ki67,"Ki-67, %, median (IQR)*",43.5 (31.2–56.0),43.5 (30.0–56.8),0.05
+anthracycline,Anthracycline-based chemotherapy,116 (27.9),107 (53.8),0.55
+period,Year of neoadjuvant therapy start,"","",2.80
+"",  2012–2015,6 (1.4),156 (78.4),""
+"",  2016–2019,171 (41.1),38 (19.1),""
+"",  2020–2023,239 (57.5),5 (2.5),""
