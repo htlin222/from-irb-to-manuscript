@@ -1,8 +1,8 @@
 {
   "outputs": ["results/table1_manuscript.csv", "results/table1_manuscript_missing.csv"],
   "script": "analysis/R/table1.R",
-  "generated": "2026-10-09 08:57:24 CST",
-  "git_commit": "311b7c9",
+  "generated": "2026-10-09 09:00:41 CST",
+  "git_commit": "5e7c240",
   "r_version": "R version 4.5.1 (2025-06-13)",
   "packages": "data.table 1.17.8、yaml 2.3.10、RcppTOML 0.2.3、digest 0.6.37、jsonlite 2.0.0、tableone 0.13.2",
   "raw_data_sha256": {

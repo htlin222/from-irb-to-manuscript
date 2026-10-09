@@ -13,3 +13,15 @@ pcr_n,single,90
 pcr_n,dual,195
 pcr_strict_n,single,56
 pcr_strict_n,dual,133
+n_period,single_2012_2015,156
+pcr_n_period,single_2012_2015,73
+n_period,dual_2012_2015,6
+pcr_n_period,dual_2012_2015,3
+n_period,single_2016_2019,38
+pcr_n_period,single_2016_2019,17
+n_period,dual_2016_2019,171
+pcr_n_period,dual_2016_2019,90
+n_period,single_2020_2023,5
+pcr_n_period,single_2020_2023,0
+n_period,dual_2020_2023,239
+pcr_n_period,dual_2020_2023,102
