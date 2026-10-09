@@ -1,0 +1,134 @@
+# 投稿期刊格式要求（單一來源）：make manuscript 依此產生投稿檔並自動檢查。
+# 期刊：Journal of Cancer Research and Practice（JCRP；Taiwan Oncology Society；Wolters Kluwer Medknow）
+# 來源：https://www.ovid.com/jnls/jcrp/pages/instructions-for-authors
+#   2026-10-09 讀取（WebFetch 被擋，改以瀏覽器 User-Agent 取得公開頁面）。投稿前請再核對一次是否更新。
+# 引號內為原文摘錄；其餘為整理。
+
+journal:
+  name: Journal of Cancer Research and Practice
+  abbreviation: J Cancer Res Pract
+  submission_site: https://preflight.paperpal.com/partner/wkmedknow/jcrp/submit
+  copyright_form: https://www.editorialmanager.com/ejcrp   # 每位作者都要填
+  language: American English
+  review: double-blind
+  fees:
+    submission_and_processing: none            # "does not charge for submission and processing"
+    repeated_or_wrong_field_submission_usd: 25 # "we will charge US$25 for the repeated submissions and the submission with wrong fields"
+    over_size_mb: 25                           # 總檔案超過 25 MB 另收費；大型資料放雲端並附連結
+
+article_type: original_article
+limits:
+  main_text_words: 4000        # "up to 4,000 words (excluding Abstract, references and Tables)"
+  abstract_words: 250          # 檢核表："structured abstract of 250 words"
+  introduction_words: [75, 100]  # 檢核表："Introduction of 75-100 words"
+  references_about: 50         # "about 50 references"
+  authors_max: 6               # 超過需說明理由
+  keywords_min: 3
+  figure_legend_words: 40
+  table_max_columns: 10        # "Tables with more than 10 columns and 25 rows are not acceptable"
+  table_max_rows: 25
+  blinded_file_mb: 1
+  image_mb: 2                  # 另一處寫 "within 1024 kb"，以 1 MB 為準較保險
+  image_pixels: [1600, 1200]
+
+abstract:
+  structured: true
+  headings: [Background, Materials and Methods, Results, Conclusion]
+  must_contain_full_title: true  # "Abstract page contains the full title of the manuscript"
+
+sections:                         # 依序
+  - Abstract
+  - Keywords
+  - Introduction
+  - Materials and Methods         # 須含倫理聲明（IRB 核准、Helsinki 1975/2013）與研究設計；觀察性研究依 STROBE
+  - Results
+  - Discussion                    # 含主要發現、優點與限制、與既有證據比較、未來方向
+  - References
+  - Tables                        # 放在參考文獻之後，每張表一頁
+  - Figure legends                # 放在文末；圖檔另外上傳，不嵌入本文
+reporting_guideline: STROBE       # https://www.strobe-statement.org/checklists/
+
+files:
+  title_page:                     # 「Title Page/First Page File」：所有可辨識作者身分的資訊只放這裡
+    format: docx
+    contents:
+      - type of manuscript
+      - title
+      - running title
+      - authors with highest academic degree, designation, affiliation
+      - departments / institutions credited
+      - total pages, number of figures, word counts (abstract; text excluding references, tables, abstract; introduction + discussion)
+      - source(s) of support (grants, equipment, drugs)
+      - acknowledgements               # 只放在 title page，不放在本文
+      - prior presentation at a meeting
+      - clinical trial registration    # 本研究不適用
+      - statement that all authors read and approved the manuscript
+      - corresponding author name, address, e-mail, telephone
+  blinded_article:                 # 「Blinded Article file」：Abstract 到 References（含 Tables）
+    format: docx
+    must_not_contain: [author names or initials, institution name, acknowledgements, "self-identifying wording (e.g. 'our previous study')"]
+    images_embedded: false
+    page_numbers: bottom
+  images:
+    format: jpeg                   # 修訂後最終版：TIFF、300 dpi 或 1800 x 1600 px
+    color: true
+  other:
+    - cover letter                 # 須提及先前發表/會議報告、經費來源
+    - authorship and conflicts of interest statement   # 期刊提供下載範本
+    - copyright transfer agreement (all authors, online)
+    - STROBE checklist
+    - Word template for original articles (.dotx, on the instructions page)
+
+format:
+  line_spacing: double
+  margins_cm: 2.5
+  page_numbers: bottom
+  headings: title case            # 不要全大寫
+  track_changes: false
+  numerals_one_to_ten: spelled out
+  sentence_initial_numerals: spelled out
+  abbreviations: define at first use separately in title, abstract, keywords and text
+
+statistics:
+  p_value: "uppercase italic P with exact value (e.g. P = 0.048), not 'P < 0.05'"
+  effect_with_ci: true            # 比例、OR、HR、平均差都要附信賴區間
+  absolute_numbers_with_percentages: true
+  avoid_nontechnical_terms: [random, normal, significant, correlations, sample]
+  report_losses_to_follow_up: true
+  software: specify
+
+references:
+  style: Vancouver (NLM / Index Medicus)
+  csl: vancouver-superscript-brackets   # 待確認可用的 CSL 檔
+  order: by first citation
+  in_text: "superscript Arabic numerals in square brackets, after punctuation (e.g. ...trials.^[1]^)"
+  authors: "list up to six; if more than six, list the first six followed by et al."
+  journal_titles: Index Medicus abbreviations
+  examples:
+    journal: "Parija SC, Ravinder PT, Shariff M. Detection of hydatid antigen in the fluid samples from hydatid cysts by co-agglutination. Trans R Soc Trop Med Hyg 1996;90:255-6."
+    more_than_six: "Roddy P, Goiri J, Flevaud L, Palma PP, Morote S, Lima N et al. Field evaluation of ... J Clin Microbiol 2008;46:2022-7."
+    internet: "... [Internet]. BMC Microbiology 2007;7:41. Available from: http://... [Last accessed on 2025 Jun 01]."
+  avoid: [abstracts as references, personal communications unless essential]
+
+tables:
+  numbering: Arabic, in order of first citation
+  footnote_symbols: ["*", "†", "‡", "§", "||", "¶", "**", "††", "‡‡"]
+  abbreviations_in_footnote: true
+
+required_statements:
+  ethics: "IRB approval and consent waiver in Materials and Methods; Declaration of Helsinki (1975, revised 2013)"
+  data_availability: "required since April 2024; must use one of the journal's standard wordings"
+  conflicts_of_interest: required
+  funding: required               # title page
+  author_contributions: "by category (concept, design, ..., manuscript review); name a guarantor"
+  ai_disclosure: >-
+    Disclose AI tool name and version, when and how it was used (writing, images, data collection or
+    analysis), in Methods/Acknowledgments or before the references. "GenAI cannot be used to write an
+    entire paper or a significant portion of a paper (e.g., method, result and analysis, etc.)" —
+    otherwise handled as academic misconduct. Recommended: archive AI-assisted parts (text, figures,
+    programs) as supplementary material.
+
+revision:
+  response_to_reviewers: point-by-point at the beginning of the revised article file
+  mark_changes: underlined or colored text
+  title_page_not_resubmitted: true
