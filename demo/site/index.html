@@ -176,6 +176,32 @@
       .hidden {
         display: none !important;
       }
+      #endbar {
+        position: absolute;
+        right: 14px;
+        bottom: 14px;
+        z-index: 15;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        max-width: calc(100% - 28px);
+        padding: 8px 8px 8px 14px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        font-size: 13px;
+        color: var(--muted);
+      }
+      #endbar span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      #endbar .btn {
+        padding: 6px 14px;
+        flex: none;
+      }
       #brief {
         display: flex;
         flex-direction: column;
@@ -515,6 +541,10 @@
                 <button class="btn ghost" id="btn-about2">這是什麼？</button>
               </div>
             </div>
+            <div id="endbar" class="hidden">
+              <span id="endtext"></span>
+              <button class="btn" id="btn-next">下一章 ▶</button>
+            </div>
             <div id="sheet-ms" class="sheet">
               <button class="close" id="close-ms">關閉</button>
               <div
@@ -555,7 +585,7 @@
 一路到期刊審稿來回與接受。全部在<b>同一個對話</b>裡完成。</p>
 
 <h2>怎麼看</h2>
-<p>左邊每一章就是一句送出的話。播放時每到新的一章會先停下來，讓你看清楚這一句寫了什麼，按 START 繼續；
+<p>左邊每一章就是一句送出的話。每一章先顯示這一句寫了什麼，按 START 播放；AI 回答完會停在最後的畫面，按「下一章」再往下。<b>空白鍵</b>就是「下一步」：開始播放 → 暫停／繼續 → 下一章。
 不想停，把下方「每章停下來看題目」取消勾選。想先讀完上一章的回答，按「先看上一章的回答」。</p>
 <p><b>縮時</b>：每一輪開頭 20 秒（訊息送進去）與結尾 15 秒（答案出來）是原速；中間 AI 在工作的片段以 8 倍速播放，
 畫面停滯超過 2 秒的地方也壓到 2 秒。實際錄影長度見右上角。標著「↳ 補充一句」的是 AI 停下來需要回應時，錄影者補上的話，照實保留。</p>
@@ -581,7 +611,7 @@
               每章停下來看題目</label
             >
             <span class="hint"
-              ><kbd>[</kbd> <kbd>]</kbd> 章節 · <kbd>space</kbd> 播放/暫停 ·
+              ><kbd>[</kbd> <kbd>]</kbd> 章節 · <kbd>space</kbd> 下一步 ·
               <kbd>Esc</kbd> 關閉</span
             >
           </footer>
@@ -593,6 +623,9 @@
       var CHAPTERS = [{"id": "01", "part": "開始之前", "name": "這個專案在做什麼", "prompt": "用三句話告訴我這個專案在做什麼。", "kind": "stage", "t": 3.567, "end": 12.156}, {"id": "02", "part": "開始之前", "name": "題目可行嗎", "prompt": "我的研究想法寫在「研究構想.md」。這個題目可行嗎？最大的困難是什麼？", "kind": "stage", "t": 21.708, "end": 54.566}, {"id": "03", "part": "IRB 初審", "name": "準備新案送審文件", "prompt": "好，幫我開一個新分支，準備 IRB 新案送審文件。", "kind": "stage", "t": 64.136, "end": 152.924}, {"id": "04", "part": "IRB 初審", "name": "看一張表單", "prompt": "產出了哪些文件？挑最重要的一張給我看。", "kind": "stage", "t": 164.479, "end": 181.582}, {"id": "05", "part": "IRB 初審", "name": "存成「IRB 初審」", "prompt": "把這個版本存起來，標記為「IRB 初審」。", "kind": "stage", "t": 193.052, "end": 206.762}, {"id": "06", "part": "IRB 複審", "name": "審查意見來了", "prompt": "IRB 審查意見回來了，放在 inbox。請逐條修改。", "kind": "stage", "t": 218.194, "end": 298.516}, {"id": "07", "part": "IRB 複審", "name": "回覆表＋複審文件", "prompt": "幫我寫審查意見回覆表，產出複審文件，存成「IRB 複審」。", "kind": "stage", "t": 310.026, "end": 346.398}, {"id": "08", "part": "IRB 複審", "name": "IRB 通過", "prompt": "IRB 通過了！核准通知在 inbox，幫我記下來。", "kind": "stage", "t": 358.041, "end": 394.271}, {"id": "09", "part": "拿到資料", "name": "收資料", "prompt": "資訊室把資料放在 inbox 了，幫我收進專案。先不要分析。", "kind": "stage", "t": 405.733, "end": 444.5}, {"id": "10", "part": "拿到資料", "name": "資料可以相信嗎", "prompt": "這份資料可以相信嗎？幫我檢查。", "kind": "stage", "t": 456.062, "end": 527.059}, {"id": "11", "part": "拿到資料", "name": "收案流程圖", "prompt": "有幾位病人符合收案條件？畫一張收案流程圖。", "kind": "stage", "t": 538.494, "end": 610.304}, {"id": "12", "part": "拿到資料", "name": "Table 1", "prompt": "幫我做 Table 1，比較兩種治療的病人。", "kind": "stage", "t": 621.826, "end": 685.323}, {"id": "13", "part": "拿到資料", "name": "資訊室回信", "prompt": "資訊室回信了，在 inbox。ypN0(i+) 就照國際通用的 pCR 定義。", "kind": "stage", "t": 696.757, "end": 758.637}, {"id": "14", "part": "公平比較", "name": "有哪些方法", "prompt": "兩組病人本來就不一樣。要公平比較，有哪些方法？用白話說明，並推薦一個。", "kind": "stage", "t": 770.115, "end": 810.53}, {"id": "15", "part": "公平比較", "name": "先寫分析計畫", "prompt": "就照你的推薦。先寫分析計畫，給我看重點。", "kind": "stage", "t": 822.064, "end": 869.797}, {"id": "16", "part": "公平比較", "name": "開始分析", "prompt": "開始分析：pCR、EFS、OS 都要。", "kind": "stage", "t": 881.25, "end": 965.591}, {"id": "17", "part": "公平比較", "name": "白話結果", "prompt": "用白話告訴我：雙標靶比較好嗎？", "kind": "stage", "t": 977.086, "end": 987.96}, {"id": "18", "part": "公平比較", "name": "結果可靠嗎", "prompt": "這個結果可靠嗎？可能哪裡出錯？", "kind": "stage", "t": 999.44, "end": 1041.936}, {"id": "19", "part": "公平比較", "name": "從頭重跑一次", "prompt": "從原始資料整個重跑一次，結果一樣嗎？", "kind": "stage", "t": 1053.464, "end": 1098.899}, {"id": "20", "part": "公平比較", "name": "存成「分析完成」", "prompt": "存檔，標記為「分析完成」。", "kind": "stage", "t": 1110.379, "end": 1127.669}, {"id": "21", "part": "IRB 修正案", "name": "送修正案", "prompt": "照你的建議，幫我送 IRB 修正案。", "kind": "stage", "t": 1139.16, "end": 1275.937}, {"id": "22", "part": "IRB 修正案", "name": "修正案通過", "prompt": "修正案通過了，通知在 inbox。", "kind": "stage", "t": 1287.485, "end": 1323.314}, {"id": "23", "part": "寫論文", "name": "期刊格式要求", "prompt": "我要投 Journal of Cancer Research and Practice。它的格式要求是什麼？整理起來，之後照這個寫。", "kind": "stage", "t": 1332.767, "end": 1383.189}, {"id": "24", "part": "寫論文", "name": "找文獻", "prompt": "用 OpenEvidence 幫我找討論要用的文獻，每一篇都要查證是真的。", "kind": "stage", "t": 1392.731, "end": 1495.451}, {"id": "25", "part": "寫論文", "name": "寫初稿", "prompt": "開始寫論文初稿。", "kind": "stage", "t": 1504.97, "end": 1691.62}, {"id": "say01", "part": "", "name": "補充", "prompt": "這是教學示範，不會真的投稿。請你把全文寫完，meta.yaml 也用虛構資料填好；論文和 README 都要註明：本示範稿由 AI 撰寫，真實投稿時內文必須由作者親自撰寫。", "kind": "say", "after": "25", "t": 1701.159, "end": 1797.677}, {"id": "26", "part": "寫論文", "name": "產出投稿檔", "prompt": "照期刊格式產出投稿檔案。", "kind": "stage", "t": 1807.135, "end": 1875.286}, {"id": "27", "part": "寫論文", "name": "投稿前檢查", "prompt": "投稿前最後檢查：字數、格式、數字有沒有對上？", "kind": "stage", "t": 1884.836, "end": 1931.381}, {"id": "28", "part": "寫論文", "name": "存成「投稿版」", "prompt": "幫我寫給編輯的 cover letter，然後存成「投稿版」。", "kind": "stage", "t": 1940.843, "end": 1983.484}, {"id": "29", "part": "審稿來回", "name": "審稿意見來了", "prompt": "期刊回信了，在 inbox。先用白話告訴我審稿人說什麼。", "kind": "stage", "t": 1992.952, "end": 2029.822}, {"id": "30", "part": "審稿來回", "name": "逐點修改＋回覆信", "prompt": "請逐點修改，並寫回覆信。", "kind": "stage", "t": 2039.373, "end": 2172.968}, {"id": "31", "part": "審稿來回", "name": "修訂版投稿檔", "prompt": "修改的地方要讓審稿人看得到。產出修訂版投稿檔，存成「第一次修訂」。", "kind": "stage", "t": 2184.522, "end": 2266.891}, {"id": "32", "part": "審稿來回", "name": "第二輪意見", "prompt": "第二輪意見來了，在 inbox。請處理，存成「第二次修訂」。", "kind": "stage", "t": 2276.435, "end": 2441.018}, {"id": "33", "part": "審稿來回", "name": "接受了！", "prompt": "論文接受了！通知在 inbox。接下來還要做什麼？順便準備 IRB 結案文件。", "kind": "stage", "t": 2450.592, "end": 2529.548}, {"id": "34", "part": "回顧", "name": "誰在判斷", "prompt": "回顧整個過程：哪些是 AI 在判斷、哪些是固定的程式？身為醫師，我一定要親自檢查哪些地方？", "kind": "stage", "t": 2539.099, "end": 2577.323}];
       var KEYS = ["IRB", "inbox", "Table 1", "pCR", "EFS", "OS", "OpenEvidence", "cover letter", "「IRB 初審」", "「IRB 複審」", "「分析完成」", "「投稿版」", "「第一次修訂」", "「第二次修訂」"];
       var cur = -1, player = null, pauseMode = true;
+      // What Space does next: "brief" → play this chapter; "playing" → pause;
+      // "paused" → resume; "ended" → this chapter's answer is on screen, show the next brief.
+      var state = "brief", endedAt = -1;
       var $ = function (id) { return document.getElementById(id); };
       var THEME = { foreground: "#1c1917", background: "#ffffff",
         palette: "#1c1917:#cf222e:#1a7f37:#9a6700:#0969da:#8250df:#1b7c83:#57534e:#57534e:#cf222e:#1a7f37:#9a6700:#0969da:#8250df:#1b7c83:#8c8681" };
@@ -641,8 +674,10 @@
         $("brieftext").innerHTML = emphasise(c.prompt);
         $("briefnote").textContent = c.kind === "say"
           ? "AI 停下來需要回應時，錄影者補上的話。照實保留。"
-          : "這是送進 Claude Code 的原文，一字不改。";
+          : "";
         msButton(c);
+        state = "brief";
+        $("endbar").classList.add("hidden");
         $("brief").classList.remove("hidden");
         $("btn-start").focus();
       }
@@ -657,11 +692,37 @@
 
       function start() {
         $("brief").classList.add("hidden");
+        $("endbar").classList.add("hidden");
         if (!player) return;
+        state = "playing";
         // Resume from this chapter's marker: covers the first START (player still at 0)
         // and a pause on a marker alike, and never re-triggers the same pause.
         Promise.resolve(player.seek({ marker: cur })).then(function () { player.play(); });
       }
+      // Stop on the last frame of a chapter instead of running into the next one.
+      function chapterEnded(last) {
+        endedAt = cur; state = "ended";
+        var n = CHAPTERS[cur + 1];
+        $("endtext").textContent = last || !n ? "全片結束"
+          : "這一章結束 · 空白鍵 → 下一章：" + (n.kind === "say" ? "補充一句" : n.id + " " + n.name);
+        $("btn-next").classList.toggle("hidden", last || !n);
+        $("endbar").classList.remove("hidden");
+      }
+      function next() { go(cur + 1, false); }
+      function step() {
+        if (state === "brief") start();
+        else if (state === "ended") next();
+        else if (state === "playing") { player.pause(); state = "paused"; }
+        else { $("endbar").classList.add("hidden"); player.play(); state = "playing"; }
+      }
+      setInterval(function () {
+        var c = CHAPTERS[cur];
+        if (!pauseMode || !player || state !== "playing" || !c || !c.end || endedAt === cur) return;
+        Promise.resolve(player.getCurrentTime()).then(function (t) {
+          // +2 s lets the final repaint land; the recording holds each answer ~9 s before the next marker.
+          if (state === "playing" && endedAt !== cur && t >= c.end + 2) { player.pause(); chapterEnded(false); }
+        });
+      }, 250);
       function closeSheets() {
         $("sheet-about").classList.remove("open"); $("sheet-ms").classList.remove("open"); closeViewer();
       }
@@ -739,9 +800,13 @@
           highlight(e.index);
           if (pauseMode) brief(e.index);
         });
+        player.addEventListener("play", function () { if (state !== "brief") { state = "playing"; $("endbar").classList.add("hidden"); } });
+        player.addEventListener("pause", function () { if (state === "playing") state = "paused"; });
+        player.addEventListener("ended", function () { chapterEnded(true); });
       }
 
       $("btn-start").onclick = start;
+      $("btn-next").onclick = next;
       $("btn-about2").onclick = openAbout;
       // Hide the brief without playing, so the previous answer can be read in full.
       $("btn-peek").onclick = function () { $("brief").classList.add("hidden"); };
@@ -763,11 +828,15 @@
       };
       document.addEventListener("keydown", function (e) {
         if (e.target.tagName === "INPUT") return;
+        var sheetOpen = document.querySelector(".sheet.open, #viewer.open");
+        if (e.key === " " && !sheetOpen) {
+          // Capture phase: the player would otherwise toggle play/pause on its own.
+          e.preventDefault(); e.stopPropagation(); step(); return;
+        }
         if (e.key === "]") go(cur + 1, true);
         else if (e.key === "[") go(cur - 1, true);
         else if (e.key === "Escape") { if ($("viewer").classList.contains("open")) closeViewer(); else closeSheets(); }
-        else if (e.key === " " && !$("brief").classList.contains("hidden")) { e.preventDefault(); start(); }
-      });
+      }, true);
 
       var css = document.createElement("style");
       var pal = THEME.palette.split(":");
