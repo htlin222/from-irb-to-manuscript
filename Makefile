@@ -1,4 +1,4 @@
-.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check deidentify cohort table1 test-analysis \
+.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check deidentify cohort table1 analysis-data outcomes analysis test-analysis \
         set-phase new amendment re_review continuing closure sae ib_update import suspension appeal
 
 # Single source of truth: config.toml (+ the files it references, e.g. cv.toml, 中文計畫摘要.md)
@@ -67,6 +67,14 @@ cohort: deidentify ## Apply eligibility criteria → results/cohort_flow.csv + r
 
 table1: cohort ## Baseline characteristics by treatment group → results/table1.{csv,docx}
 	$(RSCRIPT) analysis/R/table1.R
+
+analysis-data: cohort ## One row per eligible patient: covariates, pCR, EFS, OS → data/derived/analysis.csv
+	$(RSCRIPT) analysis/R/analysis_data.R
+
+outcomes: analysis-data ## Primary and sensitivity analyses per analysis/SAP.md → results/outcomes_*.csv, figures
+	$(RSCRIPT) analysis/R/outcomes.R
+
+analysis: data-check test-analysis table1 outcomes ## Rerun everything from raw data (stops if data checks or tests fail)
 
 test-analysis: ## Run R tests for shared definitions (treatment groups, HER2, drug map)
 	$(RSCRIPT) -e 'testthat::test_dir("analysis/tests", reporter = "summary", stop_on_failure = TRUE)'

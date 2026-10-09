@@ -20,33 +20,32 @@ d <- merge(co, reg, by = "study_id")
 stopifnot(nrow(d) == nrow(co))
 
 cut <- p$receptor_positive_cutoff
-yr <- year(as.IDate(d$index_d))
 periods <- vapply(p$treatment_periods, function(x) sprintf("%d–%d", x[1], x[2]), "")
 period_of <- function(y) {
   i <- vapply(y, function(v) which(vapply(p$treatment_periods, function(x) v >= x[1] && v <= x[2], TRUE))[1], 1L)
   factor(periods[i], periods)
 }
-na_if_blank <- function(x) fifelse(x == "", NA_character_, x)
 
-tab <- d[, .(
-  group = factor(fifelse(treatment_group == "dual", "Trastuzumab + pertuzumab", "Trastuzumab alone"),
+# 共變項編碼與傾向分數模型共用（definitions.R build_covariates），這裡只轉成顯示用的標籤
+cv <- build_covariates(d, cut)
+tab <- data.table(
+  group = factor(fifelse(d$treatment_group == "dual", "Trastuzumab + pertuzumab", "Trastuzumab alone"),
                  c("Trastuzumab + pertuzumab", "Trastuzumab alone")),
-  age = as.numeric(age_at_dx),
-  menopause = factor(menopause, c("Pre", "Post"), c("Premenopausal", "Postmenopausal")),
-  ecog = factor(ECOG),
-  bmi = as.numeric(BMI),
-  lvef = as.numeric(LVEF_baseline),
-  ct = factor(sub("^(T[0-4]).*$", "\\1", cT)),
-  cn = factor(cN),
-  stage = factor(stage_ajcc8, p$eligibility$stages),
-  hr = factor(fifelse(receptor_positive(ER_pct, cut) | receptor_positive(PR_pct, cut), "Positive", "Negative"),
-              c("Positive", "Negative")),
-  her2 = factor(fifelse(HER2_IHC == "3+", "IHC 3+", "IHC 2+, ISH amplified"), c("IHC 3+", "IHC 2+, ISH amplified")),
-  grade = factor(na_if_blank(grade), c("1", "2", "3")),
-  ki67 = parse_pct(ki67),
-  backbone = factor(chemo_backbone, c("Anthracycline-based", "Carboplatin-based", "Taxane only", "Other")),
-  period = period_of(yr)
-)]
+  age = cv$age,
+  menopause = factor(cv$postmenopausal, 0:1, c("Premenopausal", "Postmenopausal")),
+  ecog = cv$ecog,
+  bmi = cv$bmi,
+  lvef = cv$lvef,
+  ct = cv$ct,
+  cn = cv$cn,
+  stage = factor(d$stage_ajcc8, p$eligibility$stages),
+  hr = factor(cv$hr_positive, 1:0, c("Positive", "Negative")),
+  her2 = factor(cv$her2_ihc3, 1:0, c("IHC 3+", "IHC 2+, ISH amplified")),
+  grade = cv$grade,
+  ki67 = cv$ki67,
+  backbone = factor(d$chemo_backbone, c("Anthracycline-based", "Carboplatin-based", "Taxane only", "Other")),
+  period = period_of(cv$year)
+)
 tab[, backbone := droplevels(backbone)]
 
 labels <- list(

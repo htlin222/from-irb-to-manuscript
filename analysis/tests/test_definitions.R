@@ -124,3 +124,35 @@ test_that("follow-up ends at the later of last visit and last order, death date 
                       death_d = d(c(NA, NA, "2024-02-01", NA)), cutoff = d("2025-12-31"))
   expect_equal(end, d(c("2024-03-01", "2024-05-01", "2024-02-01", "2025-12-31")))
 })
+
+test_that("strict pCR (ypT0 ypN0) excludes residual DCIS", {
+  expect_equal(pcr(c("ypT0", "ypTis"), c("ypN0", "ypN0"), c(TRUE, TRUE), ypt = "ypT0"), c(TRUE, FALSE))
+})
+
+test_that("EFS takes the earliest of progression, recurrence and death; otherwise censored at follow-up end", {
+  e <- efs(index_d = d(rep("2018-01-01", 5)),
+           recurrence_type = c("Distant", "", "Progression before surgery", "Local", ""),
+           rec_d = d(c("2019-01-01", NA, "2018-03-02", "2020-01-01", NA)),
+           death_d = d(c("2018-06-01", "2019-01-01", NA, NA, NA)),
+           end_d = d(c("2018-06-01", "2019-01-01", "2022-01-01", "2023-01-01", "2023-01-01")))
+  expect_equal(e$event, c(1L, 1L, 1L, 1L, 0L))
+  expect_equal(e$time, c(151, 365, 60, 730, 1826))   # 死亡早於遠端轉移時取死亡
+})
+
+test_that("OS counts deaths only", {
+  o <- os(d(c("2018-01-01", "2018-01-01")), d(c("2019-01-01", NA)), d(c("2019-01-01", "2020-01-01")))
+  expect_equal(o$event, c(1L, 0L)); expect_equal(o$time, c(365, 730))
+})
+
+test_that("covariate coding keeps missing values as NA and collapses T4 subcategories", {
+  x <- data.table(age_at_dx = c("50.1", ""), menopause = c("Post", "Pre"), ECOG = c("0", "2"), BMI = c("22", "30"),
+                  LVEF_baseline = c("60", "65"), cT = c("T4d", "T1c"), cN = c("N1", "N0"), ER_pct = c("0", "80"),
+                  PR_pct = c("5", "0"), HER2_IHC = c("2+", "3+"), grade = c("", "3"), ki67 = c("40%", ""),
+                  chemo_backbone = c("Carboplatin-based", "Anthracycline-based"), index_d = c("2016-03-01", "2021-05-01"))
+  cv <- build_covariates(x, receptor_cutoff = 1)
+  expect_equal(as.character(cv$ct), c("T4", "T1"))
+  expect_equal(cv$hr_positive, c(1L, 1L))
+  expect_true(is.na(cv$grade[1])); expect_true(is.na(cv$ki67[2])); expect_true(is.na(cv$age[2]))
+  expect_equal(cv$year, c(2016L, 2021L))
+  expect_setequal(PS_COVARIATES, names(cv))
+})

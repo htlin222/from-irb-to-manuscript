@@ -48,10 +48,49 @@ followup_end <- function(last_contact_d, last_order_d, death_d, cutoff) {
 # ICCR 2024 doi:10.1111/his.15165）。未手術（術前惡化）視為非 pCR；有手術但 yp 分期空白為 NA。
 PCR_YPT <- c("ypT0", "ypTis")
 PCR_YPN <- "ypN0"
-pcr <- function(ypT, ypN, had_surgery) {
+# ypt 可改為 "ypT0"（原位癌殘留也不算 pCR），供 SAP 敏感度分析 S4 使用
+pcr <- function(ypT, ypN, had_surgery, ypt = PCR_YPT) {
   fifelse(!had_surgery, FALSE,
-          fifelse(is.na(ypT) | is.na(ypN) | ypT == "" | ypN == "", NA, ypT %in% PCR_YPT & ypN %in% PCR_YPN))
+          fifelse(is.na(ypT) | is.na(ypN) | ypT == "" | ypN == "", NA, ypT %in% ypt & ypN %in% PCR_YPN))
 }
+
+# EFS（SAP §3.2）：自指標日起，至術前惡化、局部／區域復發、遠端轉移或任何原因死亡（取最早者）；
+# 未發生者於追蹤終點（followup_end()）設限。時間單位：天。
+EFS_RECURRENCE_TYPES <- c("Progression before surgery", "Local", "Regional", "Distant")
+efs <- function(index_d, recurrence_type, rec_d, death_d, end_d) {
+  rec <- fifelse(recurrence_type %in% EFS_RECURRENCE_TYPES, rec_d, as.IDate(NA))
+  first <- pmin(rec, death_d, na.rm = TRUE)
+  event <- !is.na(first) & first <= end_d
+  data.table(time = as.numeric(fifelse(event, first, end_d) - index_d), event = as.integer(event))
+}
+
+# OS（SAP §3.3）：自指標日至任何原因死亡；未死亡者於追蹤終點設限。時間單位：天。
+os <- function(index_d, death_d, end_d) {
+  event <- !is.na(death_d) & death_d <= end_d
+  data.table(time = as.numeric(fifelse(event, death_d, end_d) - index_d), event = as.integer(event))
+}
+
+# 治療前特徵的分析用編碼（SAP §4）：Table 1 與傾向分數模型共用。缺值保留為 NA（之後多重插補）。
+# d 需含癌登欄位與 cohort 的 chemo_backbone、index_d。
+build_covariates <- function(d, receptor_cutoff) {
+  d[, .(
+    age = as.numeric(age_at_dx),
+    postmenopausal = as.integer(menopause == "Post"),
+    ecog = factor(ECOG, c("0", "1", "2")),
+    bmi = as.numeric(BMI),
+    lvef = as.numeric(LVEF_baseline),
+    ct = factor(sub("^(T[0-4]).*$", "\\1", cT), c("T1", "T2", "T3", "T4")),
+    cn = factor(cN, c("N0", "N1", "N2", "N3")),
+    hr_positive = as.integer(receptor_positive(ER_pct, receptor_cutoff) | receptor_positive(PR_pct, receptor_cutoff)),
+    her2_ihc3 = as.integer(HER2_IHC == "3+"),
+    grade = factor(fifelse(grade == "", NA_character_, grade), c("1", "2", "3")),
+    ki67 = parse_pct(ki67),
+    anthracycline = as.integer(chemo_backbone == "Anthracycline-based"),
+    year = year(as.IDate(index_d))
+  )]
+}
+PS_COVARIATES <- c("age", "postmenopausal", "ecog", "bmi", "lvef", "ct", "cn", "hr_positive", "her2_ihc3",
+                   "grade", "ki67", "anthracycline", "year")
 
 # 術前治療摘要（每位有醫囑的病人一列）
 #   index_d          指標日 = 第一筆抗癌藥醫囑日
