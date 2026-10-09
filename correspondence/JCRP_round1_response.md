@@ -8,7 +8,7 @@ correspondence/JCRP_decision_round1.md 讀取。每節：Response 段落＋Chang
 
 ## Opening
 
-We thank the editor and the two reviewers for their careful reading and constructive comments, which have improved the manuscript. We have addressed every comment below. In the marked revised manuscript, new text is underlined and deleted text is struck through. Analyses added in response to the reviewers were not prespecified and are labeled post hoc throughout the manuscript.
+We thank the editor and the two reviewers for their careful reading and constructive comments, which have improved the manuscript. We have addressed every comment below. In the marked revised manuscript, new text is shown in blue and underlined and deleted text in red and struck through; the Summary of Changes below gives the page of each change. Analyses added in response to the reviewers were not prespecified and are labeled post hoc throughout the manuscript.
 
 ## E1
 

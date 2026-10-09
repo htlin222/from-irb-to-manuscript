@@ -27,8 +27,8 @@ tabs <- manuscript_tables()
 
 ```{r response}
 # 修訂版：JCRP 要求逐條回覆放在修訂稿最前面（MS_RESPONSE 由 build_revision.R 設定）
-if (nzchar(Sys.getenv("MS_RESPONSE"))) {
-  knitr::asis_output(paste0(section_file(Sys.getenv("MS_RESPONSE")), "\n\n{{< pagebreak >}}\n\n"))
+if (nzchar(Sys.getenv("MS_RESPONSE"))) {   # 檔案第一頁也要有教學示範標示
+  knitr::asis_output(paste0(demo_labels(), section_file(Sys.getenv("MS_RESPONSE")), "\n\n{{< pagebreak >}}\n\n"))
 }
 ```
 

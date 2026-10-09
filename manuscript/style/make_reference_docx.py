@@ -9,7 +9,8 @@ Usage: uv run python manuscript/style/make_reference_docx.py <pandoc-default.doc
 import sys
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
+from docx.enum.style import WD_STYLE_TYPE
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING, WD_UNDERLINE
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
@@ -61,6 +62,21 @@ def add_page_number_footer(section):
         run._r.append(el)
 
 
+# 修訂稿的修改標示（JCRP："mark the changes as underlined or colored text"）：顏色之外另有底線／刪除線，黑白列印也看得出
+CHANGE_STYLES = {"Inserted Text": ("1F5FBF", "underline"), "Deleted Text": ("C00000", "strike")}
+
+
+def add_change_styles(doc):
+    names = {s.name for s in doc.styles}
+    for name, (rgb, mark) in CHANGE_STYLES.items():
+        st = doc.styles[name] if name in names else doc.styles.add_style(name, WD_STYLE_TYPE.CHARACTER)
+        st.font.color.rgb = RGBColor.from_string(rgb)
+        if mark == "underline":
+            st.font.underline = WD_UNDERLINE.SINGLE
+        else:
+            st.font.strike = True
+
+
 def main(src, out):
     doc = Document(src)
     styles = {s.name: s for s in doc.styles}
@@ -73,6 +89,7 @@ def main(src, out):
             set_font(styles[name], 12, bold=True)
             double_space(styles[name])
             styles[name].paragraph_format.space_before = Pt(12)
+    add_change_styles(doc)
     for section in doc.sections:
         for side in ("top_margin", "bottom_margin", "left_margin", "right_margin"):
             setattr(section, side, Cm(2.5))

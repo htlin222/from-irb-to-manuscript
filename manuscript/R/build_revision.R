@@ -22,7 +22,8 @@ missing <- setdiff(names(comments), names(resp)); extra <- setdiff(names(resp), 
 if (length(missing) || length(extra)) stop("回覆與審稿意見不一致：未回覆 ", paste(missing, collapse = "、"), "；多出 ", paste(extra, collapse = "、"))
 field <- function(txt, label) trimws(sub(paste0("(?s)^.*?", label, ":\\s*(.*?)(\\n\\s*\\n(Response|Changes):.*)?$"), "\\1", txt, perl = TRUE))
 group_of <- function(id) if (startsWith(id, "E")) "Editorial Office" else sprintf("Reviewer %s", sub("^R([0-9]+).*$", "\\1", id))
-md <- c("# Response to the Editor and Reviewers", "", trimws(resp[["Opening"]]), "")
+compose_response <- function(summary_md) {
+md <- c("# Response to the Editor and Reviewers", "", trimws(resp[["Opening"]]), "", summary_md, "")
 for (g in unique(vapply(names(comments), group_of, ""))) {
   md <- c(md, paste("##", g), "")
   for (id in names(comments)[vapply(names(comments), group_of, "") == g]) {
@@ -32,8 +33,9 @@ for (g in unique(vapply(names(comments), group_of, ""))) {
   }
 }
 md <- c(md, trimws(resp[["Closing"]]))
-response_md <- file.path(REV, "response.md")
 writeLines(fill_tokens(paste(md, collapse = "\n"), tk), response_md)
+}
+response_md <- file.path(REV, "response.md")
 
 # 2. 標示修改處：上次投稿版（git tag）vs 目前版本，都先填好數字再比對
 sections <- c("abstract", "introduction", "methods", "results", "discussion", "statements", "figure_legends")
@@ -47,11 +49,60 @@ for (f in sections) {
 run("uv", c("run", "python", "manuscript/style/mark_changes.py", file.path(REV, "old"), file.path(REV, "new"),
             file.path(REV, "marked")), stdout = FALSE)
 
-# 3. 產生檔案
-env_resp <- paste0("MS_RESPONSE=", normalizePath(response_md))
+# 3. 產生檔案。回覆信開頭的「修改總覽」列出每處修改在標示版的頁碼：先產生一次找頁碼，寫進回覆信再產生，
+#    直到頁碼不再變動（總覽表本身會讓後面的頁碼往後移）
+SECTION_LABELS <- c(abstract = "Abstract", introduction = "Introduction", methods = "Materials and Methods",
+                    results = "Results", discussion = "Discussion", statements = "Statements",
+                    figure_legends = "Figure Legends")
+changes <- rbindlist(jsonlite::read_json(file.path(REV, "marked", "changes.json")))
+changes <- changes[order(match(section, names(SECTION_LABELS)))]   # 依論文順序（檔案是依字母排）
+norm_txt <- function(x) gsub("\\s+", " ", gsub("-\\s*$", "-", x))
+find_pages <- function(pages) {
+  joined <- vapply(pages, function(l) norm_txt(paste(l, collapse = " ")), "")
+  start <- which(vapply(pages, function(l) "Abstract" %in% l, TRUE))
+  start <- if (length(start)) max(start[start > 1], start[1]) else 1L   # 跳過最前面的逐條回覆
+  # 每處修改都從論文第一頁（逐條回覆之後）找起；段落開頭的文字足以定位
+  vapply(changes$snippet, function(sn) {
+    hit <- Find(function(i) grepl(norm_txt(sn), joined[i], fixed = TRUE), seq(start, length(joined)))
+    if (is.null(hit)) NA_integer_ else hit
+  }, 0L, USE.NAMES = FALSE)
+}
+# 依論文順序列出引用的文獻（= 參考文獻編號順序）
+cited_keys <- function(dir) {
+  files <- file.path(dir, paste0(names(SECTION_LABELS), ".md"))
+  txt <- paste(unlist(lapply(files[file.exists(files)], readLines, encoding = "UTF-8")), collapse = " ")
+  unique(regmatches(txt, gregexpr("(?<=@)[A-Za-z0-9_]+", txt, perl = TRUE))[[1]])
+}
+ref_label <- function(key, order) {   # 例：Schneeweiss et al., 2013 (reference 16)
+  r <- Filter(function(x) identical(x$id, key), jsonlite::read_json("manuscript/references.json"))[[1]]
+  sprintf("%s%s, %s (reference %d)", r$author[[1]]$family, if (length(r$author) > 1) " et al." else "",
+          r$issued$`date-parts`[[1]][[1]], match(key, order))
+}
+summary_table <- function(pg) {
+  x <- copy(changes)[, page := pg]
+  x[, part := fifelse(nzchar(subsection) & subsection != SECTION_LABELS[section], subsection, "\u2014")]
+  by_part <- x[, .(pages = if (anyNA(page)) "?" else if (min(page) == max(page)) as.character(min(page))
+                   else sprintf("%d\u2013%d", min(page), max(page))), by = .(section, part)]
+  new_keys <- setdiff(cited_keys(file.path(REV, "new")), cited_keys(file.path(REV, "old")))   # 本輪新增的參考文獻
+  c("## Summary of Changes", "",
+    "Page numbers refer to the marked revised manuscript. New text is shown in blue and underlined; deleted text in red and struck through.", "",
+    "| Section | Part | Page(s) |", "|---|---|---|",
+    by_part[, sprintf("| %s | %s | %s |", SECTION_LABELS[section], part, pages)],
+    if (length(new_keys)) sprintf("| References | Added: %s | \u2014 |",
+                                  paste(vapply(new_keys, ref_label, "", order = cited_keys(file.path(REV, "new"))), collapse = "; ")),
+    sprintf("| Supplementary material | %s | \u2014 |", unlist(rev$new_supplementary)))
+}
+env_resp <- paste0("MS_RESPONSE=", normalizePath(response_md, mustWork = FALSE))
+env_text <- paste0("MS_TEXT_DIR=", normalizePath(file.path(REV, "marked")))
+pg <- rep(NA_integer_, nrow(changes))
+for (pass in 1:4) {
+  compose_response(summary_table(pg))
+  render("article.qmd", "JCRP_revised_article_marked.docx", dest = REV, env = c(env_resp, env_text))
+  new_pg <- find_pages(pdf_page_lines(file.path(REV, "JCRP_revised_article_marked.docx")))
+  if (identical(new_pg, pg)) break
+  pg <- new_pg
+}
 render("response.qmd", "JCRP_response_to_reviewers.docx", env = env_resp, dest = REV)
-render("article.qmd", "JCRP_revised_article_marked.docx", dest = REV,
-       env = c(env_resp, paste0("MS_TEXT_DIR=", normalizePath(file.path(REV, "marked")))))
 invisible(file.copy(file.path(BUILD, "JCRP_blinded_article.docx"), file.path(REV, "JCRP_revised_article_clean.docx")))
 invisible(file.copy(file.path(BUILD, c("JCRP_supplementary_material.docx", "JCRP_supplementary_code.zip", "JCRP_STROBE_checklist.docx")), REV))
 dir.create(file.path(REV, "figures")); invisible(file.copy(list.files(file.path(BUILD, "figures"), full.names = TRUE), file.path(REV, "figures")))
@@ -64,7 +115,10 @@ add("修訂稿通過全部投稿格式檢查（make manuscript）", base[level =
     paste(base[level == "error" & !ok, item], collapse = "、"))
 add(sprintf("每一則審稿意見都有回覆（%d 則）", length(comments)), TRUE, paste(names(comments), collapse = "、"))
 marked_xml <- paste(system2("unzip", c("-p", file.path(REV, "JCRP_revised_article_marked.docx"), "word/document.xml"), stdout = TRUE), collapse = "")
-add("標示版：新增文字有底線、刪除文字有刪除線", grepl("<w:u w:val=\"single\"", marked_xml) && grepl("<w:strike", marked_xml))
+add("標示版：新增文字用「Inserted Text」（藍色底線）、刪除文字用「Deleted Text」（紅色刪除線）",
+    grepl("w:rStyle w:val=\"InsertedText\"", marked_xml) && grepl("w:rStyle w:val=\"DeletedText\"", marked_xml))
+add(sprintf("修改總覽：%d 處修改都找到所在頁碼，且頁碼已穩定", nrow(changes)), !anyNA(pg) && identical(new_pg, pg),
+    paste(changes$snippet[is.na(pg)], collapse = "；"))
 add("標示版：逐條回覆放在檔案最前面", regexpr("Response to the Editor and Reviewers", marked_xml) < regexpr(">Abstract<", marked_xml))
 bt <- blind_terms_for(cfg, cv)
 for (f in c("JCRP_response_to_reviewers.docx", "JCRP_revised_article_marked.docx")) {
@@ -91,7 +145,7 @@ writeLines(c(
   sprintf("期刊要求在 %d 天內交回。修訂稿不必再交首頁檔（Title Page）。", rev$due_days), "",
   "| 檔案 | 用途 |", "|---|---|",
   "| `JCRP_response_to_reviewers.docx` | 逐條回覆（匿名） |",
-  "| `JCRP_revised_article_marked.docx` | 標示修改處的修訂稿：最前面是逐條回覆；新增加底線、刪除加刪除線 |",
+  "| `JCRP_revised_article_marked.docx` | 標示修改處的修訂稿：最前面是逐條回覆與修改總覽（附頁碼）；新增為藍色底線、刪除為紅色刪除線 |",
   "| `JCRP_revised_article_clean.docx` | 乾淨修訂稿 |",
   "| `JCRP_supplementary_material.docx` | 補充資料（新增 Table S4、Figure S2） |",
   "| `JCRP_supplementary_code.zip` | 分析程式（含事後分析） |",

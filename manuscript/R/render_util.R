@@ -30,3 +30,16 @@ blind_terms_for <- function(cfg, cv) {
     vapply(people, function(p) p$email %||% "", ""), cfg$study$irb_no,
     unlist(inst[c("name", "name_en", "short_name", "heading")]), "KFSYSCC", "Koo Foundation")))
 }
+
+# Word → PDF（LibreOffice）→ 每頁的文字行；找不到 LibreOffice 時回傳 NULL
+SOFFICE <- "/Applications/LibreOffice.app/Contents/MacOS/soffice"
+pdf_page_lines <- function(docx) {
+  if (!file.exists(SOFFICE)) return(NULL)
+  out_dir <- file.path(tempdir(), "jcrp_pdf"); dir.create(out_dir, showWarnings = FALSE)
+  system2(SOFFICE, c(paste0("-env:UserInstallation=file://", file.path(tempdir(), "lo-profile")), "--headless",
+                     "--convert-to", "pdf", "--outdir", out_dir, docx), stdout = FALSE, stderr = FALSE)
+  pdf <- file.path(out_dir, sub("\\.docx$", ".pdf", basename(docx)))
+  info <- suppressWarnings(system2("pdfinfo", pdf, stdout = TRUE))
+  n <- as.integer(sub("^Pages:\\s+", "", grep("^Pages:", info, value = TRUE)))
+  lapply(seq_len(n), function(i) trimws(system2("pdftotext", c("-f", i, "-l", i, pdf, "-"), stdout = TRUE)))
+}

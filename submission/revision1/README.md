@@ -8,7 +8,7 @@
 | 檔案 | 用途 |
 |---|---|
 | `JCRP_response_to_reviewers.docx` | 逐條回覆（匿名） |
-| `JCRP_revised_article_marked.docx` | 標示修改處的修訂稿：最前面是逐條回覆；新增加底線、刪除加刪除線 |
+| `JCRP_revised_article_marked.docx` | 標示修改處的修訂稿：最前面是逐條回覆與修改總覽（附頁碼）；新增為藍色底線、刪除為紅色刪除線 |
 | `JCRP_revised_article_clean.docx` | 乾淨修訂稿 |
 | `JCRP_supplementary_material.docx` | 補充資料（新增 Table S4、Figure S2） |
 | `JCRP_supplementary_code.zip` | 分析程式（含事後分析） |

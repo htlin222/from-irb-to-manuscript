@@ -4,3 +4,6 @@ baseline_tag: jcrp-submission-v1          # 比對基準：上次投稿的版本
 decision: correspondence/JCRP_decision_round1.md
 response: correspondence/JCRP_round1_response.md
 due_days: 45
+new_supplementary:                        # 本輪新增的補充資料（列入回覆信的修改總覽）
+  - "Supplementary Table S4 (post hoc analyses)"
+  - "Supplementary Figure S2 (propensity-score distributions)"

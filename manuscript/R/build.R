@@ -31,16 +31,8 @@ tk <- manuscript_tokens()
 texts <- sapply(c("abstract", "introduction", "methods", "results", "discussion", "statements", "figure_legends"),
                 function(f) fill_tokens(read_text(f), tk), simplify = FALSE)
 wc <- vapply(texts, word_count, 0L)
-pdf_dir <- file.path(tempdir(), "jcrp_pdf"); dir.create(pdf_dir, showWarnings = FALSE)
-soffice <- "/Applications/LibreOffice.app/Contents/MacOS/soffice"
-pages <- NA_integer_
-if (file.exists(soffice)) {
-  system2(soffice, c(paste0("-env:UserInstallation=file://", file.path(tempdir(), "lo-profile")), "--headless",
-                     "--convert-to", "pdf", "--outdir", pdf_dir, file.path(BUILD, "JCRP_blinded_article.docx")),
-          stdout = FALSE, stderr = FALSE)
-  info <- suppressWarnings(system2("pdfinfo", file.path(pdf_dir, "JCRP_blinded_article.pdf"), stdout = TRUE))
-  pages <- as.integer(sub("^Pages:\\s+", "", grep("^Pages:", info, value = TRUE)))
-}
+pg_lines <- pdf_page_lines(file.path(BUILD, "JCRP_blinded_article.docx"))
+pages <- if (is.null(pg_lines)) NA_integer_ else length(pg_lines)
 counts <- list(abstract_words = wc[["abstract"]], intro_words = wc[["introduction"]],
                text_words = sum(wc[c("introduction", "methods", "results", "discussion")]),
                intro_discussion_words = wc[["introduction"]] + wc[["discussion"]],
@@ -54,8 +46,6 @@ HEADINGS <- c("Abstract", "Introduction", "Materials and Methods", "Study Design
               "Discussion", "References")
 page_map <- list()
 if (!is.na(counts$pages)) {
-  pdf <- file.path(pdf_dir, "JCRP_blinded_article.pdf")
-  pg_lines <- lapply(seq_len(counts$pages), function(i) trimws(system2("pdftotext", c("-f", i, "-l", i, pdf, "-"), stdout = TRUE)))
   at <- 1L
   for (h in HEADINGS) {
     hit <- Find(function(i) sub("^Results/", "", h) %in% pg_lines[[i]], seq(at, counts$pages))
