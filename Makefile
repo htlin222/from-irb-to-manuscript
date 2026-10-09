@@ -1,4 +1,4 @@
-.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check deidentify cohort table1 analysis-data outcomes analysis test-analysis \
+.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check deidentify cohort table1 analysis-data outcomes analysis test-analysis references \
         set-phase new amendment re_review continuing closure sae ib_update import suspension appeal
 
 # Single source of truth: config.toml (+ the files it references, e.g. cv.toml, 中文計畫摘要.md)
@@ -78,6 +78,9 @@ analysis: data-check test-analysis table1 outcomes ## Rerun everything from raw 
 
 test-analysis: ## Run R tests for shared definitions (treatment groups, HER2, drug map)
 	$(RSCRIPT) -e 'testthat::test_dir("analysis/tests", reporter = "summary", stop_on_failure = TRUE)'
+
+references: ## Verify every reference in manuscript/references.yaml against Crossref + PubMed → references.bib
+	$(RSCRIPT) manuscript/verify_references.R
 
 test: ## Run tests
 	$(RUN) pytest -v
