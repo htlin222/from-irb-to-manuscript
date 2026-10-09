@@ -84,7 +84,7 @@ run_checks <- function(texts, meta, tables, counts, journal, refs_status, blind_
   lowp <- regmatches(all_text, gregexpr("(?<![*A-Za-z])p\\s*=\\s*0?\\.[0-9]", all_text, perl = TRUE))[[1]]
   add("warning", "P 值用大寫斜體 *P*（代號 {{..._p}} 已處理）", !length(lowp), paste(lowp, collapse = "、"))
   digits <- regmatches(all_text, gregexpr("(?<![0-9.,%/\\-–])\\b[1-9]\\b(?![0-9.,%/\\-–])(?! ?(years?|months?|days?|cycles?|mg|%))",
-                                          gsub("\\{\\{[a-z0-9_]+\\}\\}|\\*\\*Figure [0-9]+\\.\\*\\*|Table [0-9]|Figure [0-9]|S[0-9]|T[0-4]|N[0-3]", "", all_text),
+                                          gsub("\\{\\{[a-z0-9_]+\\}\\}|\\*\\*Figure [0-9]+\\.\\*\\*|Table [0-9]|Figure [0-9]|S[0-9]|T[0-4]|N[0-3]|receptor 2|[0-9]\\+", "", all_text),   # HER2 正式名稱、IHC 分數不算
                                           perl = TRUE))[[1]]
   add("warning", "1 到 10 的數字用英文拼寫（one … ten）", !length(digits),
       if (length(digits)) sprintf("疑似 %d 處，請檢查", length(digits)) else "")
@@ -93,6 +93,8 @@ run_checks <- function(texts, meta, tables, counts, journal, refs_status, blind_
   add("error", "資料可取得性聲明已撰寫", !grepl("Data Availability Statement\\s*\\n+\\s*\\[TO BE WRITTEN", texts$statements))
   add("error", "生成式 AI 使用揭露已撰寫", !grepl("Use of Generative AI\\s*\\n+\\s*\\[TO BE WRITTEN", texts$statements))
   add("error", "兩個檔案都有「synthetic data for teaching」標示", all(files$synthetic_label))
+  add("warning", "本稿為 AI 撰寫之教學示範稿（不得投稿；真實投稿時內文須由作者親自撰寫）", !any(files$ai_demo_label),
+      if (any(files$ai_demo_label)) "兩個檔案都標示了 AI 撰寫，符合教學示範；真實投稿前須由作者重寫並移除標示" else "")
   add("error", "首頁檔沒有中文字（英文投稿）", !files$title_page_has_cjk, if (files$title_page_has_cjk) "請檢查 cv.toml 的電話、meta.yaml" else "")
 
   # 8. 檔案

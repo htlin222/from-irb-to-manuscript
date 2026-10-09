@@ -1,35 +1,38 @@
-# 論文首頁（Title Page）資訊：由作者填寫。題目、作者姓名、Email、電話、IRB 編號與核准日讀自 config.toml / cv.toml，不在此重寫。
-# 所有 TODO 都要填完，make submission 才會通過。
-# 教學示範：人員與單位皆為虛構；單位請勿使用真實醫院名稱。
+# 論文首頁（Title Page）資訊。題目、作者姓名、Email、電話、IRB 編號與核准日讀自 config.toml / cv.toml，不在此重寫。
+# 教學示範：以下人員、單位、地址全部虛構（synthetic data for teaching）；單位不得使用真實醫院名稱。
+# 本示範稿由 AI 撰寫；真實投稿時，內文與本檔內容必須由作者親自撰寫與確認。
 
 article_type: Original Article
-running_title: "TODO: ≤ 50 characters, e.g. Neoadjuvant dual HER2 blockade in practice"
-keywords:          # JCRP：至少 3 個；建議用 MeSH 詞
-  - TODO
-  - TODO
-  - TODO
+running_title: "Neoadjuvant dual HER2 blockade in routine practice"
+keywords:          # MeSH 詞
+  - Breast neoplasms
+  - Receptor, ErbB-2
+  - Neoadjuvant therapy
+  - Pertuzumab
+  - Trastuzumab
+  - Propensity score
 
 authors:           # 依 cv.toml 的英文姓名對應；順序 = 作者順序
   - name_en: Yi-Chun Chen
-    degrees: "TODO: e.g. MD"
-    designation: "TODO: e.g. Attending Physician"
-    affiliation: "TODO: department, hospital (fictional), city, country"
+    degrees: MD
+    designation: Attending Physician
+    affiliation: "Division of Medical Oncology, Formosa Demonstration Cancer Hospital (fictional), Taipei, Taiwan"
     corresponding: true
-    address: "TODO: postal address"
-    contributions: [concept, design, data acquisition, manuscript preparation]   # 依 JCRP 類別，請確認
+    address: "No. 1, Demonstration Road, Taipei, Taiwan (fictional)"
+    contributions: [concept, design, definition of intellectual content, literature search, data acquisition, manuscript preparation]
     guarantor: true
   - name_en: Chia-Hao Chang
-    degrees: "TODO"
-    designation: "TODO"
-    affiliation: "TODO"
+    degrees: MD
+    designation: Attending Surgeon
+    affiliation: "Department of Breast Surgery, Formosa Demonstration Cancer Hospital (fictional), Taipei, Taiwan"
     contributions: [clinical studies, data acquisition, manuscript review]
   - name_en: Shu-Fen Huang
-    degrees: "TODO"
-    designation: "TODO"
-    affiliation: "TODO"
-    contributions: [design, statistical analysis, manuscript editing]
+    degrees: MS
+    designation: Biostatistician
+    affiliation: "Clinical Research Center, Formosa Demonstration Cancer Hospital (fictional), Taipei, Taiwan"
+    contributions: [design, data analysis, statistical analysis, manuscript editing]
 
-funding: "TODO: e.g. None."
-acknowledgements: "TODO: e.g. None."   # JCRP：只放首頁，不放正文
-prior_presentation: "TODO: e.g. None."
-conflicts_of_interest: "TODO: e.g. The authors declare no conflicts of interest."
+funding: "None."
+acknowledgements: "The authors thank the hospital information office for data extraction and verification (fictional)."
+prior_presentation: "None."
+conflicts_of_interest: "The authors declare no conflicts of interest."

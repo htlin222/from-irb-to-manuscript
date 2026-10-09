@@ -1,7 +1,7 @@
-<!-- 圖說：每則 ≤ 40 字（JCRP）。縮寫在圖說中定義。圖檔另外上傳（make submission 自動轉成 JPEG）。 -->
+<!-- 圖說：每則 ≤ 40 字（JCRP）。教學示範：本段由 AI 撰寫；真實投稿時須由作者親自撰寫。 -->
 
-**Figure 1.** [TO BE WRITTEN BY AUTHORS]
+**Figure 1.** Flow diagram of patient selection. HER2, human epidermal growth factor receptor 2.
 
-**Figure 2.** [TO BE WRITTEN BY AUTHORS]
+**Figure 2.** Overlap-weighted Kaplan-Meier curves of event-free survival by neoadjuvant regimen, averaged over {{imputations}} imputations, with the numbers of patients at risk. CI, confidence interval; HR, hazard ratio.
 
-**Figure 3.** [TO BE WRITTEN BY AUTHORS]
+**Figure 3.** Overlap-weighted Kaplan-Meier curves of overall survival by neoadjuvant regimen, averaged over {{imputations}} imputations, with the numbers of patients at risk. CI, confidence interval; HR, hazard ratio.

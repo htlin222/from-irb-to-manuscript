@@ -90,6 +90,7 @@ blind_terms <- unique(Filter(nzchar, c(
 files <- list(
   article_mb = file.size(file.path(BUILD, "JCRP_blinded_article.docx")) / 1024^2,
   synthetic_label = c(grepl("SYNTHETIC DATA FOR TEACHING", article_xml), grepl("SYNTHETIC DATA FOR TEACHING", title_xml)),
+  ai_demo_label = c(grepl("written by AI", article_xml), grepl("written by AI", title_xml)),
   title_page_has_cjk = grepl("[㐀-鿿]", title_xml), images = images)
 res <- run_checks(texts, meta, manuscript_tables(), counts, journal, fread("manuscript/references_verification.csv"),
                   blind_terms, files)

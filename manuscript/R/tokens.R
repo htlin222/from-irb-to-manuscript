@@ -13,6 +13,8 @@ fmt_ci <- function(est, lo, hi, d = 2) sprintf("%s (95%% CI, %s)", sprintf(paste
 fmt_p <- function(p) if (p >= 0.001) sprintf("*P* = %.3f", p) else sprintf("*P* = %s", formatC(p, format = "g", digits = 2))
 fmt_n_of <- function(k, n) sprintf("%d/%d (%.1f%%)", k, n, 100 * k / n)
 fmt_month <- function(d) format(as.Date(d), "%B %Y")
+# JCRP：1 到 10 的數字用英文拼寫
+spell <- function(n) if (n >= 0 && n <= 10 && n == round(n)) c("zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten")[n + 1] else as.character(n)
 
 manuscript_tokens <- function() {
   facts <- study_facts()
@@ -30,7 +32,7 @@ manuscript_tokens <- function() {
     enroll_start = fmt_month(facts$enroll_start), enroll_end = fmt_month(facts$enroll_end),
     fu_cutoff = sprintf("%s %d, %s", format(as.Date(facts$fu_cutoff), "%B"), as.integer(format(as.Date(facts$fu_cutoff), "%d")),
                         format(as.Date(facts$fu_cutoff), "%Y")),
-    n_records = fl("records"), n_duplicates = fl("duplicates"), n_patients = fl("patients"),
+    n_records = fl("records"), n_duplicates = spell(fl("duplicates")), n_patients = fl("patients"),
     n_excl_stage = fl("excluded_1", "Clinical stage 0-I"), n_excl_m1 = fl("excluded_1", "Distant metastasis at diagnosis"),
     n_excl_her2 = fl("excluded_1", "HER2 not positive"),
     n_excl_no_orders = fl("excluded_2", "No systemic therapy orders at our hospital"),
@@ -71,8 +73,17 @@ manuscript_tokens <- function() {
     os_events_dual = S("OS", "main")$events_dual, os_events_single = S("OS", "main")$events_single,
     os_hr = fmt_ci(S("OS", "main")$hr, S("OS", "main")$hr_lo, S("OS", "main")$hr_hi), os_p = fmt_p(S("OS", "main")$p),
     os_5y_dual = fmt_pct(S("OS", "main")$s5_dual), os_5y_single = fmt_pct(S("OS", "main")$s5_single),
+    efs_ph_p = fmt_p(S("EFS", "main")$ph_p), os_ph_p = fmt_p(S("OS", "main")$ph_p),
     tdm1_non_pcr_dual = fmt_pct(d1("adjuvant_tdm1_pct_non_pcr", "dual") / 100),
     tdm1_non_pcr_single = fmt_pct(d1("adjuvant_tdm1_pct_non_pcr", "single") / 100),
+    # 各治療年代的未加權 pCR（描述性）
+    pcr_2012_2015_dual = fmt_n_of(d1("pcr_n_period", "dual_2012_2015"), d1("n_period", "dual_2012_2015")),
+    pcr_2012_2015_single = fmt_n_of(d1("pcr_n_period", "single_2012_2015"), d1("n_period", "single_2012_2015")),
+    pcr_2016_2019_dual = fmt_n_of(d1("pcr_n_period", "dual_2016_2019"), d1("n_period", "dual_2016_2019")),
+    pcr_2016_2019_single = fmt_n_of(d1("pcr_n_period", "single_2016_2019"), d1("n_period", "single_2016_2019")),
+    pcr_2020_2023_all = fmt_n_of(sum(de[item == "pcr_n_period" & grepl("2020_2023", group), value]),
+                                 sum(de[item == "n_period" & grepl("2020_2023", group), value])),
+    n_2020_2023_single = spell(d1("n_period", "single_2020_2023")),
     # 軟體（provenance）
     r_version = sub("^R version ([0-9.]+).*$", "\\1", prov$r_version),
     imputations = params()$imputation_m
@@ -80,11 +91,17 @@ manuscript_tokens <- function() {
   vapply(tk, as.character, "")
 }
 
-# {{name}} 換成數值；未知代號一律報錯（避免印出錯字或空白）
+# {{name}} 換成數值；{{name|b}} 把信賴區間的圓括號改成方括號（用在圓括號裡面時，避免括號套括號）。
+# 未知代號一律報錯（避免印出錯字或空白）
 fill_tokens <- function(text, tokens = manuscript_tokens()) {
-  used <- unique(regmatches(text, gregexpr("\\{\\{[a-z0-9_]+\\}\\}", text))[[1]])
-  unknown <- setdiff(gsub("[{}]", "", used), names(tokens))
-  if (length(unknown)) stop("未知的數字代號：", paste0("{{", unknown, "}}", collapse = "、"))
-  for (u in used) text <- gsub(u, tokens[[gsub("[{}]", "", u)]], text, fixed = TRUE)
+  used <- unique(regmatches(text, gregexpr("\\{\\{[a-z0-9_]+(\\|b)?\\}\\}", text))[[1]])
+  names_used <- sub("\\|b$", "", gsub("[{}]", "", used))
+  unknown <- setdiff(names_used, names(tokens))
+  if (length(unknown)) stop("未知的數字代號：", paste0("{{", unique(unknown), "}}", collapse = "、"))
+  for (i in seq_along(used)) {
+    value <- tokens[[names_used[i]]]
+    if (grepl("\\|b\\}\\}$", used[i])) value <- sub("\\((95% CI, [^)]*)\\)", "[\\1]", value)
+    text <- gsub(used[i], value, text, fixed = TRUE)
+  }
   text
 }

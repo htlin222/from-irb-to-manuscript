@@ -10,6 +10,8 @@
 
 <h1 align="center">IRB-in-Hurry: Institution-Agnostic IRB Form Generator</h1>
 
+> **About this repository (HER2 teaching demonstration).** This repository uses **synthetic data** to demonstrate the full path from IRB submission to journal submission for a fictional study of neoadjuvant dual HER2 blockade. **The demonstration manuscript in `manuscript/` and `submission/` was written by AI (Claude Opus 5.5). In a real submission, the text must be written by the authors** — journals such as the *Journal of Cancer Research and Practice* do not allow generative AI to write the paper or a substantial part of it. See [`manuscript/README.md`](manuscript/README.md).
+
 <p align="center">
   <strong>Turn a few plain-text files into a complete, submission-ready IRB packet — DOCX + PDF, in seconds.</strong>
 </p>

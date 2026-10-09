@@ -6,6 +6,7 @@ name    = "陳怡君"
 name_en = "Yi-Chun Chen"
 dept    = "腫瘤內科／主治醫師"       # 單位／職稱
 phone   = "院內分機2301"
+phone_en = "+886-2-0000-0000 ext. 2301 (fictional)"   # 英文文件（論文首頁）用
 email   = "ycchen@example.org"
 
 [[co_pi]]

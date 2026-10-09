@@ -1,21 +1,26 @@
-<!-- 方法：依 STROBE 第 4–12 項。下列小標題可改。不得出現醫院名稱或 IRB 編號（雙盲；寫在首頁檔）。 -->
+<!-- 方法：依 STROBE 第 4–12 項。不得出現醫院名稱或 IRB 編號（雙盲；寫在首頁檔）。
+     教學示範：本段由 AI 撰寫；真實投稿時須由作者親自撰寫。 -->
 
 ## Study Design and Data Sources
 
-[TO BE WRITTEN BY AUTHORS]
+This single-center retrospective cohort study was designed to emulate a target trial comparing two neoadjuvant treatment strategies.[@hernan2016targettrial] Data were extracted from the hospital cancer registry, electronic drug orders, surgical pathology reports, and follow-up records. Before analysis, the extracts were checked for completeness, plausible values, duplicates, and the order of dates; errors identified during these checks were queried with the hospital information office and corrected from source documents. Medical record numbers were replaced with random study identifiers before analysis. The study is reported according to the Strengthening the Reporting of Observational Studies in Epidemiology (STROBE) statement.[@vonelm2007strobe]
 
 ## Patients
 
-[TO BE WRITTEN BY AUTHORS]
+We included patients aged 20 years or older with clinical stage II–III breast cancer (American Joint Committee on Cancer, 8th edition) that was HER2-positive, defined as an immunohistochemistry (IHC) score of 3+ or amplification on in situ hybridization (ISH), who started neoadjuvant chemotherapy with trastuzumab between {{enroll_start}} and {{enroll_end}}. We excluded patients with distant metastasis at diagnosis, surgery before systemic therapy, neoadjuvant trastuzumab emtansine (T-DM1), or surgery at another hospital without an available pathology report. Follow-up data were available until {{fu_cutoff}}.
 
 ## Treatment Groups and Outcomes
 
-[TO BE WRITTEN BY AUTHORS]
+The index date was the date of the first neoadjuvant anticancer drug order. Patients were assigned to the dual-blockade group if any pertuzumab order, including the fixed-dose subcutaneous combination of pertuzumab and trastuzumab, occurred between the index date and the day before surgery, and to the single-blockade group otherwise.
+
+The primary outcome was pCR, defined as no residual invasive cancer in the breast and axillary lymph nodes (ypT0/is ypN0). In line with international recommendations, isolated tumor cells (ypN0(i+)) and micrometastases in lymph nodes were not considered pCR.[@provenzano2015bignabcg; @bossuyt2024iccr] Patients whose disease progressed before surgery were classified as not achieving pCR. The secondary outcome was event-free survival (EFS), measured from the index date to disease progression precluding surgery, locoregional recurrence, distant metastasis, or death from any cause. Overall survival (OS) was an exploratory outcome. Patients without an event were censored at the later of the last clinic visit and the last drug order, or at the follow-up cutoff, whichever came first.
 
 ## Statistical Analysis
 
-[TO BE WRITTEN BY AUTHORS]
+The statistical analysis plan was finalized before any outcome was examined, and its differences from the original protocol were approved by the institutional review board as a protocol amendment. The propensity score for receiving dual blockade was estimated by logistic regression with 13 baseline covariates: age, menopausal status, Eastern Cooperative Oncology Group performance status, body mass index, baseline left ventricular ejection fraction, clinical T and N categories, hormone receptor status, HER2 IHC score, histologic grade, Ki-67 index, anthracycline-based chemotherapy, and year of treatment start. Because the two regimens were used in largely different periods, we used overlap weighting, which emphasizes patients for whom either treatment was plausible and avoids extreme weights.[@li2018overlap; @li2019extreme; @thomas2020overlapjama] Covariate balance was assessed with standardized mean differences (SMDs), with values below 0.1 indicating adequate balance. Missing covariate values were imputed by multiple imputation with {{imputations}} data sets that excluded outcome variables, and estimates were combined with Rubin's rules.[@leyrat2019mips]
+
+The pCR rates were compared with weighted logistic regression, reported as odds ratios (ORs), and with weighted risk differences; standard errors accounted for estimation of the propensity score. EFS and OS were estimated with weighted Kaplan-Meier curves and compared with weighted Cox models, reported as hazard ratios (HRs) with robust standard errors; the proportional hazards assumption was assessed with Schoenfeld residuals. Prespecified sensitivity analyses restricted the cohort to patients who started treatment in 2016–2019, used one-to-one propensity-score matching, used multivariable regression, defined pCR as ypT0 ypN0, and included only patients with complete covariate data. An exploratory analysis tested whether the association with pCR differed by hormone receptor status. The E-value was calculated to quantify how strong unmeasured confounding would need to be to explain away the primary result.[@vanderweele2017evalue] Two-sided *P* values below 0.05 were considered statistically significant. Analyses were performed with R version {{r_version}} using the WeightIt, MatchIt, cobalt, mice, survival, and EValue packages.
 
 ## Ethics
 
-[TO BE WRITTEN BY AUTHORS]
+The study was approved by the institutional review board of the participating hospital, which waived the requirement for informed consent because of the retrospective design and the use of de-identified data. The study was conducted in accordance with the Declaration of Helsinki (1975, revised in 2013).

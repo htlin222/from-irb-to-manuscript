@@ -53,6 +53,7 @@ tabs <- manuscript_tables()
 ```{r title-block, results="asis"}
 cat("**", cfg$study$title_en, "**\n\n", sep = "")
 cat("*SYNTHETIC DATA FOR TEACHING — NOT A REAL STUDY. Patients, investigators and institution are fictional.*\n\n")
+cat("**This demonstration manuscript was written by AI (Claude Opus 5.5). In a real submission, the text must be written by the authors.**\n\n")
 ```
 
 # Abstract

@@ -25,6 +25,7 @@ who <- function(name_en) Filter(function(p) identical(p$name_en, name_en), peopl
 L <- function(...) cat(..., "\n\n", sep = "")
 
 L("*SYNTHETIC DATA FOR TEACHING — NOT A REAL STUDY. Patients, investigators and institution are fictional.*")
+L("**This demonstration manuscript was written by AI (Claude Opus 5.5). In a real submission, the text must be written by the authors.**")
 L("**Type of manuscript:** ", meta$article_type)
 L("**Title:** ", cfg$study$title_en)
 L("**Running title:** ", meta$running_title)
@@ -59,5 +60,5 @@ L("**Statement:** The manuscript has been read and approved by all the authors, 
 corr <- Filter(function(a) isTRUE(a$corresponding), meta$authors)[[1]]
 p <- who(corr$name_en)
 L("**Corresponding author:** ", corr$name_en, ", ", corr$degrees, ", ", corr$affiliation, ". Address: ", corr$address,
-  ". E-mail: ", p$email, ". Telephone: ", p$phone, ".")
+  ". E-mail: ", p$email, ". Telephone: ", p$phone_en %||% p$phone, ".")   # 英文文件用 phone_en
 ```

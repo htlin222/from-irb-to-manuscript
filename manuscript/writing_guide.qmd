@@ -29,6 +29,10 @@ tok <- function(...) { n <- c(...); knitr::kable(data.table(`代號` = paste0("{
 ```
 
 > ⚠️ 教學示範：資料為模擬（synthetic data for teaching），論文需清楚標示，不得當作真實研究投稿。
+>
+> **本專案的論文示範稿（`manuscript/text/`）由 AI 撰寫，僅供教學；真實投稿時，內文必須由作者親自撰寫。** 本指引說明真實投稿時作者應如何撰寫。
+>
+> **本專案的論文示範稿（`manuscript/text/`）由 AI 撰寫，僅供教學；真實投稿時，內文必須由作者親自撰寫。** 本指引說明真實投稿時作者應如何撰寫。
 
 # 分工與 JCRP 的生成式 AI 規定
 
@@ -44,6 +48,7 @@ AI 協助的用途要具名揭露（工具名稱、版本、時間、用法）�
 
 1. 用任何文字編輯器打開 `manuscript/text/*.md`，把 `[TO BE WRITTEN BY AUTHORS]` 換成您的英文段落。
 2. **數字不手打**：寫 `{{pcr_or}}`，產生 Word 檔時會換成 `r tk[["pcr_or"]]`。代號表見下面各節，寫錯代號會直接報錯。
+   放在圓括號裡面時寫 `{{pcr_or|b}}`，信賴區間會改用方括號，避免括號套括號。
 3. **引用文獻**：寫 `[@cortazar2014ctneobc]`，放在**標點之後**（JCRP 規定），例如 `...long-term outcomes.[@cortazar2014ctneobc]`。
    多篇用分號：`[@gianni2012neosphere; @shao2020peony]`。只能引用 `references.yaml` 裡已查證的文獻；要加新文獻，在該檔加 DOI 後執行 `make references`。
 4. 執行 `make manuscript`，看 `manuscript/_build/check_report.md`：字數、表格、雙盲、用詞都會自動檢查。
