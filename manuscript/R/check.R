@@ -105,7 +105,49 @@ run_checks <- function(texts, meta, tables, counts, journal, refs_status, blind_
     add("error", sprintf("%s：JPEG、≤ 1 MB、≤ %d×%d 像素", im$name, lim$image_pixels[1], lim$image_pixels[2]),
         im$mb <= 1 && im$w <= lim$image_pixels[1] && im$h <= lim$image_pixels[2], sprintf("%.2f MB，%d×%d", im$mb, im$w, im$h))
   }
+  # 9. 投稿包其他檔案
+  add("error", "Cover letter 提及未曾發表／未投他刊、會議報告、經費來源（JCRP 檢核表）",
+      grepl("not been published", files$cover_text) && grepl("presented", files$cover_text) && grepl("fund", files$cover_text))
+  add("error", "Cover letter 有教學示範標示", grepl("written by AI", files$cover_text))
+  for (t in files$supp_tables) {
+    add("error", sprintf("%s：≤ %d 列、≤ %d 欄", sub("\\..*$", "", t$title), lim$table_max_rows, lim$table_max_columns),
+        nrow(t$data) <= lim$table_max_rows && ncol(t$data) <= lim$table_max_columns, sprintf("%d 列 × %d 欄", nrow(t$data), ncol(t$data)))
+  }
+  hits_supp <- blind_terms[vapply(blind_terms, function(w) grepl(w, files$supp_text, fixed = TRUE), TRUE)]
+  add("error", "補充資料不含作者姓名、單位、IRB 編號", !length(hits_supp), paste(hits_supp, collapse = "、"))
+  need <- vapply(files$strobe, function(it) if (isTRUE(it$results)) paste0("Results/", it$section) else it$section, "")
+  missing_pg <- unique(need[!need %in% names(files$page_map) & !grepl("^Title page", need)])
+  add("error", "STROBE 每一項都找得到所在頁碼", !length(missing_pg), paste(missing_pg, collapse = "、"))
+  data_like <- grep("(^|/)data/|\\.csv$|linkage", files$code_zip_files, value = TRUE)
+  data_like <- setdiff(data_like, "analysis/drug_map.csv")   # 藥名對照表，不含病人資料
+  add("error", "分析程式補充檔不含任何資料檔", !length(data_like), paste(data_like, collapse = "、"))
+  add("error", "投稿檔總大小 ≤ 25 MB（超過另收費）", files$package_mb <= 25, sprintf("%.1f MB", files$package_mb))
   rbindlist(out)
+}
+
+# submission/README.md：上傳清單與只能人工完成的步驟
+write_submission_readme <- function(dir, upload, journal) {
+  sz <- function(f) sprintf("%.0f KB", file.size(file.path(dir, f)) / 1024)
+  figs <- list.files(file.path(dir, "figures"))
+  lines <- c(
+    "# JCRP 投稿檔（由 make submission 產生，請勿手改）", "",
+    "> ⚠️ **教學示範：資料為模擬（synthetic data for teaching），論文由 AI（Claude Opus 5.5）撰寫，不得投稿。**",
+    "> 真實投稿時，論文內文必須由作者親自撰寫；所有「written by AI」與「synthetic data」標示須在作者重寫並確認後才能移除。", "",
+    sprintf("投稿系統：%s（需先註冊）", journal$journal$submission_site), "",
+    "## 上傳檔案", "", "| 檔案 | 用途 | 大小 |", "|---|---|---|",
+    sprintf("| `%s` | %s | %s |", upload, c("Cover letter", "Title Page／First Page File（含作者與單位）",
+            "Blinded Article file（摘要至參考文獻，含表 1–3 與圖說；不含作者資訊）",
+            "補充資料（Table S1–S3、Figure S1）", "補充檔 S1：分析程式（不含病人資料）", "STROBE 檢核表"), sapply(upload, sz)),
+    sprintf("| `figures/%s` | %s | %s |", figs, ifelse(grepl("S1", figs), "補充圖（亦已放在補充資料中）", "正文圖（JPEG，另外上傳，不嵌入正文）"),
+            sapply(file.path("figures", figs), sz)), "",
+    "## 只能人工完成的步驟", "",
+    "1. 每位作者到期刊網站填寫線上 Copyright Transfer Agreement：", paste0("   ", journal$journal$copyright_form),
+    "2. 從期刊投稿須知頁面下載「Authorship & Conflicts of Interest Statement」範本，填寫並由全體作者簽名後上傳。",
+    sprintf("3. 投稿系統的欄位逐項核對後再送出（欄位填錯或重複投稿，期刊收費 US$%d）。", journal$journal$fees$repeated_or_wrong_field_submission_usd),
+    "4. Cover letter 的日期在送出當天填上。",
+    "5. 送出前再讀一次期刊最新的投稿須知（`manuscript/journal.yaml` 的讀取日期見檔案開頭）。", "",
+    "檢查結果見 `check_report.md`。")
+  writeLines(lines, file.path(dir, "README.md"))
 }
 
 write_report <- function(res, path, counts) {

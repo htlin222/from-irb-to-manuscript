@@ -1,0 +1,45 @@
+---
+# STROBE 檢核表（世代研究）：項目對應 manuscript/strobe.yaml；頁碼由 build.R 從匿名正文 PDF 找出（_build/page_map.json）。
+format:
+  docx:
+    reference-doc: style/reference.docx
+lang: en-US
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+```
+
+```{r load}
+source("manuscript/R/render_helpers.R")
+items <- yaml::read_yaml("manuscript/strobe.yaml")
+pages <- jsonlite::read_json("manuscript/_build/page_map.json")
+page_of <- function(it) {
+  key <- if (isTRUE(it$results)) paste0("Results/", it$section) else it$section
+  pg <- pages[[key]] %||% pages[[it$section]]
+  if (is.null(pg)) "title page" else as.character(pg)
+}
+tab <- data.frame(`Item` = vapply(items, `[[`, "", "item"), `Recommendation` = vapply(items, `[[`, "", "topic"),
+                  `Reported in` = vapply(items, `[[`, "", "section"), `Page` = vapply(items, page_of, ""),
+                  check.names = FALSE)
+```
+
+**STROBE Statement — checklist of items for cohort studies**
+
+```{r, results="asis"}
+cat("**", cfg$study$title_en, "**\n\n", sep = "")
+```
+
+```{r}
+demo_labels()
+```
+
+```{r}
+ft_df(tab)
+```
+
+Page numbers refer to the blinded article file. Item wording is abbreviated; see https://www.strobe-statement.org/checklists/ for the full checklist (von Elm E, et al. Lancet 2007;370:1453-7).

@@ -21,39 +21,16 @@ knitr::opts_knit$set(root.dir = normalizePath(".."))
 ```
 
 ```{r load}
-source("manuscript/R/tables.R")
-tk <- manuscript_tokens()
-cfg <- RcppTOML::parseTOML("config.toml")
-meta <- yaml::read_yaml("manuscript/meta.yaml")
-section <- function(name) {
-  x <- paste(readLines(file.path("manuscript/text", paste0(name, ".md")), encoding = "UTF-8"), collapse = "\n")
-  x <- gsub("<!--.*?-->", "", x)           # 作者註解不輸出
-  knitr::asis_output(paste0("\n", fill_tokens(x, tk), "\n"))
-}
-ft <- function(t) {
-  flextable::flextable(as.data.frame(t$data)) |>
-    flextable::font(fontname = "Times New Roman", part = "all") |>
-    flextable::fontsize(size = if (ncol(t$data) >= 7) 9 else 10, part = "all") |>   # 欄位多的表用 9 pt
-    flextable::bold(part = "header") |>
-    flextable::padding(padding.top = 1, padding.bottom = 1, part = "all") |>
-    flextable::italic(j = intersect("P", names(t$data)), part = "header") |>
-    flextable::autofit() |>
-    fit_page()
-}
-# 縮放欄寬到頁寬（A4 扣掉 2.5 cm 邊界約 6.3 吋），字體維持 10 pt，必要時換行（fit_to_width 會縮小字體）
-fit_page <- function(x, page = 6.3) {
-  w <- pmax(flextable::dim_pretty(x, part = "body")$widths, 0.6) + 0.12   # 依內容（不依長標題）決定欄寬並留緩衝；標題自動換行
-  w[1] <- min(max(w[1], 1.5), 2.2)
-  flextable::width(x, width = w * min(1, page / sum(w)))
-}
-footnotes <- function(t) knitr::asis_output(paste0("\n", paste(t$footnotes, collapse = "\n\n"), "\n"))
+source("manuscript/R/render_helpers.R")
 tabs <- manuscript_tables()
 ```
 
 ```{r title-block, results="asis"}
 cat("**", cfg$study$title_en, "**\n\n", sep = "")
-cat("*SYNTHETIC DATA FOR TEACHING — NOT A REAL STUDY. Patients, investigators and institution are fictional.*\n\n")
-cat("**This demonstration manuscript was written by AI (Claude Opus 5.5). In a real submission, the text must be written by the authors.**\n\n")
+```
+
+```{r}
+demo_labels()
 ```
 
 # Abstract

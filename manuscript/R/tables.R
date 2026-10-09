@@ -77,3 +77,45 @@ table_survival <- function() {
 }
 
 manuscript_tables <- function() list(table_baseline(), table_pcr(), table_survival())
+
+# ── 補充資料表格 ───────────────────────────────────────────────────────────
+# Table S1：完整版基期特徵（results/table1.csv），依變項切成 ≤ max_rows 列的數段，每段重複表頭
+supp_baseline_parts <- function(max_rows) {
+  full <- rd_res("table1.csv", strip.white = FALSE, na.strings = c("", "NA"))
+  starts <- which(!is.na(full$SMD))
+  blocks <- split(seq_len(nrow(full)), findInterval(seq_len(nrow(full)), starts))
+  parts <- list(); cur <- integer()
+  for (b in blocks) {
+    if (length(cur) + length(b) > max_rows) { parts[[length(parts) + 1]] <- cur; cur <- integer() }
+    cur <- c(cur, b)
+  }
+  parts[[length(parts) + 1]] <- cur
+  show <- copy(full)
+  show[is.na(SMD), Characteristic := paste0("  ", Characteristic)]
+  show[, SMD := ifelse(is.na(SMD), "", sprintf("%.2f", SMD))]
+  lapply(seq_along(parts), function(i) list(
+    title = sprintf("Table S1%s. Baseline characteristics, all categories (part %d of %d)", letters[i], i, length(parts)),
+    data = show[parts[[i]]],
+    footnotes = "Values are n (%) or median (IQR); missing values are shown and excluded from percentages. SMD, standardized mean difference before weighting."))
+}
+
+supp_subgroup <- function(tk = manuscript_tokens()) {
+  sg <- rd_res("outcomes_subgroup.csv")
+  list(title = "Table S2. Pathologic complete response by hormone receptor status (exploratory)",
+       data = sg[, .(Subgroup = subgroup, `Patients, n (T+P/T)` = sprintf("%d/%d", n_dual, n_single),
+                     `pCR, T+P*` = sprintf("%.1f%%", 100 * pcr_dual), `pCR, T*` = sprintf("%.1f%%", 100 * pcr_single),
+                     `Odds ratio (95% CI)` = ci(or, or_lo, or_hi))],
+       footnotes = sprintf("*Overlap-weighted proportions with propensity scores re-estimated within each subgroup, averaged over %s imputations. %s for interaction (overall weights). pCR, pathologic complete response; T, trastuzumab; T+P, trastuzumab plus pertuzumab.",
+                           tk[["imputations"]], tk[["p_interaction_hr"]]))
+}
+
+supp_evalues <- function() {
+  ev <- rd_res("outcomes_evalues.csv")
+  list(title = "Table S3. E-values for unmeasured confounding",
+       data = ev[, .(Endpoint = endpoint, `E-value, point estimate` = sprintf("%.2f", point),
+                     `E-value, confidence limit` = ifelse(is.na(lower) & is.na(upper), "1.00†",
+                                                          sprintf("%.2f", fifelse(is.na(lower), upper, lower))))],
+       footnotes = "The E-value is the minimum strength of association, on the risk-ratio scale, that an unmeasured confounder would need to have with both treatment and outcome to explain away the observed estimate. †The confidence interval includes the null value.")
+}
+
+supplementary_tables <- function(max_rows) c(supp_baseline_parts(max_rows), list(supp_subgroup(), supp_evalues()))

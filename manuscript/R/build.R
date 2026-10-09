@@ -59,8 +59,31 @@ counts <- list(abstract_words = wc[["abstract"]], intro_words = wc[["introductio
                pages = if (length(pages)) pages else NA, figures = length(FIGURES), tables = length(manuscript_tables()))
 jsonlite::write_json(counts, file.path(BUILD, "counts.json"), auto_unbox = TRUE, pretty = TRUE)
 
-# 4. 首頁
+# 3b. 正文各小標題所在頁碼（STROBE 檢核表用）：依正文順序逐頁比對整行文字
+HEADINGS <- c("Abstract", "Introduction", "Materials and Methods", "Study Design and Data Sources", "Patients",
+              "Treatment Groups and Outcomes", "Statistical Analysis", "Ethics", "Results", "Results/Patients",
+              "Pathologic Complete Response", "Event-Free and Overall Survival", "Sensitivity and Subgroup Analyses",
+              "Discussion", "References")
+page_map <- list()
+if (!is.na(counts$pages)) {
+  pdf <- file.path(pdf_dir, "JCRP_blinded_article.pdf")
+  pg_lines <- lapply(seq_len(counts$pages), function(i) trimws(system2("pdftotext", c("-f", i, "-l", i, pdf, "-"), stdout = TRUE)))
+  at <- 1L
+  for (h in HEADINGS) {
+    hit <- Find(function(i) sub("^Results/", "", h) %in% pg_lines[[i]], seq(at, counts$pages))
+    if (!is.null(hit)) { page_map[[h]] <- hit; at <- hit }
+  }
+}
+jsonlite::write_json(page_map, file.path(BUILD, "page_map.json"), auto_unbox = TRUE, pretty = TRUE)
+
+# 4. 首頁、cover letter、補充資料、STROBE 檢核表、分析程式（補充檔）
 render("title_page.qmd", "JCRP_title_page.docx")
+render("cover_letter.qmd", "JCRP_cover_letter.docx")
+render("supplementary.qmd", "JCRP_supplementary_material.docx")
+render("strobe_checklist.qmd", "JCRP_STROBE_checklist.docx")
+code_zip <- file.path(BUILD, "JCRP_supplementary_code.zip")
+unlink(code_zip)
+run("zip", c("-r", "-q", "-X", code_zip, "analysis", "Makefile", "-x", "*.DS_Store", "*/.Rhistory"), stdout = FALSE)
 
 # 5. 圖檔（JPEG，另外上傳，不嵌入正文）
 px <- journal$limits$image_pixels
@@ -91,7 +114,15 @@ files <- list(
   article_mb = file.size(file.path(BUILD, "JCRP_blinded_article.docx")) / 1024^2,
   synthetic_label = c(grepl("SYNTHETIC DATA FOR TEACHING", article_xml), grepl("SYNTHETIC DATA FOR TEACHING", title_xml)),
   ai_demo_label = c(grepl("written by AI", article_xml), grepl("written by AI", title_xml)),
-  title_page_has_cjk = grepl("[㐀-鿿]", title_xml), images = images)
+  title_page_has_cjk = grepl("[㐀-鿿]", title_xml), images = images,
+  cover_text = docx_text(file.path(BUILD, "JCRP_cover_letter.docx")),
+  supp_tables = supplementary_tables(journal$limits$table_max_rows),
+  supp_text = docx_text(file.path(BUILD, "JCRP_supplementary_material.docx")),
+  strobe = yaml::read_yaml("manuscript/strobe.yaml"), page_map = page_map,
+  code_zip_files = system2("unzip", c("-Z1", code_zip), stdout = TRUE),
+  package_mb = sum(file.size(c(file.path(BUILD, c("JCRP_title_page.docx", "JCRP_blinded_article.docx",
+    "JCRP_cover_letter.docx", "JCRP_supplementary_material.docx", "JCRP_STROBE_checklist.docx")), code_zip,
+    list.files(file.path(BUILD, "figures"), full.names = TRUE)))) / 1024^2)
 res <- run_checks(texts, meta, manuscript_tables(), counts, journal, fread("manuscript/references_verification.csv"),
                   blind_terms, files)
 write_report(res, file.path(BUILD, "check_report.md"), counts)
@@ -106,8 +137,10 @@ if (mode == "submission") {
     quit(status = 1)
   }
   dir.create("submission/figures", showWarnings = FALSE, recursive = TRUE)
-  file.copy(file.path(BUILD, c("JCRP_title_page.docx", "JCRP_blinded_article.docx", "check_report.md")), "submission",
-            overwrite = TRUE)
+  upload <- c("JCRP_cover_letter.docx", "JCRP_title_page.docx", "JCRP_blinded_article.docx",
+              "JCRP_supplementary_material.docx", "JCRP_supplementary_code.zip", "JCRP_STROBE_checklist.docx")
+  file.copy(file.path(BUILD, c(upload, "check_report.md")), "submission", overwrite = TRUE)
   file.copy(list.files(file.path(BUILD, "figures"), full.names = TRUE), "submission/figures", overwrite = TRUE)
-  cat("投稿檔已寫入 submission/\n")
+  write_submission_readme("submission", upload, journal)
+  cat("投稿檔已寫入 submission/（上傳清單見 submission/README.md）\n")
 }

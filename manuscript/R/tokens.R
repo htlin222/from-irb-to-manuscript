@@ -28,6 +28,7 @@ manuscript_tokens <- function() {
   S <- function(ep, k) sv[endpoint == ep & analysis == k]
 
   tk <- list(
+    title_en = RcppTOML::parseTOML("config.toml")$study$title_en,
     # 研究期間與收案（config.toml、cohort_flow.csv）
     enroll_start = fmt_month(facts$enroll_start), enroll_end = fmt_month(facts$enroll_end),
     fu_cutoff = sprintf("%s %d, %s", format(as.Date(facts$fu_cutoff), "%B"), as.integer(format(as.Date(facts$fu_cutoff), "%d")),
