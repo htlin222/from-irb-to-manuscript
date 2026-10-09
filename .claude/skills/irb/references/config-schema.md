@@ -160,6 +160,10 @@ Full example: `examples/tdxd-her2low/中文計畫摘要.md`.
 | `data_safety.encrypted` | bool | Data is encrypted |
 | `data_safety.retention_years` | int | Years to retain data |
 | `data_safety.authorized_personnel` | string | Who can access data |
+| `report` | Markdown | SF038 結案報告書 content, usually `"@<file>.md"`: `## 研究參與者`, `## 研究方法`, `## 研究結果分析與討論`, `## 結論`, `## 參考文獻` (also `## 研究背景` / `## 研究目的` / `## 研究設計`, which otherwise come from `proposal`). Missing sections keep the placeholder. A study with an analysis pipeline can generate this file so that its numbers come from results (this study: `結案報告.md` → `make closure-report` → `results/irb_closure.md`) |
+
+Any value can be an `@` reference, so enrolment counts can also come from a generated file, e.g.
+`actual_n = "@results/irb_closure.toml#actual_n"` and `{ name = "…", n = "@results/irb_closure.toml#n_dual" }`.
 
 ## `amendment` (when phase=amendment)
 

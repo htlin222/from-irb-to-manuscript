@@ -198,6 +198,17 @@ def set_run_font(run, font_name=None, size=12, bold=False):
     rPr.rFonts.set(qn('w:eastAsia'), font_name)
 
 
+def prose_text(value, placeholder=""):
+    """Markdown section value (paragraph string or list) → form text; empty → placeholder.
+
+    Lists become "1. … 2. …" lines; wrapped source lines leave spaces next to CJK, which are dropped.
+    """
+    if isinstance(value, list):
+        return "\n".join(f"{i}. {x}" for i, x in enumerate(value, 1))
+    value = re.sub(r"[^\S\n]*([\u3000-\u303f\u4e00-\u9fff\uff00-\uffef])[^\S\n]*", r"\1", (value or "").strip())
+    return value or placeholder
+
+
 def add_p(doc, text, bold=False, size=12, alignment=None, sa=None, sb=None):
     """Add a formatted paragraph to the document."""
     p = doc.add_paragraph()

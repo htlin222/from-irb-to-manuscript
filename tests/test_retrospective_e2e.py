@@ -194,3 +194,12 @@ def test_amendment_changes_compare_sections_and_mark_edits(output_dir):
     text = docx_text(amendment.generate_sf015(config, output_dir))
     assert "第1次修正" in text
     assert "■ 研究設計變更" in text and "■ 其他（請說明）：統計方法" in text
+
+
+def test_sf038_fills_sections_from_closure_report(retro_config, output_dir):
+    """SF038: closure.report sections fill the report; background falls back to the proposal; others keep the placeholder."""
+    retro_config["closure"]["report"] = {"participants": "共收案882人。", "results": "主要結果如下。"}
+    retro_config["proposal"] = {"background": "背景說明。"}
+    text = docx_text(generate_all.generate_form("SF038", retro_config, output_dir))
+    assert "共收案882人。" in text and "主要結果如下。" in text and "背景說明。" in text
+    assert text.count("（請填寫本節內容）") == 5   # 目的、設計、方法、結論、參考文獻

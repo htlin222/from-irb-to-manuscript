@@ -54,6 +54,11 @@ SECTION_KEYS = {
     "統計分析": "statistics",
     "資料保護": "data_protection",
     "附件": "attachments",
+    # 結案報告書（closure.report）
+    "研究參與者": "participants",
+    "研究結果分析與討論": "results",
+    "結論": "conclusion",
+    "參考文獻": "references",
 }
 
 STUDY_TYPES = ("retrospective", "prospective", "clinical_trial", "genetic")
@@ -74,7 +79,7 @@ DEFAULTS = {
     "co_pi": [],
     "dates": {},
     "subjects": {"consent_waiver": False, "vulnerable_population": False},
-    "closure": {"data_safety": {}},
+    "closure": {"data_safety": {}, "report": {}},
     "amendment": {},
     "continuing_review": {},
     "re_review": {"responses": {}},

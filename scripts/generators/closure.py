@@ -17,6 +17,7 @@ from scripts.docx_utils import (
     check,
     init_doc,
     institution,
+    prose_text,
     set_cell_shading,
 )
 
@@ -292,26 +293,33 @@ def generate_sf038(config, output_dir):
     add_p(doc, "目　錄", bold=True, size=16,
           alignment=WD_ALIGN_PARAGRAPH.CENTER, sa=Pt(12))
 
+    # (編號, 標題, config key)。內容取自 closure.report（Markdown 的 `## 標題`）；背景、目的、設計未寫時沿用
+    # 核准的計畫摘要（proposal）；都沒有則留空白提示
     sections = [
-        ("一", "研究背景"),
-        ("二", "研究目的"),
-        ("三", "研究設計"),
-        ("四", "研究參與者"),
-        ("五", "研究方法"),
-        ("六", "研究結果分析與討論"),
-        ("七", "結論"),
-        ("八", "參考文獻"),
+        ("一", "研究背景", "background"),
+        ("二", "研究目的", "objectives"),
+        ("三", "研究設計", "design"),
+        ("四", "研究參與者", "participants"),
+        ("五", "研究方法", "methods"),
+        ("六", "研究結果分析與討論", "results"),
+        ("七", "結論", "conclusion"),
+        ("八", "參考文獻", "references"),
     ]
+    report = config["closure"].get("report") or {}
+    proposal = config.get("proposal") or {}
+    fallback = {"background", "objectives", "design"}
 
-    for num, title in sections:
+    for num, title, _ in sections:
         add_p(doc, f"{num}、{title}", size=12, sa=Pt(6))
 
     doc.add_page_break()
 
     # ---- Content sections ----
-    for num, title in sections:
+    for num, title, key in sections:
         add_p(doc, f"{num}、{title}", bold=True, size=14, sa=Pt(6), sb=Pt(12))
-        add_p(doc, "（請填寫本節內容）", size=12, sa=Pt(12))
+        value = report.get(key) or (proposal.get(key) if key in fallback else None)
+        for para in prose_text(value, "（請填寫本節內容）").split("\n"):
+            add_p(doc, para, size=12, sa=Pt(6))
         doc.add_paragraph()
 
     # Footer

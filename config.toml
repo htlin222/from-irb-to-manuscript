@@ -35,12 +35,12 @@ irb_approval_date = "2026年11月16日"
 
 [subjects]
 planned_n             = 700   # 資訊室初估 600–700 人，取上限
-actual_n              = 0
+actual_n              = "@results/irb_closure.toml#actual_n"   # make closure-report 由分析結果產生
 consent_waiver        = true
 vulnerable_population = false
 groups = [
-  { name = "雙標靶組（化療＋trastuzumab＋pertuzumab）", n = 0 },
-  { name = "單標靶組（化療＋trastuzumab）", n = 0 },
+  { name = "雙標靶組（化療＋trastuzumab＋pertuzumab）", n = "@results/irb_closure.toml#n_dual" },
+  { name = "單標靶組（化療＋trastuzumab）", n = "@results/irb_closure.toml#n_single" },
 ]
 
 [closure]
@@ -48,6 +48,7 @@ extensions = 0
 amendments = 1   # 已核准的修正案次數（結案報告用）
 sae_count  = 0
 specimens  = false
+report     = "@results/irb_closure.md"   # SF038 各節內容：結案報告.md 經 make closure-report 填入數字
 
 [closure.data_safety]
 deidentified         = true

@@ -4,6 +4,8 @@ from datetime import date
 
 from scripts.institution import current
 
+SF038_REPORT_KEYS = ("participants", "methods", "results", "conclusion", "references")
+
 
 def generate_checklist(config, results, phase_zh, output_path="checklist.md"):
     """Generate checklist.md from generation results.
@@ -57,7 +59,10 @@ def generate_checklist(config, results, phase_zh, output_path="checklist.md"):
         ])
     elif config["phase"] == "closure":
         lines.extend([
-            "□ Complete SF038 結案報告書 content sections",
+            # SF038 各節由 closure.report 填入（結案報告.md → make closure-report）
+            ("■" if all((config["closure"].get("report") or {}).get(k) for k in SF038_REPORT_KEYS) else "□")
+            + " Complete SF038 結案報告書 content sections (closure.report)",
+            "□ Fill in 報告日期 on SF038 on the submission date",
             "□ PI signature on SF037",
         ])
     elif config["phase"] == "amendment":

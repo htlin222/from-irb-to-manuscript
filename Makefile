@@ -1,4 +1,4 @@
-.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check deidentify cohort table1 analysis-data outcomes posthoc posthoc2 analysis test-analysis references manuscript submission revision \
+.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check deidentify cohort table1 analysis-data outcomes posthoc posthoc2 closure-report analysis test-analysis references manuscript submission revision \
         set-phase new amendment re_review continuing closure sae ib_update import suspension appeal
 
 # Single source of truth: config.toml (+ the files it references, e.g. cv.toml, 中文計畫摘要.md)
@@ -77,6 +77,9 @@ outcomes: analysis-data ## Primary and sensitivity analyses per analysis/SAP.md 
 posthoc: outcomes ## Post hoc analyses for the JCRP round-1 review (not in the SAP) → results/posthoc_r1*.csv
 	$(RSCRIPT) analysis/R/posthoc_revision1.R
 
+closure-report: ## IRB closure report content and enrolment counts from results → results/irb_closure.{md,toml}
+	$(RSCRIPT) analysis/R/irb_closure.R
+
 posthoc2: outcomes ## Post hoc analyses for the JCRP round-2 review (not in the SAP) → results/posthoc_r2.csv
 	$(RSCRIPT) analysis/R/posthoc_revision2.R
 
@@ -117,3 +120,5 @@ set-phase: ## Persist the phase in config.toml (keeps comments): make set-phase 
 # Phase shortcuts: make closure == make all PHASE=closure (config.toml untouched)
 new amendment re_review continuing closure sae ib_update import suspension appeal:
 	@$(MAKE) --no-print-directory all PHASE=$@
+
+closure: closure-report   # 結案報告的數字先由分析結果產生
