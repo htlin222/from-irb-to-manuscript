@@ -600,6 +600,9 @@
     <script>
       var CHAPTERS = {{CHAPTERS}};
       var KEYS = {{KEYS}};
+      // Progressive load: start on demo.head.cast (first ~5 min), fetch demo.cast
+      // in the background and swap when it arrives (see swapToFull).
+      var HEAD_END = {{HEAD_END}}, SRC = "demo.head.cast", full = null, waitingFull = false;
       var cur = -1, player = null, pauseMode = true;
       // What Space does next: "brief" → play this chapter; "playing" → pause;
       // "paused" → resume; "ended" → this chapter's answer is on screen, show the next brief.
@@ -664,11 +667,13 @@
         if (i < 0 || i >= CHAPTERS.length) return;
         highlight(i);
         closeSheets();
-        if (seek && player) { player.pause(); player.seek({ marker: i }); }
+        if (seek && player) { player.pause(); if (!needsFull(i)) player.seek({ marker: i }); }
         brief(i);
       }
 
+      function needsFull(i) { return !full && CHAPTERS[i] && CHAPTERS[i].t >= HEAD_END; }
       function start() {
+        if (needsFull(cur)) { waitingFull = true; $("btn-start").textContent = "載入中…"; return; }
         $("brief").classList.add("hidden");
         $("endbar").classList.add("hidden");
         if (!player) return;
@@ -770,9 +775,9 @@
       function openAbout() { closeSheets(); $("sheet-about").classList.add("open"); }
 
       function makePlayer() {
-        player = AsciinemaPlayer.create("demo.cast", $("player"), {
+        player = AsciinemaPlayer.create(SRC, $("player"), {
           fit: "both", theme: "her2", terminalFontFamily: "var(--mono)", preload: true,
-          pauseOnMarkers: pauseMode, idleTimeLimit: 2
+          pauseOnMarkers: pauseMode // no idleTimeLimit: postprocess already capped idle gaps; a player-side cap would shift time away from chapters.json and cut the answer hold
         });
         player.addEventListener("marker", function (e) {
           highlight(e.index);
@@ -780,7 +785,7 @@
         });
         player.addEventListener("play", function () { if (state !== "brief") { state = "playing"; $("endbar").classList.add("hidden"); } });
         player.addEventListener("pause", function () { if (state === "playing") state = "paused"; });
-        player.addEventListener("ended", function () { chapterEnded(true); });
+        player.addEventListener("ended", function () { chapterEnded(!!full); });
       }
 
       $("btn-start").onclick = start;
@@ -823,8 +828,30 @@
         pal.map(function (c, n) { return "--term-color-" + n + ":" + c; }).join(";") + "}";
       document.head.appendChild(css);
 
+      // Replace the head player with the full one at the same spot. Only while
+      // nothing is moving (brief / chapter end / paused), so the viewer never sees a jump.
+      function whenReady(fn) {
+        Promise.resolve(player.getDuration()).then(function (d) { d ? fn() : setTimeout(function () { whenReady(fn); }, 100); });
+      }
+      function swapToFull() {
+        if (!full || SRC !== "demo.head.cast") return;
+        if (state === "playing" && !waitingFull) return setTimeout(swapToFull, 500);
+        Promise.resolve(player.getCurrentTime()).then(function (t) {
+          player.dispose(); $("player").innerHTML = "";
+          SRC = URL.createObjectURL(new Blob([full])); makePlayer();
+          // A seek issued before the new player has parsed the cast is dropped.
+          whenReady(function () {
+            var at = state === "brief" ? player.seek({ marker: cur }) : player.seek(t || 0);
+            Promise.resolve(at).then(function () {
+              if (waitingFull) { waitingFull = false; $("btn-start").textContent = "START"; start(); }
+            });
+          });
+        });
+      }
+
       rail();
       makePlayer();
+      fetch("demo.cast").then(function (r) { return r.text(); }).then(function (txt) { full = txt; swapToFull(); });
       fetch("milestones.json").then(function (r) { return r.ok ? r.json() : []; }).then(function (j) {
         MS = j; renderMilestones();
         msButton(CHAPTERS[cur]);

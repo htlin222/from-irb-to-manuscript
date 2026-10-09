@@ -18,6 +18,22 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 STAGES = Path(os.environ.get("DEMO_STAGES", HERE.parent / "stages.toml"))
+HEAD_SECONDS = 300  # the first-visit cast covers at least this much playback
+
+
+def write_head(site: Path, chapters: list[dict]) -> float:
+    """demo.head.cast = the full cast up to the first chapter that starts after
+    HEAD_SECONDS. It is ~10x smaller, so playback can start while demo.cast
+    downloads; the player swaps to the full cast once it arrives."""
+    cut = next((c["t"] for c in chapters if c["t"] >= HEAD_SECONDS), None)
+    lines = (site / "demo.cast").read_text().splitlines(keepends=True)
+    if cut is None:
+        cut = float("inf")
+    # Markers sit 0.5 s before their prompt (postprocess): stop before the next one.
+    head = [lines[0]] + [ln for ln in lines[1:] if json.loads(ln)[0] < cut - 0.5]
+    (site / "demo.head.cast").write_text("".join(head))
+    return cut - 0.5
+
 
 ABOUT = """
 <p><b>這是一段沒有剪接的錄影。</b>一位醫師（由程式代打）把一句一句很短的話送進 Claude Code，
@@ -81,6 +97,7 @@ def main() -> None:
         "「第一次修訂」",
         "「第二次修訂」",
     ]
+    head_end = write_head(site, chapters)
     page = (HERE / "template.html").read_text()
     for k, v in {
         "{{TITLE}}": html.escape(proj["title"]),
@@ -91,6 +108,7 @@ def main() -> None:
         "{{ABOUT}}": ABOUT,
         "{{CHAPTERS}}": json.dumps(chapters, ensure_ascii=False),
         "{{KEYS}}": json.dumps(keys, ensure_ascii=False),
+        "{{HEAD_END}}": json.dumps(head_end),
     }.items():
         page = page.replace(k, v)
     (site / "index.html").write_text(page)
