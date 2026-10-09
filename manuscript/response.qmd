@@ -1,0 +1,27 @@
+---
+# 給編輯與審稿人的逐條回覆（匿名）。內容由 build_revision.R 組成（MS_RESPONSE），來源：correspondence/JCRP_round<N>_response.md
+format:
+  docx:
+    reference-doc: style/reference.docx
+lang: en-US
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+```
+
+```{r load}
+source("manuscript/R/render_helpers.R")
+```
+
+```{r}
+demo_labels()
+```
+
+```{r}
+section_file(Sys.getenv("MS_RESPONSE"))
+```

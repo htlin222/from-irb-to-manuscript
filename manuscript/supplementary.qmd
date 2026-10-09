@@ -47,4 +47,12 @@ for (t in supp) {
 
 Absolute standardized mean differences of the propensity-score covariates; dashed line, 0.1. Year of treatment start is shown as a continuous variable.
 
+{{< pagebreak >}}
+
+**Figure S2. Distribution of propensity scores by neoadjuvant regimen (post hoc)**
+
+![](../results/figures/ps_overlap.png){width=6in}
+
+Propensity scores for receiving trastuzumab plus pertuzumab, averaged over imputations. The limited overlap reflects the different treatment periods of the two regimens; overlap weighting gives the greatest weight to patients in the region of overlap.
+
 **Supplementary File S1. Analysis code** (`JCRP_supplementary_code.zip`): the statistical analysis plan, analysis code, shared definitions with automated tests, analysis parameters, drug-name map, and records of data queries and decisions. No patient data are included. The code was written with the assistance of Claude Opus 5.5 (see the Use of Generative AI statement).

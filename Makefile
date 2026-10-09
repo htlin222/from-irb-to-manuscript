@@ -1,4 +1,4 @@
-.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check deidentify cohort table1 analysis-data outcomes posthoc analysis test-analysis references manuscript submission \
+.PHONY: help setup check generate pdf templates onboard validate all dashboard checklist review test lint format clean init data-check deidentify cohort table1 analysis-data outcomes posthoc analysis test-analysis references manuscript submission revision \
         set-phase new amendment re_review continuing closure sae ib_update import suspension appeal
 
 # Single source of truth: config.toml (+ the files it references, e.g. cv.toml, 中文計畫摘要.md)
@@ -88,6 +88,9 @@ references: ## Verify every reference in manuscript/references.yaml against Cros
 manuscript: ## Build the JCRP draft (title page, blinded article, JPEG figures, writing guide) + checks → manuscript/_build/
 	@test -f manuscript/style/reference.docx || { quarto pandoc -o manuscript/_build/pandoc-reference.docx --print-default-data-file reference.docx && $(RUN) python manuscript/style/make_reference_docx.py manuscript/_build/pandoc-reference.docx manuscript/style/reference.docx; }
 	$(RSCRIPT) manuscript/R/build.R draft
+
+revision: manuscript ## Journal revision per manuscript/revision.yaml: response letter + marked and clean revised article → submission/revision<N>/
+	$(RSCRIPT) manuscript/R/build_revision.R
 
 submission: ## Same as manuscript, but only writes submission/ when every JCRP check passes
 	$(RSCRIPT) manuscript/R/build.R submission

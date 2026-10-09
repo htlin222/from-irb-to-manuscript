@@ -6,8 +6,11 @@ cv <- RcppTOML::parseTOML("cv.toml")
 meta <- yaml::read_yaml("manuscript/meta.yaml")
 
 # 讀 manuscript/text/<name>.md：去掉作者註解、填入數字代號
-section <- function(name) {
-  x <- paste(readLines(file.path("manuscript/text", paste0(name, ".md")), encoding = "UTF-8"), collapse = "\n")
+# MS_TEXT_DIR：修訂時改讀「標示修改處」的版本（manuscript/_build/revision/marked，已填好數字）
+TEXT_DIR <- Sys.getenv("MS_TEXT_DIR", "manuscript/text")
+section <- function(name) section_file(file.path(TEXT_DIR, paste0(name, ".md")))
+section_file <- function(path) {
+  x <- paste(readLines(path, encoding = "UTF-8"), collapse = "\n")
   x <- gsub("<!--.*?-->", "", x)           # 作者註解不輸出
   knitr::asis_output(paste0("\n", fill_tokens(x, tk), "\n"))
 }

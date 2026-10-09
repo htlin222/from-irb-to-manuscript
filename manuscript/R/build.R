@@ -5,6 +5,7 @@ mode <- if (length(args)) args[1] else "draft"
 stopifnot(mode %in% c("draft", "submission"))
 source("manuscript/R/tables.R")   # tokens.R、common.R
 source("manuscript/R/check.R")
+source("manuscript/R/render_util.R")
 
 BUILD <- "manuscript/_build"
 dir.create(BUILD, showWarnings = FALSE, recursive = TRUE)
@@ -14,11 +15,7 @@ cfg <- RcppTOML::parseTOML("config.toml")
 cv <- RcppTOML::parseTOML("cv.toml")
 FIGURES <- c(`Figure 1` = "results/figures/cohort_flow.png", `Figure 2` = "results/figures/km_efs.png",
              `Figure 3` = "results/figures/km_os.png")
-SUPPLEMENTARY <- c(`Figure S1` = "results/figures/love_plot.png")
-run <- function(cmd, args, ...) {
-  st <- system2(cmd, args, ...)
-  if (!identical(st, 0L) && !is.null(st) && st != 0) stop(cmd, " 失敗（", st, "）")
-}
+SUPPLEMENTARY <- c(`Figure S1` = "results/figures/love_plot.png", `Figure S2` = "results/figures/ps_overlap.png")
 
 # 1. 參考文獻：JCRP 的 Vancouver 範例不列 DOI／PMID，給 pandoc 的副本移除這兩欄
 refs_json <- jsonlite::read_json("manuscript/references.json")
@@ -26,15 +23,6 @@ jsonlite::write_json(lapply(refs_json, function(r) r[setdiff(names(r), c("DOI", 
                      file.path(BUILD, "references_pandoc.json"), auto_unbox = TRUE, pretty = TRUE)
 
 # 2. 匿名正文
-render <- function(qmd, out, to = "docx") {
-  log <- file.path(BUILD, paste0(qmd, ".log"))
-  # Word：--output 相對於執行目錄（專案根目錄）；HTML 自包含檔要在原位置產生，否則找不到 quarto 的元件
-  produced <- if (to == "html") file.path("manuscript", out) else out
-  argv <- c("render", file.path("manuscript", qmd), "--to", to, if (to != "html") c("--output", out))
-  st <- system2("quarto", argv, stdout = log, stderr = log)
-  if (st != 0 || !file.exists(produced)) stop(qmd, " 產生失敗，請看 ", log)
-  invisible(file.rename(produced, file.path(BUILD, out)))
-}
 render("article.qmd", "JCRP_blinded_article.docx")
 
 # 3. 字數（作者文字填入數字後計算）與頁數
@@ -98,18 +86,9 @@ images <- rbindlist(lapply(strsplit(fig_out, " "), function(v) data.table(
 render("writing_guide.qmd", "writing_guide.html", to = "html")
 
 # 7. 檢查
-docx_text <- function(f) {
-  x <- system2("unzip", c("-p", f, "word/document.xml"), stdout = TRUE)
-  gsub("<[^>]+>", " ", paste(x, collapse = " "))
-}
 article_xml <- docx_text(file.path(BUILD, "JCRP_blinded_article.docx"))
 title_xml <- docx_text(file.path(BUILD, "JCRP_title_page.docx"))
-people <- c(list(cv$pi), cv$co_pi)
-inst <- RcppTOML::parseTOML(file.path("institutions", cfg$institution, "profile.toml"))
-blind_terms <- unique(Filter(nzchar, c(
-  vapply(people, `[[`, "", "name"), vapply(people, `[[`, "", "name_en"),
-  vapply(people, function(p) p$email %||% "", ""), cfg$study$irb_no,
-  unlist(inst[c("name", "name_en", "short_name", "heading")]), "KFSYSCC", "Koo Foundation")))
+blind_terms <- blind_terms_for(cfg, cv)
 files <- list(
   article_mb = file.size(file.path(BUILD, "JCRP_blinded_article.docx")) / 1024^2,
   synthetic_label = c(grepl("SYNTHETIC DATA FOR TEACHING", article_xml), grepl("SYNTHETIC DATA FOR TEACHING", title_xml)),
@@ -126,6 +105,7 @@ files <- list(
 res <- run_checks(texts, meta, manuscript_tables(), counts, journal, fread("manuscript/references_verification.csv"),
                   blind_terms, files)
 write_report(res, file.path(BUILD, "check_report.md"), counts)
+fwrite(res, file.path(BUILD, "check_results.csv"))   # 給 build_revision.R 讀
 n_err <- res[level == "error" & !ok, .N]
 cat(sprintf("論文檔已產生於 %s：待修正 %d 項、請確認 %d 項 → %s/check_report.md\n", BUILD, n_err,
             res[level == "warning" & !ok, .N], BUILD))

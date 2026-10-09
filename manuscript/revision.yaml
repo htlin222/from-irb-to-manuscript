@@ -1,0 +1,6 @@
+# 期刊審查回合（單一來源）：make revision 依此產生回覆信與標示修改處的修訂稿。
+round: 1
+baseline_tag: jcrp-submission-v1          # 比對基準：上次投稿的版本
+decision: correspondence/JCRP_decision_round1.md
+response: correspondence/JCRP_round1_response.md
+due_days: 45

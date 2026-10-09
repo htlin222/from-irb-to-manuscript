@@ -26,6 +26,11 @@ manuscript_tokens <- function() {
   d1 <- function(it, g) de[item == it & group == g, value]
   P <- function(k) pcr[analysis == k]
   S <- function(ep, k) sv[endpoint == ep & analysis == k]
+  ph <- rf("posthoc_r1.csv"); pov <- rf("posthoc_r1_overlap.csv"); ptm <- rf("posthoc_r1_timing.csv")
+  po <- function(m, g) pov[metric == m & group == g, value]
+  po2 <- function(m) pov[metric == m, value]
+  tm <- function(m) ptm[metric == m, value]
+  H <- function(k, f) { x <- ph[id == k]; f(x$est, x$lo, x$hi) }
 
   tk <- list(
     title_en = RcppTOML::parseTOML("config.toml")$study$title_en,
@@ -85,6 +90,24 @@ manuscript_tokens <- function() {
     pcr_2020_2023_all = fmt_n_of(sum(de[item == "pcr_n_period" & grepl("2020_2023", group), value]),
                                  sum(de[item == "n_period" & grepl("2020_2023", group), value])),
     n_2020_2023_single = spell(d1("n_period", "single_2020_2023")),
+    # 事後分析（JCRP 第一輪審查；analysis/R/posthoc_revision1.R）——文中須標明 post hoc
+    ps_median_dual = sprintf("%.2f", po("ps_median", "dual")), ps_median_single = sprintf("%.2f", po("ps_median", "single")),
+    common_support_dual = fmt_pct(po("in_common_support", "dual")), common_support_single = fmt_pct(po("in_common_support", "single")),
+    weight_share_2016_2019 = fmt_pct(po("weight_share", "2016-2019")),
+    or_spline = H("P1", fmt_ci), efs_hr_2012_2019 = H("P2", fmt_ci), efs_p_2012_2019 = fmt_p(ph[id == "P2", p]),
+    n_2012_2019_dual = ph[id == "P2", n_dual], n_2012_2019_single = ph[id == "P2", n_single],
+    tdm1_2012_2019 = if (all(po2("tdm1_pct_non_pcr_2012_2019") == 0)) "none" else "some",
+    or_no_pbs = H("P3", fmt_ci), n_pbs_dual = spell(po("n_progression_before_surgery", "dual")),
+    n_pbs_single = spell(po("n_progression_before_surgery", "single")),
+    or_elsewhere_all_pcr = H("P4", fmt_ci), or_elsewhere_no_pcr = H("P5", fmt_ci),
+    n_elsewhere_dual = spell(po("n_operated_elsewhere", "dual")), n_elsewhere_single = spell(po("n_operated_elsewhere", "single")),
+    efs_hr_5y = H("P6", fmt_ci), os_hr_5y = H("P7", fmt_ci),
+    rmst5_efs = sprintf("%.2f years (95%% CI, %s)", S("EFS", "main")$rmst5_diff, ci_range(S("EFS", "main")$rmst5_lo, S("EFS", "main")$rmst5_hi)),
+    rmst5_os = sprintf("%.2f years (95%% CI, %s)", S("OS", "main")$rmst5_diff, ci_range(S("OS", "main")$rmst5_lo, S("OS", "main")$rmst5_hi)),
+    pz_from_index = tm("dual_pertuzumab_from_index"), pz_later = tm("dual_pertuzumab_later"),
+    pz_later_median_day = tm("dual_pertuzumab_later_median_day"),
+    single_min_day = tm("single_min_days_to_surgery_or_progression"),
+    single_before_day = spell(tm("single_n_before_day_84")),
     # 軟體（provenance）
     r_version = sub("^R version ([0-9.]+).*$", "\\1", prov$r_version),
     imputations = params()$imputation_m

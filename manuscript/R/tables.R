@@ -118,4 +118,13 @@ supp_evalues <- function() {
        footnotes = "The E-value is the minimum strength of association, on the risk-ratio scale, that an unmeasured confounder would need to have with both treatment and outcome to explain away the observed estimate. †The confidence interval includes the null value.")
 }
 
-supplementary_tables <- function(max_rows) c(supp_baseline_parts(max_rows), list(supp_subgroup(), supp_evalues()))
+# Table S4：回應第一輪審查的事後分析（analysis/R/posthoc_revision1.R）
+supp_posthoc <- function() {
+  ph <- rd_res("posthoc_r1.csv")
+  list(title = "Table S4. Post hoc analyses performed in response to peer review",
+       data = ph[, .(Analysis = label, `Patients, n (T+P/T)` = sprintf("%d/%d", n_dual, n_single), Measure = measure,
+                     `Estimate (95% CI)` = ci(est, lo, hi), P = pval(p))],
+       footnotes = "These analyses were not prespecified in the statistical analysis plan. All used overlap weighting with the same 20 imputations as the primary analysis. Patients operated on elsewhere were assigned to groups by pertuzumab use within 180 days of the index date. CI, confidence interval; EFS, event-free survival; HR, hazard ratio; OR, odds ratio; OS, overall survival; pCR, pathologic complete response; T, trastuzumab; T+P, trastuzumab plus pertuzumab.")
+}
+
+supplementary_tables <- function(max_rows) c(supp_baseline_parts(max_rows), list(supp_subgroup(), supp_evalues(), supp_posthoc()))

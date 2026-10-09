@@ -25,6 +25,13 @@ source("manuscript/R/render_helpers.R")
 tabs <- manuscript_tables()
 ```
 
+```{r response}
+# 修訂版：JCRP 要求逐條回覆放在修訂稿最前面（MS_RESPONSE 由 build_revision.R 設定）
+if (nzchar(Sys.getenv("MS_RESPONSE"))) {
+  knitr::asis_output(paste0(section_file(Sys.getenv("MS_RESPONSE")), "\n\n{{< pagebreak >}}\n\n"))
+}
+```
+
 ```{r title-block, results="asis"}
 cat("**", cfg$study$title_en, "**\n\n", sep = "")
 ```
