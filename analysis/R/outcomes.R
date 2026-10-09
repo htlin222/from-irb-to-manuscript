@@ -202,7 +202,11 @@ descriptive <- rbind(
   # 未加權的實際人數（JCRP：百分比須附上計算它的絕對人數）
   a[, .(item = "n", group = fifelse(dual == 1, "dual", "single"), value = .N), keyby = dual][, .(item, group, value)],
   a[, .(item = "pcr_n", group = fifelse(dual == 1, "dual", "single"), value = sum(pcr)), keyby = dual][, .(item, group, value)],
-  a[, .(item = "pcr_strict_n", group = fifelse(dual == 1, "dual", "single"), value = sum(pcr_strict)), keyby = dual][, .(item, group, value)]
+  a[, .(item = "pcr_strict_n", group = fifelse(dual == 1, "dual", "single"), value = sum(pcr_strict)), keyby = dual][, .(item, group, value)],
+  # 依治療開始年份分期的未加權人數（描述性：說明未加權與加權結果差異的來源）
+  rbindlist(lapply(p$treatment_periods, function(yr) a[year >= yr[1] & year <= yr[2],
+    .(item = c("n_period", "pcr_n_period"), value = c(.N, sum(pcr))), keyby = dual][
+    , .(item, group = sprintf("%s_%d_%d", fifelse(dual == 1, "dual", "single"), yr[1], yr[2]), value)]))
 )
 
 fwrite(pcr_tab, file.path(RESULTS_DIR, "outcomes_pcr.csv"))
