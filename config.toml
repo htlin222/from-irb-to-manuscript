@@ -45,7 +45,7 @@ groups = [
 
 [closure]
 extensions = 0
-amendments = 0
+amendments = 1   # 已核准的修正案次數（結案報告用）
 sae_count  = 0
 specimens  = false
 
@@ -62,6 +62,7 @@ change_description = "@correspondence/IRB修正案1_修正說明.md"
 baseline           = "irb-approved:中文計畫摘要.md"   # SF016：核准版（git tag:檔案）vs 目前版，自動逐段比對
 affects_consent    = false
 affects_risk       = false
+approval_date      = "2026年12月07日"   # 第 1 次修正案核准（correspondence/IRB修正案1_核准通知.md）
 
 [continuing_review]
 enrollment_status   = ""
