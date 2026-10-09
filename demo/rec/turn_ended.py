@@ -54,7 +54,9 @@ for line in reversed(pathlib.Path(ev["transcript_path"]).read_text().splitlines(
     body = " ".join(texts(e)).strip()
     if not body:
         continue  # tool results carry no text block
-    hit = next((k for k, v in wanted.items() if body.startswith(v) or body == v), None)
+    # Newest first, unanswered first: the same `say` text may be sent twice.
+    matches = [k for k, v in reversed(list(wanted.items())) if body.startswith(v)]
+    hit = next((k for k in matches if not (state / "answered" / k).exists()), matches[0] if matches else None)
     break  # only the most recent human message counts
 
 (state / "answered").mkdir(parents=True, exist_ok=True)

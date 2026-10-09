@@ -176,7 +176,12 @@ def answer_question(screen: str) -> bool:
         tmux("send-keys", "-t", SOCK, "Enter")
         log("  (responder) submitted answers")
         return True
-    opts = [line for line in screen.splitlines() if re.match(r"^\s*(❯\s*)?\d+\.\s", line)]
+    # Only the question widget: walk up from "Enter to select" to the rule line
+    # above it, so numbered lists in the conversation are never read as options.
+    lines = screen.splitlines()
+    end = max(i for i, line in enumerate(lines) if "Enter to select" in line)
+    begin = next((i for i in range(end, -1, -1) if re.fullmatch(r"\s*─{10,}.*", lines[i])), 0)
+    opts = [line for line in lines[begin:end] if re.match(r"^\s*(❯\s*)?\d+\.\s", line)]
     pick = next((i for i, opt in enumerate(opts) if RECOMMEND.search(opt)), 0)
     time.sleep(6)  # give the viewer time to read the question
     for _ in range(pick):
@@ -244,7 +249,9 @@ def cmd_run(a: argparse.Namespace) -> int:
     while True:
         # Re-read the plan every chapter: chapters can be inserted mid-run.
         stages = tomllib.loads(STAGES.read_text())["stage"]
-        st = next((s for s in stages if not (STATE / "verified" / s["id"]).exists()), None)
+        ids = [s["id"] for s in stages]
+        first = ids.index(a.start) if a.start in ids else 0  # --from: skip earlier chapters
+        st = next((s for s in stages[first:] if not (STATE / "verified" / s["id"]).exists()), None)
         if st is None:
             break
         sid = st["id"]
@@ -259,7 +266,7 @@ def cmd_run(a: argparse.Namespace) -> int:
             )
             log(f"▶ {sid} {st['name']}: {st['prompt']}")
             send(st["prompt"])
-        rc = wait_turn(sid, st["verify"])
+        rc = wait_turn(sid, st.get("verify"))
         if rc:
             return rc
         if a.until and sid == a.until:
@@ -296,7 +303,7 @@ def cmd_finish(_: argparse.Namespace) -> int:
 def cmd_status(_: argparse.Namespace) -> int:
     for st in CFG["stage"]:
         done = (STATE / "answered" / st["id"]).exists()
-        ok = done and verify(st["verify"])
+        ok = done and verify(st.get("verify") or "true")
         print(f"{st['id']} {'✓' if ok else ('…' if done else ' ')} {st['name']}")
     print("session:", "alive" if alive() else "none")
     return 0

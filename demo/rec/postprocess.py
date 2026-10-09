@@ -71,8 +71,9 @@ def main() -> None:
     session = {e["event"]: e["t"] for e in load_jsonl(state / "session.jsonl")}
     t_start = session["start"]  # wall clock of cast t=0 (asciinema spawned)
     t_ready = session.get("ready", t_start) - t_start
-    turns = load_jsonl(state / "turns.jsonl")
-    marks = load_jsonl(state / "markers.jsonl")
+    # A restarted `start` overwrites raw.cast: only events of the current take count.
+    turns = [t for t in load_jsonl(state / "turns.jsonl") if t["t"] >= t_start]
+    marks = [m for m in load_jsonl(state / "markers.jsonl") if m["t"] >= t_start]
     said = {d["id"]: d for d in load_jsonl(state / "said.jsonl")}
     t_end = max(t["t"] for t in turns) - t_start + a.tail if turns else events[-1][0]
 

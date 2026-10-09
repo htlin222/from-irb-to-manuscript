@@ -55,7 +55,7 @@ id = "05"
 part = "IRB 初審"
 name = "存成「IRB 初審」"
 prompt = "把這個版本存起來，標記為「IRB 初審」。"
-verify = "check answered 05 && check saved 初審"
+verify = "check answered 05 && check saved 05 初審"
 
 # ── Part 3 · IRB 複審 ───────────────────────────────────────────────
 [[stage]]
@@ -71,7 +71,7 @@ id = "07"
 part = "IRB 複審"
 name = "回覆表＋複審文件"
 prompt = "幫我寫審查意見回覆表，產出複審文件，存成「IRB 複審」。"
-verify = "check answered 07 && check file 'output/**/*SF019*' && check saved 複審"
+verify = "check answered 07 && check file 'output/**/*SF019*' && check saved 07 複審"
 
 [[stage]]
 id = "08"
@@ -169,7 +169,7 @@ id = "20"
 part = "公平比較"
 name = "存成「分析完成」"
 prompt = "存檔，標記為「分析完成」。"
-verify = "check answered 20 && check saved 分析完成"
+verify = "check answered 20 && check saved 20 分析完成"
 
 # ── Part 6 · IRB 修正案 ─────────────────────────────────────────────
 [[stage]]
@@ -177,7 +177,7 @@ id = "21"
 part = "IRB 修正案"
 name = "送修正案"
 prompt = "照你的建議，幫我送 IRB 修正案。"
-verify = "check answered 21 && check file 'output/**/*SF016*' && check saved 修正"
+verify = "check answered 21 && check file 'output/**/*SF016*' && check saved 21 修正"
 
 [[stage]]
 id = "22"
@@ -228,7 +228,7 @@ id = "28"
 part = "寫論文"
 name = "存成「投稿版」"
 prompt = "幫我寫給編輯的 cover letter，然後存成「投稿版」。"
-verify = "check answered 28 && check saved 投稿"
+verify = "check answered 28 && check saved 28 投稿"
 
 # ── Part 8 · 審稿來回 ───────────────────────────────────────────────
 [[stage]]
@@ -251,7 +251,7 @@ id = "31"
 part = "審稿來回"
 name = "修訂版投稿檔"
 prompt = "修改的地方要讓審稿人看得到。產出修訂版投稿檔，存成「第一次修訂」。"
-verify = "check answered 31 && check saved 修訂"
+verify = "check answered 31 && check saved 31 修訂"
 
 [[stage]]
 id = "32"
@@ -259,7 +259,7 @@ part = "審稿來回"
 name = "第二輪意見"
 drop = ["drops/JCRP_decision_round2.md"]
 prompt = "第二輪意見來了，在 inbox。請處理，存成「第二次修訂」。"
-verify = "check answered 32 && check saved 第二次修訂"
+verify = "check answered 32 && check saved 32 第二次修訂"
 
 [[stage]]
 id = "33"

@@ -37,7 +37,7 @@ rows = [
         "粗略比較（未調整）",
         f"{pct(crude)}（{int(n_pcr['dual'])}/{int(desc.n_dual)} vs {int(n_pcr['single'])}/{int(desc.n_single)}）",
         pct(truth["pcr_risk_difference_ATO"]),
-        "差很多：被年代混淆",
+        f"差 {100 * abs(truth['pcr_risk_difference_ATO'] - crude):.0f} 個百分點",
     ),
     (
         "pCR 差異（雙標靶 − 單標靶）",
