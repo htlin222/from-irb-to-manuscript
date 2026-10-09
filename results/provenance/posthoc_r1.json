@@ -1,8 +1,8 @@
 {
   "outputs": ["results/posthoc_r1.csv", "results/posthoc_r1_overlap.csv", "results/posthoc_r1_timing.csv"],
   "script": "analysis/R/posthoc_revision1.R",
-  "generated": "2026-10-09 09:30:07 CST",
-  "git_commit": "d43f1eb",
+  "generated": "2026-10-09 09:54:48 CST",
+  "git_commit": "b3fb1bc",
   "r_version": "R version 4.5.1 (2025-06-13)",
   "packages": "data.table 1.17.8、yaml 2.3.10、RcppTOML 0.2.3、digest 0.6.37、jsonlite 2.0.0、mice 3.18.0、WeightIt 1.5.1、survival 3.8.3、ggplot2 4.0.0",
   "raw_data_sha256": {
